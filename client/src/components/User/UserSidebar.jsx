@@ -1,4 +1,4 @@
-import { Calendar, ClipboardList, Home} from 'lucide-react'
+import {  ClipboardList, Home} from 'lucide-react'
 import { NavLink } from 'react-router-dom'
 
 const UserSidebar = () => {
@@ -19,11 +19,6 @@ const UserSidebar = () => {
            px-3 rounded-lg hover:bg-gray-800 hover:text-white transition-all text-gray-300 ${isActive && 'bg-blue-500 text-white'}`}>
             <ClipboardList className='min-w-4 w-5'/>
             <p className='hidden md:inline-block'>My Tasks</p>
-          </NavLink>
-          <NavLink to='/user/calendar' className={({isActive})=>`flex gap-3 items-center py-3.5
-          px-3 rounded-lg hover:bg-gray-800 hover:text-white transition-all text-gray-300  ${isActive && 'bg-blue-500 text-white'}`}>
-            < Calendar className='min-w-4 w-5'/>
-            <p className='hidden md:inline-block'>Calendar</p>
           </NavLink>
         </div>
     </div>
