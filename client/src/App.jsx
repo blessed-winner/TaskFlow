@@ -7,7 +7,6 @@ import Analytics from './pages/Admin/Analytics'
 import Settings from './pages/Admin/Settings'
 import './index.css'
 import UserDashboard from './pages/User/UserDashboard'
-import Calendar from './pages/User/Calendar'
 import MyTasks from './pages/User/MyTasks'
 import UserLayout from './pages/User/UserLayout'
 
@@ -24,7 +23,6 @@ const App = () => {
             <Route path = '/user' element = {<UserLayout/>}>
             <Route index element ={<UserDashboard/>}/>
             <Route path='my-tasks' element={<MyTasks/>}/>
-            <Route path='calendar' element={<Calendar/>}/>
          </Route>
        </Routes>
     </div>
