@@ -4,7 +4,7 @@ import { dummyTasks, userDashboardData } from '../../assets/assets'
 
 const MyTasks = () => {
   return (
-   <div className='p-4 md:p-10 bg-blue-50/50 flex-1 h-full'>
+   <div className='ml-54 mt-16.5 p-4 md:p-10 bg-blue-50/50 flex-1 h-full'>
          <h1 className='font-semibold text-2xl text-gray-900 mb-6'>My Tasks</h1>
          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             <div className='bg-white p-4 py-6 flex items-center rounded-lg justify-between min-w-58 shadow'>
