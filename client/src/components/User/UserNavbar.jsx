@@ -3,7 +3,7 @@ import { SearchIcon,Bell, UserIcon, LogOutIcon } from 'lucide-react'
 const UserNavbar = () => {
   return (
     <>
-        <div className='flex justify-between items-center px-6 py-3 bg-white border-b border-gray-300 shadow'>
+        <div className='flex justify-between items-center px-6 py-3 bg-white border-b border-gray-300 shadow fixed z-1 right-0 left-0 top-0'>
           <div className='flex gap-3 items-center'>
               <h1 className='font-bold text-2xl text-gray-900'>TaskFlow</h1>
            <div className='flex gap-3 items-center border border-gray-300 px-3 py-2 rounded-lg w-[250px] max-md:hidden'>
