@@ -9,6 +9,11 @@ import './index.css'
 import UserDashboard from './pages/User/UserDashboard'
 import MyTasks from './pages/User/MyTasks'
 import UserLayout from './pages/User/UserLayout'
+import ManagerLayout from './pages/Manager/ManagerLayout'
+import ManagerDashboard from './pages/Manager/ManagerDashboard'
+import TaskManagement from './pages/Manager/TaskManagement'
+import TeamOverview from './pages/Manager/TeamOverview'
+import Projects from './pages/Manager/Projects'
 
 const App = () => {
   return (
@@ -23,6 +28,12 @@ const App = () => {
             <Route path = '/user' element = {<UserLayout/>}>
             <Route index element ={<UserDashboard/>}/>
             <Route path='my-tasks' element={<MyTasks/>}/>
+         </Route>
+         <Route path='/manager' element = {<ManagerLayout/>}>
+             <Route index element ={<ManagerDashboard/>}/>
+             <Route path='manage-tasks' element={<TaskManagement/>}/>
+             <Route path='team-overview' element={<TeamOverview/>}/>
+             <Route path='projects' element={<Projects/>}/>
          </Route>
        </Routes>
     </div>

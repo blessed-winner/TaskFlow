@@ -1,17 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import UserTableData from '../../components/Admin/UserTableData'
 import { user_data } from '../../assets/assets'
+import { useAppContext } from '../../context/AppContext'
 
 const User = () => {
-  const [userData,setUserData] = useState([])
-  const fetchUserData = () => {
-    setUserData(user_data)
-  }
-  useEffect(()=>{
-    fetchUserData()
-  },[])
-  return (
-    <div className='p-4 md:p-10 bg-blue-50/50 flex-1'>
+  const{users,fetchUsers} = useAppContext()
+ 
+  return (    <div className='ml-54 mt-16.5 p-4 md:p-10 bg-blue-50/50 flex-1 h-full'>
        <h1 className='font-semibold text-2xl mb-5'>User Management</h1>
        <div className='max-w-5xl scrollbar-hide rounded-lg overflow-x-auto h-4/5'>
          <table className='w-full text-sm'>
@@ -25,13 +20,14 @@ const User = () => {
             </tr>
          </thead>
          <tbody>
-             {userData.map((user,index)=>(
-              <UserTableData user={user} key={index} fetchUsers={fetchUserData}/>
+             {users.map((user,index)=>(
+              <UserTableData user={user} key={index} fetchUsers={fetchUsers}/>
              ))}
          </tbody>
        </table>
        </div>
        </div>
+
   )
 }
 

@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom'
 
 const AdminSidebar = () => {
   return (
-    <div className='flex flex-col min-h-full bg-gray-900 md:p-6'>
+    <div className='flex flex-col min-h-full bg-gray-900 md:p-6 min-w-54 fixed mt-16.5'>
         <div className='text-center mb-12 border-b-1 border-gray-500 p-4'>
            <h1 className='text-white w-10 h-10 text-md bg-blue-500 flex items-center justify-center rounded-full mb-5 mx-auto'>A</h1>
             <h4 className='font-semibold text-gray-200 text-md hidden md:block'>Admin User</h4>
@@ -11,22 +11,22 @@ const AdminSidebar = () => {
         </div>
         <div className='space-y-2'>
           <NavLink end={true} to='/admin' className={({isActive})=>`flex gap-3 items-center px-3
-          py-3.5 rounded-lg hover:bg-gray-800 hover:text-white transition-all text-gray-300  ${isActive && 'bg-blue-500 text-white'}`}>
+          py-3.5 rounded-lg text-gray-300 ${isActive ? 'bg-blue-500 text-white' : 'hover:bg-gray-800 hover:text-white transition-all'}`}>
             <Home className='min-w-4 w-5'/>
             <p className='hidden md:inline-block'>Dashboard</p>
           </NavLink>
            <NavLink to='/admin/users' className={({isActive})=>`flex gap-3 items-center py-3.5
-           px-3 rounded-lg hover:bg-gray-800 hover:text-white transition-all text-gray-300 ${isActive && 'bg-blue-500 text-white'}`}>
+           px-3 rounded-lg text-gray-300 ${isActive ? 'bg-blue-500 text-white' : 'hover:bg-gray-800 hover:text-white transition-all'}`}>
             <Users className='min-w-4 w-5'/>
             <p className='hidden md:inline-block'>User Management</p>
           </NavLink>
           <NavLink to='/admin/analytics' className={({isActive})=>`flex gap-3 items-center py-3.5
-          px-3 rounded-lg hover:bg-gray-800 hover:text-white transition-all text-gray-300  ${isActive && 'bg-blue-500 text-white'}`}>
+          px-3 rounded-lg text-gray-300 ${isActive ? 'bg-blue-500 text-white' : 'hover:bg-gray-800 hover:text-white transition-all'}`}>
             <BarChart3 className='min-w-4 w-5'/>
             <p className='hidden md:inline-block'>Analytics</p>
           </NavLink>
           <NavLink to='/admin/settings' className={({isActive})=>`flex gap-3 items-center py-3.5
-          px-3 rounded-lg hover:bg-gray-800 hover:text-white transition-all text-gray-300 ${isActive && 'bg-blue-500 text-white'}`}>
+          px-3 rounded-lg text-gray-300 ${isActive ? 'bg-blue-500 text-white' : 'hover:bg-gray-800 hover:text-white transition-all'}`}>
             <Settings className='min-w-4 w-5'/>
             <p className='hidden md:inline-block'>Settings</p>
           </NavLink>

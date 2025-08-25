@@ -4,6 +4,7 @@ export const user_data = [
   role:"Admin",
   completedTasks:[],
   pendingTasks:[],
+  totalTasks:[],
   email:"AdminUser@company.com",
   dept:'IT',
   due:'5/3/2025'
@@ -70,43 +71,62 @@ export const user_data = [
 }
 ]
 
-export const task_data = 
-   [
-      {
-         name:"Database optimization",
-         status:'In progress',
-         dept:'IT',
-      },
-      {
-         name:"Design user dashboard",
-         status:'In progress',
-         dept:'Design'
-      },
-      {
-         name:"Database querying",
-         status:'pending',
-         dept:'Database' 
-      },
-      {
-        name:"Effective communication",
-         status:'completed',
-         dept:'Telecommunication'
-      },
-      {
-         name:"Design communication networks",
-         status:'pending', 
-         dept:'Network'
-      }
-      
-
-   ]
+export const task_data = [
+  {
+    name: "Database optimization",
+    status: "In progress",
+    dept: "IT",
+    assignee: "Jane Smith",
+    priority: "High",
+    dueDate: "2/5/2024",
+    description: "Improve database performance by refining queries and indexing."
+  },
+  {
+    name: "Design user dashboard",
+    status: "Completed",
+    dept: "Design",
+    assignee: "StrawHat Luffy",
+    priority: "Medium",
+    dueDate: "3/8/2024",
+    description: "Create an intuitive and visually appealing user dashboard."
+  },
+  {
+    name: "Database querying",
+    status: "pending",
+    dept: "Database",
+    assignee: "Jane Smith",
+    priority: "High",
+    dueDate: "2/5/2024",
+    description: "Develop and test queries to retrieve and manage data efficiently."
+  },
+  {
+    name: "Effective communication",
+    status: "completed",
+    dept: "Telecommunication",
+    assignee: "John Smith",
+    priority: "Medium",
+    dueDate: "2/5/2024",
+    description: "Enhance team communication skills for better collaboration."
+  },
+  {
+    name: "Design communication networks",
+    status: "pending",
+    dept: "Network",
+    assignee: "Water Law",
+    priority: "High",
+    dueDate: "5/6/2024",
+    description: "Plan and design robust communication networks"
+  }
+]
 
  export const dashboardData = {
       totalUsers:1,
       totalTasks:2,
       completedTasks:1,
       activeManagers:1,
-      completionRate:33.3
+      completionRate:33.3,
+      overDueTasks:0,
+      pending:1,
  }
 
  export const department_data = [
