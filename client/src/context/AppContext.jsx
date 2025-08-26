@@ -7,7 +7,7 @@ axios.defaults.baseURL = import.meta.env.VITE_BASE_URL
 export const AppProvider = ({children})=>{
     const [users,setUsers] = useState([])
     const value = {
-        users
+        users,axios
     }
     const fetchUsers = async()=>{
         try {
