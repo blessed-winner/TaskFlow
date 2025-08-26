@@ -1,12 +1,33 @@
 import React, { useEffect, useState } from 'react'
 import {dashboardData, task_data, user_data} from '../../assets/assets'
 import { Activity, ClipboardList, TrendingUp, Users } from 'lucide-react'
+import { useAppContext } from '../../context/AppContext'
 
 const AdminDashboard = () => {
 
+  const { axios } = useAppContext()
+
   const[userData,setUserData] = useState([])
+  const[dashboardData,setDashboardData] = useState({
+    totalUsers:0,
+    totalTasks:0,
+    completed:0,
+    activeManagers:0,
+    completionRate:0,
+  })
+  
   const fetchUserData = () => {
     setUserData(user_data)
+  }
+
+  const fetchDashboardData = async() => {
+    try {
+       const { data } = await axios.get('/api/users/dashboard')
+       data.success ? setDashboardData(data.dashboardData) : toast.error(data.error)
+    } catch (error) {
+      toast.error(error.message)
+    }
+   
   }
 
   const[taskData,setTaskData] = useState([])
@@ -14,9 +35,11 @@ const AdminDashboard = () => {
     setTaskData(task_data)
   }
   
+  
   useEffect(()=>{
     fetchUserData()
     fetchTaskData()
+    fetchDashboardData()
   },[])
   return (
     <div className='ml-54 mt-16.5 p-4 md:p-10 bg-blue-50/50 flex-1 h-full'>
@@ -39,7 +62,7 @@ const AdminDashboard = () => {
             <div className='bg-white p-4 py-6 flex items-center rounded-lg justify-between min-w-58 shadow'>
             <span className='space-y-1'>
               <p className='text-sm font-semibold text-gray-600'>Completed Tasks</p>
-              <p className='text-2xl font-semibold text-purple-500'>{dashboardData.completedTasks}</p>
+              <p className='text-2xl font-semibold text-purple-500'>{dashboardData.completed}</p>
             </span>
             <TrendingUp className='text-purple-500 h-8 w-8'/>
            </div> 

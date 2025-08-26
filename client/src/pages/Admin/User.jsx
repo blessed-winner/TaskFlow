@@ -4,7 +4,9 @@ import { user_data } from '../../assets/assets'
 import { useAppContext } from '../../context/AppContext'
 
 const User = () => {
+
   const{users,fetchUsers} = useAppContext()
+
  
   return (    <div className='ml-54 mt-16.5 p-4 md:p-10 bg-blue-50/50 flex-1 h-full'>
        <h1 className='font-semibold text-2xl mb-5'>User Management</h1>
@@ -22,7 +24,7 @@ const User = () => {
          <tbody>
              {users.map((user,index)=>(
               <UserTableData user={user} key={index} fetchUsers={fetchUsers}/>
-             ))}
+     ))}
          </tbody>
        </table>
        </div>
