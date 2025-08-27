@@ -5,7 +5,7 @@ const userRouter = express.Router()
 
 userRouter.post('/add-user',addNewUser)
 userRouter.put('/:id',updateUser)
-userRouter.delete('/:id',deleteUser)
+userRouter.delete('/delete/:id',deleteUser)
 userRouter.get('/All',getAllUsers)
 userRouter.get('/dashboard',adminDashboardData)
 

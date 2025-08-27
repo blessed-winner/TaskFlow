@@ -14,10 +14,12 @@ import ManagerDashboard from './pages/Manager/ManagerDashboard'
 import TaskManagement from './pages/Manager/TaskManagement'
 import TeamOverview from './pages/Manager/TeamOverview'
 import Projects from './pages/Manager/Projects'
+import { Toaster } from 'react-hot-toast'
 
 const App = () => {
   return (
     <div>
+      <Toaster/>
        <Routes>
          <Route path = '/admin' element = {<AdminLayout/>}>
             <Route index element ={<AdminDashboard/>}/>

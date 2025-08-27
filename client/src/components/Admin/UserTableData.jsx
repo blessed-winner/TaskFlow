@@ -1,7 +1,29 @@
 import React, { useState } from 'react'
+import { useAppContext } from '../../context/AppContext'
+import toast from 'react-hot-toast'
+
 
 const UserTableData = ({user,fetchUsers}) => {
-    const { fName, lName, email, role, department } = user
+    const{ axios } = useAppContext()
+
+    const { id, fName, lName, email, role, department } = user
+    const deleteUser = async () => {
+        const confirm = window.confirm("Are you sure you want to delete this user ?")
+        if(!confirm) return
+        try {
+            const { data } = await axios.delete(`/api/users/delete/${id}`)
+            if(data.success){
+              toast.success(data.message)
+              await fetchUsers()
+            } else {
+              toast.error(data.message)
+            }
+            } catch (error) {
+           toast.error(error.message)
+        }
+      
+    }
+
     const [isActive,setIsActive] = useState(false)
   
   return (
@@ -28,7 +50,7 @@ const UserTableData = ({user,fetchUsers}) => {
       <td className='py-3 px-2 xl:px-4'>
         <div className='flex gap-4 font-medium'>
             <span className='text-blue-400 text-sm cursor-pointer hover:text-blue-500 transition-all'>Edit</span>
-            <span className='text-red-400 text-sm cursor-pointer hover:text-red-500 transition-all'>Delete</span>
+            <span className='text-red-400 text-sm cursor-pointer hover:text-red-500 transition-all' onClick={deleteUser}>Delete</span>
         </div>
       </td>
     </tr>
