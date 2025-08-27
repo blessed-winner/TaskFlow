@@ -1,4 +1,3 @@
-const express = require('express')
 const { PrismaClient } = require('../generated/prisma')
 
 const prisma = new PrismaClient()
@@ -32,9 +31,9 @@ module.exports.updateUser = async(req,res) => {
 
 module.exports.deleteUser = async(req,res) => {
     try{
-        const{ userId } = req.params
+        const{ id } = req.params
         const user = await prisma.user.delete({
-            where:{id:userId}
+            where: {id:Number(id)}
         })
         return res.json({ success:true, message:"User deleted successfully" })
     }

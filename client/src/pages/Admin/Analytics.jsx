@@ -2,18 +2,17 @@
 import { useEffect, useState } from 'react'
 import { dashboardData, department_data, user_data } from '../../assets/assets'
 import { Activity, ClipboardList, TrendingUp, Users } from 'lucide-react'
+import { useAppContext } from '../../context/AppContext'
 
 const Analytics = () => {
+
+  const { dashboardData,departmentData } = useAppContext()
+  
     const[userData,setUserData] = useState([])
      const fetchUserData = () => {
        setUserData(user_data)
      }
-     const[departmentData,setDeparmentData] = useState([])
-     const fetchDepartmentData = () => {
-          setDeparmentData(department_data)
-     }
       useEffect(()=>{
-        fetchDepartmentData()
          fetchUserData()
        },[])
   return (
@@ -63,7 +62,7 @@ const Analytics = () => {
 
            <span className='space-y-1'>
               <h4 className='text-xs font-medium text-right'>{dept.tasks.length} tasks</h4>
-              <p className='text-xs font-light'>{dept.completed} completed</p>
+              <p className='text-xs font-light'>{dept.tasks.filter(task => task.completed).length} completed</p>
            </span>
             </div>
            ))}
