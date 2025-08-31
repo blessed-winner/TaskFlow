@@ -40,10 +40,10 @@ export const AppProvider = ({children})=>{
 
     const [ departmentData,setDeparmentData ] = useState([])
 
-    const fetchDepartment = async () => {
+    const fetchDepartments = async () => {
       try {
         const { data } = await axios.get('/api/departments/All')
-        data.success ? setDeparmentData(data.department) : toast.error(data.message)
+        data.success ? setDeparmentData(data.departments) : toast.error(data.message)
       } catch (error) {
          toast.error(error.message)
       }
@@ -56,13 +56,13 @@ export const AppProvider = ({children})=>{
         departmentData,
         fetchUsers,
         fetchDashboardData,
-        fetchDepartment,
+        fetchDepartments,
         }
 
     useEffect(()=>{
       fetchUsers()
       fetchDashboardData()
-      fetchDepartment()
+      fetchDepartments()
     },[])
 
   return(
