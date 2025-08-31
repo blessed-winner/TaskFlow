@@ -1,10 +1,38 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Flag, Users, X } from 'lucide-react'
 import RoleSelect from './RoleSelect'
+import { useAppContext } from '../../context/AppContext'
+import toast from 'react-hot-toast'
+import DepartmentSelect from './DepartmentSelect'
 
 const AddUserForm = ({onClose}) => {
+
+  const [firstName,setFirstName] = useState("")
+  const [lastName,setLastName] = useState("")
+  const [email,setEmail] = useState("")
+  const[departmentId,setDepartmentId] = useState(0)
+  const[role,setRole] = useState("User")
+
+    const { axios } = useAppContext()
     const handleSubmit = (e) => {
      e.preventDefault()
+    }
+
+
+    const handleAddUser = async() => {
+      const formData = {
+        fName:firstName,
+        lName:lastName,
+        email,
+        role,
+        deptId:departmentId
+      }
+      try {
+        const { data } = await axios.post('/api/users/add-user',formData)
+        data.success ? toast.success(data.message) : toast.error(data.message)
+      } catch (error) {
+         toast.error(error.message)
+      }
     }
   return (
      <div className='inset-0 flex justify-center bg-black/40 items-center fixed z-50'>
@@ -16,17 +44,17 @@ const AddUserForm = ({onClose}) => {
            <div className='w-full space-y-2 flex justify-between'>
             <div>
                <h5 className='font-medium text-sm'>First Name *</h5>
-             <input type="text" placeholder='Enter First Name' className='border border-gray-300 w-full px-4 py-2.5 rounded-md font-light outline-none min-w-75'/>
+             <input type="text" value={firstName} onChange={(e)=>setFirstName(e.target.value)} placeholder='Enter First Name' className='border border-gray-300 w-full px-4 py-2.5 rounded-md font-light outline-none min-w-75'/>
             </div>
 
             <div>
                <h5 className='font-medium text-sm'>Last Name *</h5>
-             <input type="text" placeholder='Enter Last Name' className='border border-gray-300 w-full px-4 py-2.5 rounded-md font-light outline-none min-w-75'/>
+             <input type="text" value={lastName} onChange={(e)=>setLastName(e.target.value)} placeholder='Enter Last Name' className='border border-gray-300 w-full px-4 py-2.5 rounded-md font-light outline-none min-w-75'/>
             </div>
              </div>
            <div className='space-y-2'>
              <h5 className='font-medium text-sm'>Email Address *</h5>
-             <input type="email" className='border border-gray-300 w-full px-4 py-2.5 rounded-md font-light outline-none' placeholder='Enter Email Address'/>
+             <input type="email" value={email} onChange={(e)=>setEmail(e.target.value)} className='border border-gray-300 w-full px-4 py-2.5 rounded-md font-light outline-none' placeholder='Enter Email Address'/>
            </div>
 
            <div className='space-y-2'>
@@ -34,18 +62,18 @@ const AddUserForm = ({onClose}) => {
             <Flag className='mr-1 w-4'/>
              <h5 className='font-medium text-sm'>Role *</h5>
             </span>
-            <RoleSelect/>
+            <RoleSelect value={role} onChange={setRole}/>
             </div>
             <div className='space-y-2'>
            <span className='flex items-center'>
             <Users className='mr-1 w-4'/>
              <h5 className='font-medium text-sm'>Department *</h5>
             </span>
-           <input type="text" placeholder='Input department' className='border border-gray-300 w-full px-4 py-2.5 rounded-md font-light outline-none' />
+            <DepartmentSelect value={departmentId} onChange={setDepartmentId}/>
             </div>
             <div className='w-full flex justify-end gap-3 py-4 border-t border-gray-300 mt-5'>
               <button onClick={onClose} className='border px-3.5 py-2.5 rounded-md border-gray-300 text-gray-500 font-light cursor-pointer'>Cancel</button>
-              <button className='bg-blue-600 text-white font-light px-3.5 py-2.5 rounded-md hover:bg-blue-700 transition-all cursor-pointer'>Add User</button>
+              <button onClick={handleAddUser} className='bg-blue-600 text-white font-light px-3.5 py-2.5 rounded-md hover:bg-blue-700 transition-all cursor-pointer'>Add User</button>
             </div>
         </form>
     </div>

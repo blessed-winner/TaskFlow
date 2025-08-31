@@ -6,7 +6,7 @@ module.exports.addNewUser = async( req,res ) => {
     try {
          const { fName, lName, email, role, deptId  } = req.body
          const user = await prisma.user.create({
-         data:{fName, lName, email, role:role.toUpperCase(), deptId}
+         data:{fName, lName, email, role:role.toUpperCase(), department: {connect: { id: deptId }}}
     })
         return res.json({ success:true, message:"User created successfully", user })
     } catch (error) {

@@ -15,14 +15,14 @@ module.exports.createDepartment = async( req,res ) => {
 
 module.exports.getAllDepartments = async( req,res ) => {
     try {
-        const department = await prisma.department.findMany({
+        const departments = await prisma.department.findMany({
             include:{
                 users:true,
                 tasks:true
             }
         })
 
-        return res.json({ success:true, department })
+        return res.json({ success:true, departments })
     } catch (error) {
          return res.json({ success:false, message:error.message })
     }
