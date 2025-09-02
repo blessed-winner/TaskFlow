@@ -9,7 +9,7 @@ const Settings = () => {
     const[weekReport,setWeekReport] = useState(false)
     
   return (
-    <div className='ml-54 mt-16.5 p-4 md:p-10 bg-blue-50/50 flex-1 h-full'>
+    <div className='ml-18 md:ml-54 mt-14.5 p-4 md:p-10 bg-blue-50/50 flex-1 h-full'>
       <h1 className='font-semibold text-2xl text-gray-900 mb-6'>System Settings</h1>
       <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
         <div className='bg-white px-5 py-6 rounded-lg shadow-md space-y-4'>

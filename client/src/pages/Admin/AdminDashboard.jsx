@@ -6,12 +6,16 @@ import AddUserForm from '../../components/Admin/AddUserForm'
 
 const AdminDashboard = () => {
 
-  const { dashboardData } = useAppContext()
+  const { dashboardData,setUsers,fetchDashboardData } = useAppContext()
   const [ showForm,setShowForm  ] = useState(false)
 
+  const handleUserAdd = (newUser) => {
+      setUsers((users) => [...users,newUser])
+  }
+
   return (
-    <div className='ml-54 mt-16.5 p-4 md:p-10 bg-blue-50/50 flex-1 h-full'>
-          {showForm && <AddUserForm onClose={()=>setShowForm(false)}/>}
+    <div className=' ml-18 md:ml-54 mt-14.5 p-4 md:p-10 bg-blue-50/50 flex-1 h-full'>
+          {showForm && <AddUserForm onClose={()=>setShowForm(false)} onUserAdded={handleUserAdd} fetchDashboard={fetchDashboardData}/>}
           <div className='flex justify-between'>
          <h1 className='font-semibold text-2xl text-gray-900 mb-6'>Admin Dashboard</h1>
          <AddUserButton onClick = {()=>setShowForm(true)}/>

@@ -5,7 +5,8 @@ const DepartmentSelect = ({value,onChange}) => {
     const { departmentData } = useAppContext() 
    
   return (
-        <select value={value} onChange={(e)=>onChange(e.target.value)} className='border border-gray-300 w-full px-4 py-2.5 rounded-md font-light outline-none'>
+        <select value={value ?? ""} onChange={(e)=>onChange(e.target.value)} className='border border-gray-300 w-full px-4 py-2.5 rounded-md font-light outline-none'>
+          <option value="">Select department</option>
          { departmentData.map((dept,index)=>(
               <option value={dept.id} key={index}>{dept.name}</option>
          )) }

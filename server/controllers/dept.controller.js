@@ -6,11 +6,28 @@ const prisma = new PrismaClient()
 module.exports.createDepartment = async( req,res ) => {
     try {
         const { name } = req.body
-        const dept = await prisma.department.create( name )
-        return res.json({ success:true, dept })
+        const dept = await prisma.department.create({
+            data:{
+                name
+            }
+        })
+        return res.json({ success:true, message:"Department created successfully", dept })
     } catch (error) {
          return res.json({ success:false, message:error.message })
     }
+}
+
+module.exports.deleteDepartment = async(req,res) => {
+   try{
+    const {id} = req.params
+    const dept = await prisma.department.delete({
+        where:{ id:Number(id) }
+    })
+    return res.json({ success:true, message:"Department removed successfully" })
+   }
+   catch(err){
+     return res.json({ success:false, message:err.message })
+   }
 }
 
 module.exports.getAllDepartments = async( req,res ) => {

@@ -38,12 +38,12 @@ export const AppProvider = ({children})=>{
         
     }
 
-    const [ departmentData,setDeparmentData ] = useState([])
+    const [ departmentData,setDepartmentData ] = useState([])
 
     const fetchDepartments = async () => {
       try {
         const { data } = await axios.get('/api/departments/All')
-        data.success ? setDeparmentData(data.departments) : toast.error(data.message)
+        data.success ? setDepartmentData(data.departments) : toast.error(data.message)
       } catch (error) {
          toast.error(error.message)
       }
@@ -51,9 +51,12 @@ export const AppProvider = ({children})=>{
 
       const value = {
         users,
+        setUsers,
         axios,
         dashboardData,
+        setDashboardData,
         departmentData,
+        setDepartmentData,
         fetchUsers,
         fetchDashboardData,
         fetchDepartments,

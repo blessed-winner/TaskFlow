@@ -2,32 +2,56 @@ const { PrismaClient } = require('../generated/prisma')
 
 const prisma = new PrismaClient()
 
-module.exports.addNewUser = async( req,res ) => {
-    try {
-         const { fName, lName, email, role, deptId  } = req.body
-         const user = await prisma.user.create({
-         data:{fName, lName, email, role:role.toUpperCase(), department: {connect: { id: deptId }}}
+module.exports.addNewUser = async (req, res) => {
+  try {
+    const { fName, lName, email, role, deptId } = req.body
+
+    const user = await prisma.user.create({
+      data: {
+        fName,
+        lName,
+        email,
+        role: role.toUpperCase(),
+        department: deptId ? { connect: { id: Number(deptId) } } : undefined
+      },
+      include: {
+        department: true 
+      }
     })
-        return res.json({ success:true, message:"User created successfully", user })
-    } catch (error) {
-         return res.json({ success:false, message:error.message })
-    }
-   
+
+    return res.json({ success: true, message: "User created successfully", user })
+  } catch (error) {
+    console.error(error)
+    return res.json({ success: false, message: error.message })
+  }
 }
 
-module.exports.updateUser = async(req,res) => {
-    try{
-        const { userId } = req.params
-        const user = await prisma.user.update({
-            where: {id:userId},
-            data:{fName, lName, email, role}
-        })
-        return res.json({ success:true, message:"User updated successfully", user })
+module.exports.updateUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { fName, lName, email, role, deptId } = req.body; 
+
+    const data = {};
+    if (fName !== undefined) data.fName = fName;
+    if (lName !== undefined) data.lName = lName;
+    if (email !== undefined) data.email = email;
+    if (role !== undefined) data.role = role.toUpperCase();
+    if (deptId !== undefined) {
+      data.department = { connect: { id: Number(deptId) } };
     }
-    catch(err){
-      return res.json({ success:false, message:err.message })
-    }
-}
+
+    const user = await prisma.user.update({
+      where: { id: Number(id) },
+      data,
+      include: { department: true },
+    });
+
+    return res.json({ success: true, message: "User updated successfully", user });
+  } catch (err) {
+    return res.json({ success: false, message: err.message });
+  }
+};
+
 
 module.exports.deleteUser = async(req,res) => {
     try{
