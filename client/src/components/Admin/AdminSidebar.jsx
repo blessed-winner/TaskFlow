@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom'
 
 const AdminSidebar = () => {
   return (
-    <div className='flex flex-col min-h-full bg-gray-900 md:p-6 min-w-54 fixed mt-16.5'>
+    <div className='flex flex-col min-h-full bg-gray-900 md:p-6 fixed mt-14.5'>
         <div className='text-center mb-12 border-b-1 border-gray-500 p-4'>
            <h1 className='text-white w-10 h-10 text-md bg-blue-500 flex items-center justify-center rounded-full mb-5 mx-auto'>A</h1>
             <h4 className='font-semibold text-gray-200 text-md hidden md:block'>Admin User</h4>

@@ -3,9 +3,8 @@ import { useAppContext } from '../../context/AppContext'
 import toast from 'react-hot-toast'
 
 
-const UserTableData = ({user,fetchUsers}) => {
+const UserTableData = ({user,fetchUsers,fetchDashboard,onShowUpdateForm,setSelectedUser}) => {
     const{ axios } = useAppContext()
-
     const { id, fName, lName, email, role, department } = user
     const deleteUser = async () => {
         const confirm = window.confirm("Are you sure you want to delete this user ?")
@@ -15,6 +14,7 @@ const UserTableData = ({user,fetchUsers}) => {
             if(data.success){
               toast.success(data.message)
               await fetchUsers()
+              await fetchDashboard()
             } else {
               toast.error(data.message)
             }
@@ -24,7 +24,8 @@ const UserTableData = ({user,fetchUsers}) => {
       
     }
 
-    const [isActive,setIsActive] = useState(false)
+
+  const[isActive,setIsActive] = useState(false)
   
   return (
     <tr className='border-b border-gray-200 bg-white text-gray-800 hover:bg-blue-100/20 transition-all'>
@@ -49,7 +50,10 @@ const UserTableData = ({user,fetchUsers}) => {
       </td>
       <td className='py-3 px-2 xl:px-4'>
         <div className='flex gap-4 font-medium'>
-            <span className='text-blue-400 text-sm cursor-pointer hover:text-blue-500 transition-all'>Edit</span>
+            <span className='text-blue-400 text-sm cursor-pointer hover:text-blue-500 transition-all' onClick={()=>{
+              setSelectedUser(user)
+              onShowUpdateForm()
+              }}>Edit</span>
             <span className='text-red-400 text-sm cursor-pointer hover:text-red-500 transition-all' onClick={deleteUser}>Delete</span>
         </div>
       </td>
