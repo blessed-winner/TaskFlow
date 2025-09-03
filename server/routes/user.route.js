@@ -4,8 +4,8 @@ const { addNewUser, updateUser, deleteUser, getAllUsers, adminDashboardData } = 
 const userRouter = express.Router()
 
 userRouter.post('/add-user',addNewUser)
-userRouter.put('/update/:id',updateUser)
-userRouter.delete('/delete/:id',deleteUser)
+userRouter.put('admin/update/:id',updateUser)
+userRouter.delete('admin/delete/:id',deleteUser)
 userRouter.get('/All',getAllUsers)
 userRouter.get('/dashboard',adminDashboardData)
 

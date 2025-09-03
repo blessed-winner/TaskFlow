@@ -10,7 +10,7 @@ const UserTableData = ({user,fetchUsers,fetchDashboard,onShowUpdateForm,setSelec
         const confirm = window.confirm("Are you sure you want to delete this user ?")
         if(!confirm) return
         try {
-            const { data } = await axios.delete(`/api/users/delete/${id}`)
+            const { data } = await axios.delete(`/api/users/admin/delete/${id}`)
             if(data.success){
               toast.success(data.message)
               await fetchUsers()
