@@ -38,7 +38,7 @@ const UpdateUserForm = ({user,onClose,onUserUpdated,fetchDashboard,fetchUsers}) 
   
       const id = user.id
       try {
-        const { data } = await axios.put(`/api/users/update/${id}`,formData)
+        const { data } = await axios.put(`/api/users/admin/update/${id}`,formData)
         data.success ? toast.success(data.message) : toast.error(data.message)
         fetchUsers()
         fetchDashboard()

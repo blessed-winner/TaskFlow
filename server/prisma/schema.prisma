@@ -38,7 +38,7 @@ model User{
   fName   String
   lName   String 
   role   Role      @default(USER)
-  tasks  Task[]    @relation("UsersTasks")
+  tasks  Task[]   
   status userStatus @default(AWAY)
   deptId Int
   department Department? @relation(fields:[deptId], references:[id])  
@@ -48,7 +48,8 @@ model Task {
   id           Int @id @default(autoincrement())
   title        String
   description  String
-  assignees    User[] @relation("UsersTasks")
+  userId       Int
+  user         User     @relation(fields: [userId], references: [id])
   priority     Priority @default(MEDIUM)
   dueDate      DateTime
   status       taskStatus  @default(PENDING)

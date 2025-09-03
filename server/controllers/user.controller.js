@@ -104,3 +104,11 @@ module.exports.adminDashboardData = async(req,res) => {
         return res.json({ success:false, message:err.message })
     }
 }
+
+module.exports.userDashboardData = async (req,res) => {
+  try {
+    const totalTasks = 
+  } catch (error) {
+    
+  }
+}
