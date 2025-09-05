@@ -3,6 +3,7 @@ const { PrismaClient } = require('./generated/prisma')
 const cors = require('cors')
 const userRouter = require('./routes/user.route')
 const deptRouter = require('./routes/dept.route')
+const authRouter = require('./routes/auth.route')
 require('dotenv').config()
 
 const app = express()
@@ -12,6 +13,7 @@ app.use(cors())
 app.use(express.json())
 
 app.get('/',(req,res)=>res.send("API is working"))
+app.use('/api/auth',authRouter)
 app.use('/api/users',userRouter)
 app.use('/api/departments',deptRouter)
 
