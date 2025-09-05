@@ -15,28 +15,43 @@ import TaskManagement from './pages/Manager/TaskManagement'
 import TeamOverview from './pages/Manager/TeamOverview'
 import Projects from './pages/Manager/Projects'
 import { Toaster } from 'react-hot-toast'
+import Login from './components/auth/Login'
+import RoleGuard from './components/Guard/RoleGuard'
 
 const App = () => {
   return (
     <div>
       <Toaster/>
        <Routes>
-         <Route path = '/admin' element = {<AdminLayout/>}>
+         <Route path = '/admin' element = {
+          <RoleGuard role="ADMIN">
+              <AdminLayout/>
+          </RoleGuard>
+       }>
             <Route index element ={<AdminDashboard/>}/>
             <Route path='users' element={<User/>}/>
             <Route path='analytics' element={<Analytics/>}/>
             <Route path='settings' element={<Settings/>}/>
          </Route>
-            <Route path = '/user' element = {<UserLayout/>}>
+            <Route path = '/user' element = {
+              <RoleGuard role="USER">
+                   <UserLayout/>
+              </RoleGuard>
+              }>
             <Route index element ={<UserDashboard/>}/>
             <Route path='my-tasks' element={<MyTasks/>}/>
          </Route>
-         <Route path='/manager' element = {<ManagerLayout/>}>
+         <Route path='/manager' element = {
+         <RoleGuard role="MANAGER">
+                   <ManagerLayout/>
+        </RoleGuard>
+          }>
              <Route index element ={<ManagerDashboard/>}/>
              <Route path='manage-tasks' element={<TaskManagement/>}/>
              <Route path='team-overview' element={<TeamOverview/>}/>
              <Route path='projects' element={<Projects/>}/>
          </Route>
+         <Route path='/auth' element={<Login/>}/>
        </Routes>
     </div>
   )

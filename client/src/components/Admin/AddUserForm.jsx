@@ -11,6 +11,7 @@ const AddUserForm = ({onClose,onUserAdded,fetchDashboard}) => {
   const [lastName,setLastName] = useState("")
   const [email,setEmail] = useState("")
   const[departmentId,setDepartmentId] = useState(null)
+  const[password,setPassword] = useState("")
   const[role,setRole] = useState("User")
 
     const { axios } = useAppContext()
@@ -27,6 +28,7 @@ const AddUserForm = ({onClose,onUserAdded,fetchDashboard}) => {
         fName:firstName,
         lName:lastName,
         email,
+        password,
         role,
         deptId:departmentId
       }
@@ -67,6 +69,11 @@ const AddUserForm = ({onClose,onUserAdded,fetchDashboard}) => {
            <div className='space-y-2'>
              <h5 className='font-medium text-sm'>Email Address *</h5>
              <input type="email" value={email} onChange={(e)=>setEmail(e.target.value)} className='border border-gray-300 w-full px-4 py-2.5 rounded-md font-light outline-none' placeholder='Enter Email Address'/>
+           </div>
+
+           <div className='space-y-2'>
+             <h5 className='font-medium text-sm'>Password *</h5>
+             <input type="password" value={password} onChange={(e)=>setPassword(e.target.value)} className='border border-gray-300 w-full px-4 py-2.5 rounded-md font-light outline-none' placeholder='Enter Email Address'/>
            </div>
 
            <div className='space-y-2'>

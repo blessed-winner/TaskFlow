@@ -12,12 +12,13 @@ export const AppProvider = ({children})=>{
     activeManagers:0,
     completionRate:0,
   })
+  const[token,setToken] = useState("")
   
  
 
   const fetchDashboardData = async() => {
     try {
-       const { data } = await axios.get('/api/users/dashboard')
+       const { data } = await axios.get('/api/users/admin/dashboard')
        data.success ? setDashboardData(data.dashboardData) : toast.error(data.error)
     } catch (error) {
       toast.error(error.message)
@@ -53,6 +54,8 @@ export const AppProvider = ({children})=>{
         users,
         setUsers,
         axios,
+        token,
+        setToken,
         dashboardData,
         setDashboardData,
         departmentData,
@@ -64,6 +67,11 @@ export const AppProvider = ({children})=>{
 
     useEffect(()=>{
       fetchUsers()
+      const token = localStorage.getItem("token")
+      if(token){
+        setToken(token)
+        axios.defaults.headers.common["Authorization"] = `Bearer ${token}`
+      }
       fetchDashboardData()
       fetchDepartments()
     },[])

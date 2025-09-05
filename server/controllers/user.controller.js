@@ -1,16 +1,21 @@
 const { PrismaClient } = require('../generated/prisma')
+const bcrypt = require('bcrypt')
 
 const prisma = new PrismaClient()
 
 module.exports.addNewUser = async (req, res) => {
   try {
-    const { fName, lName, email, role, deptId } = req.body
+    const { fName, lName, email,password, role, deptId } = req.body
+    
+    const salt = await bcrypt.genSalt()
+    const hashedPassword = await bcrypt.hash(password, salt)
 
     const user = await prisma.user.create({
       data: {
         fName,
         lName,
         email,
+        hashedPassword,
         role: role.toUpperCase(),
         department: deptId ? { connect: { id: Number(deptId) } } : undefined
       },
@@ -107,8 +112,32 @@ module.exports.adminDashboardData = async(req,res) => {
 
 module.exports.userDashboardData = async (req,res) => {
   try {
-    const totalTasks = 
+    const userId = parseInt(req.params.id)
+    const totalTasks = await prisma.user.count({
+      where: { userId }
+    })
+    const completedTasks = await prisma.task.count({
+       where: { userId,status:'COMPLETED' }
+    })
+   const inProgressTasks = await prisma.task.count({
+    where: { userId, status:'IN_PROGRESS' }
+   })
+   const pendingTasks = await prisma.task.count({
+     where:{ userId,status:'PENDING' }
+   })
+   const completionRate = 0
+       ? Math.floor((completedTasks / totalTasks) * 100)
+       : 0;
+   const userDashboard = {
+    totalTasks,
+    completedTasks,
+    inProgressTasks,
+    pendingTasks,
+    completionRate
+   }
+
+   return res.json({ success:true, userDashboard })
   } catch (error) {
-    
+     return res.json({ success:false, message:error.message })
   }
 }
