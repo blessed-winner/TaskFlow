@@ -4,7 +4,7 @@ import { useAppContext } from '../../context/AppContext'
 
 const RoleGuard = ({ role,children }) => {
     const{token} = useAppContext()
-    const user = localStorage.getItem('user')
+    const user = JSON.parse(localStorage.getItem('user'))
     if(!user || !token){
         return <Navigate to='/auth'/>
     }
