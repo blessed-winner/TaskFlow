@@ -33,7 +33,7 @@ const AddUserForm = ({onClose,onUserAdded,fetchDashboard}) => {
         deptId:departmentId
       }
       try {
-        const { data } = await axios.post('/api/users/add-user',formData)
+        const { data } = await axios.post('/api/users/admin/add-user',formData)
         data.success ? toast.success(data.message) : toast.error(data.message)
         onUserAdded(data.user)
         fetchDashboard()
@@ -73,7 +73,7 @@ const AddUserForm = ({onClose,onUserAdded,fetchDashboard}) => {
 
            <div className='space-y-2'>
              <h5 className='font-medium text-sm'>Password *</h5>
-             <input type="password" value={password} onChange={(e)=>setPassword(e.target.value)} className='border border-gray-300 w-full px-4 py-2.5 rounded-md font-light outline-none' placeholder='Enter Email Address'/>
+             <input type="password" value={password} onChange={(e)=>setPassword(e.target.value)} className='border border-gray-300 w-full px-4 py-2.5 rounded-md font-light outline-none' placeholder='Enter Password'/>
            </div>
 
            <div className='space-y-2'>

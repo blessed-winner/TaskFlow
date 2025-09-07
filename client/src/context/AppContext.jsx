@@ -12,6 +12,24 @@ export const AppProvider = ({children})=>{
     activeManagers:0,
     completionRate:0,
   })
+
+  const [userDashboardData,setUserDashboardData] = useState({
+    totalTasks:0,
+    completedTasks:0,
+    inProgressTasks:0,
+    pendingTasks:0,
+    completionRate:0,
+  })
+
+  const fetchUserDashboardData = async () => {
+    try {
+      const { data } = await axios.get('/api/users/user/dashboard')
+      data.success ? setUserDashboardData(data.userDashboard) : toast.error(data.error)
+    } catch (error) {
+      toast.error(error.message)
+    }
+  }
+
   const[token,setToken] = useState("")
   
  
@@ -30,7 +48,7 @@ export const AppProvider = ({children})=>{
   
     const fetchUsers = async()=>{
         try {
-            const {data}  = await axios.get('/api/users/All')
+            const {data}  = await axios.get('/api/users/admin/All')
             data.success ? setUsers(data.users) : toast.error(data.message) 
 
         } catch (err) {
@@ -50,6 +68,7 @@ export const AppProvider = ({children})=>{
       }
     }
 
+
       const value = {
         users,
         setUsers,
@@ -63,18 +82,23 @@ export const AppProvider = ({children})=>{
         fetchUsers,
         fetchDashboardData,
         fetchDepartments,
+        userDashboardData,
+        setUserDashboardData,
+        fetchUserDashboardData
         }
 
     useEffect(()=>{
-      fetchUsers()
-      const token = localStorage.getItem("token")
-      if(token){
-        setToken(token)
-        axios.defaults.headers.common["Authorization"] = `Bearer ${token}`
+      const storedToken = localStorage.getItem("token")
+      if(storedToken){
+        setToken(storedToken)
+        axios.defaults.headers.common["Authorization"] = `Bearer ${storedToken}`
       }
+      fetchUsers()
       fetchDashboardData()
       fetchDepartments()
+      fetchUserDashboardData()
     },[])
+
 
   return(
     <AppContext.Provider value={value}>
