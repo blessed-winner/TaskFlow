@@ -1,10 +1,13 @@
 import React from 'react'
 import { AlertCircle, CheckCircle, ClockIcon,Calendar} from 'lucide-react'
-import { dummyTasks, userDashboardData } from '../../assets/assets'
+import { dummyTasks } from '../../assets/assets'
+import { useAppContext } from '../../context/AppContext'
 
 const MyTasks = () => {
+  const { userDashboardData } = useAppContext()
+  const user = JSON.parse(localStorage.getItem('user'))
   return (
-   <div className='ml-54 mt-16.5 p-4 md:p-10 bg-blue-50/50 flex-1 h-full'>
+   <div className=' ml-18 md:ml-54 mt-14.5 p-4 md:p-10 bg-blue-50/50 flex-1 h-full'>
          <h1 className='font-semibold text-2xl text-gray-900 mb-6'>My Tasks</h1>
          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             <div className='bg-white p-4 py-6 flex items-center rounded-lg justify-between min-w-58 shadow'>
@@ -17,27 +20,27 @@ const MyTasks = () => {
                <div className='bg-white p-4 py-6 flex items-center rounded-lg justify-between min-w-58 shadow'>
                <span className='space-y-1'>
                  <p className='text-sm font-semibold text-gray-600'>Completed</p>
-                 <p className='text-2xl font-semibold text-green-600'>{userDashboardData.completed}</p>
+                 <p className='text-2xl font-semibold text-green-600'>{userDashboardData.completedTasks}</p>
                </span>
                <CheckCircle className='text-green-600 h-8 w-8'/>
               </div> 
                <div className='bg-white p-4 py-6 flex items-center rounded-lg justify-between min-w-58 shadow'>
                <span className='space-y-1'>
                  <p className='text-sm font-semibold text-gray-600'>In Progress</p>
-                 <p className='text-2xl font-semibold text-blue-600'>{userDashboardData.inProgress}</p>
+                 <p className='text-2xl font-semibold text-blue-600'>{userDashboardData.inProgressTasks}</p>
                </span>
                <AlertCircle className='text-blue-600 h-8 w-8'/>
               </div> 
                <div className='bg-white p-4 py-6 flex items-center rounded-lg justify-between min-w-58 shadow'>
                <span className='space-y-1'>
                  <p className='text-sm font-semibold text-gray-600'>Pending</p>
-                 <p className='text-2xl font-semibold text-yellow-600'>{userDashboardData.pending}</p>
+                 <p className='text-2xl font-semibold text-yellow-600'>{userDashboardData.pendingTasks}</p>
                </span>
               <ClockIcon className='text-yellow-600 h-8 w-8'/>
               </div> 
          </div>
-         <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-4 gap-6 mt-6'>
-            {dummyTasks.map((task,index)=>(
+         {user.tasks ? <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-4 gap-6 mt-6'>
+            {user.tasks.map((task,index)=>(
                 <div key={index} className={`bg-white px-7 py-9 text-gray-800 rounded-lg space-y-3 shadow-lg ${task.priority.toLowerCase() === 'high' && 'border-l-4 border-orange-300/50'}  ${task.priority.toLowerCase() === 'medium' && 'border-l-4 border-yellow-300/50'}`}>
                     <span className='flex justify-between items-center'>
                       <h3 className='font-medium text-xl'>{task.name}</h3>
@@ -63,7 +66,7 @@ const MyTasks = () => {
                 </div>
             </div>
             ))}
-         </div>
+         </div> : <div className='flex items-center justify-center w-full min-h-60'><p>No tasks available currently</p></div>}
          </div>
   )
 }
