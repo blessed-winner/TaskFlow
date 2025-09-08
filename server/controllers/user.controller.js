@@ -142,3 +142,32 @@ module.exports.userDashboardData = async (req,res) => {
      return res.json({ success:false, message:error.message })
   }
 }
+
+module.exports.managerDashboardData = async(req,res) => {
+  try {
+    const totalTasks = await prisma.task.count()
+      const completedTasks = await prisma.task.count({
+       where: { status:'COMPLETED' }
+    })
+    const teamMembers = await prisma.user.count()
+    const overDueTasks = await prisma.task.count({
+      where:{status:"OVERDUE"}
+    })
+     const pendingTasks = await prisma.task.count({
+     where:{ status:'PENDING' }
+   })
+
+   const managerDashboard = {
+    totalTasks,
+    completedTasks,
+    teamMembers,
+    overDueTasks,
+    pendingTasks
+   }
+
+   return res.json({ success:true, managerDashboard })
+
+  } catch (error) {
+       return res.json({ success:false, message:error.message })
+  }
+}

@@ -25,6 +25,7 @@ enum taskStatus{
   IN_PROGRESS
   PENDING
   COMPLETED
+  OVERDUE
 }
 
 enum userStatus {

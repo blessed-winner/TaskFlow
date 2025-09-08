@@ -21,6 +21,24 @@ export const AppProvider = ({children})=>{
     completionRate:0,
   })
 
+  const[managerDashboardData,setManagerDashboardData] = useState({
+    totalTasks:0,
+    completedTasks:0,
+    teamMembers:0,
+    overDueTasks:0,
+    pendingTasks:0
+  })
+
+  const fetchManagerDashboardData = async() => {
+    try{
+      const { data } = await axios.get('/api/users/manager/dashboard')
+      data.success ? setManagerDashboardData(data.managerDashboard) : toast.error(data.message)   
+    }
+    catch(err){
+      toast.error(err.message)
+    }
+  }
+
   const fetchUserDashboardData = async () => {
     try {
       const { data } = await axios.get('/api/users/user/dashboard')
@@ -57,6 +75,16 @@ export const AppProvider = ({children})=>{
         
     }
 
+    const [tasks,setTasks] = useState([])
+    const fetchTasks = async () => {
+      try {
+          const{ data } = await axios.get('/api/tasks/All')
+          data.success ? setTasks(data.tasks) : toast.error(data.message)
+      } catch (error) {
+         toast.error(error.message)
+      }
+    }
+
     const [ departmentData,setDepartmentData ] = useState([])
 
     const fetchDepartments = async () => {
@@ -84,7 +112,13 @@ export const AppProvider = ({children})=>{
         fetchDepartments,
         userDashboardData,
         setUserDashboardData,
-        fetchUserDashboardData
+        fetchUserDashboardData,
+        managerDashboardData,
+        setManagerDashboardData,
+        fetchManagerDashboardData,
+        tasks,
+        fetchTasks,
+        setTasks
         }
 
     useEffect(()=>{
@@ -97,6 +131,8 @@ export const AppProvider = ({children})=>{
       fetchDashboardData()
       fetchDepartments()
       fetchUserDashboardData()
+      fetchManagerDashboardData()
+      fetchTasks()
     },[])
 
 
