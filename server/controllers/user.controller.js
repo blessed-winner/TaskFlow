@@ -113,7 +113,7 @@ module.exports.adminDashboardData = async(req,res) => {
 
 module.exports.userDashboardData = async (req,res) => {
   try {
-    const userId = parseInt(req.params.id)
+    const userId = parseInt(req.user.id)
     const totalTasks = await prisma.task.count({
       where: { userId }
     })

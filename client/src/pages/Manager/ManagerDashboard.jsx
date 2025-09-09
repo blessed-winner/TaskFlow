@@ -79,16 +79,16 @@ const ManagerDashboard = () => {
             <h2 className='font-semibold text-gray-800 text-lg mb-5'>Team Performance</h2>
             
               {
-                users.map((user,index)=>{
+                users.filter(user => user.role === 'USER').map((user,index)=>{
                     const totalTasks = user?.tasks?.length || 0;
                     const completedTasks = user?.tasks?.filter(t => t.status.toLowerCase() === "completed").length || 0;
                     const completionRate = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
                   return(
-                  <div className='flex justify-between mb-5'>
-                  <p className='font-semibold text-gray-800'>{user.name}</p>
+                  <div key={index} className='flex justify-between mb-5'>
+                  <p className='font-semibold text-gray-800'>{user.fName + " " +user.lName}</p>
                   <div className='space-y-1'>
                   <p className='text-xs font-semibold'>{completionRate}%</p>
-                  <p className='font-light text-xs text-gray-500'>{user?.tasks?.length}tasks</p>
+                  <p className='font-light text-xs text-gray-500'>{totalTasks}tasks</p>
                   </div>
                 </div>
                 )})

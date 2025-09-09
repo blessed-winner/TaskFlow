@@ -59,14 +59,13 @@ export const AppProvider = ({children})=>{
     } catch (error) {
       toast.error(error.message)
     }
-   
   }
 
     const [users,setUsers] = useState([])
   
     const fetchUsers = async()=>{
         try {
-            const {data}  = await axios.get('/api/users/admin/All')
+            const {data}  = await axios.get('/api/users/All')
             data.success ? setUsers(data.users) : toast.error(data.message) 
 
         } catch (err) {
@@ -137,16 +136,26 @@ export const AppProvider = ({children})=>{
 
     useEffect(()=>{
       const storedToken = localStorage.getItem("token")
+      const user = JSON.parse(localStorage.getItem('user'))
+      
       if(storedToken){
         setToken(storedToken)
         axios.defaults.headers.common["Authorization"] = `Bearer ${storedToken}`
       }
-      fetchUsers()
-      fetchDashboardData()
-      fetchDepartments()
-      fetchUserDashboardData()
-      fetchManagerDashboardData()
-      fetchTasks()
+      
+      // Only fetch data based on user role
+      if(user?.role === 'ADMIN') {
+        fetchUsers()
+        fetchDashboardData()
+        fetchDepartments()
+        fetchTasks()
+      } else if(user?.role === 'MANAGER') {
+        fetchManagerDashboardData()
+        fetchTasks()
+        fetchUsers()
+      } else if(user?.role === 'USER') {
+        fetchUserDashboardData()
+      }
     },[])
 
 
