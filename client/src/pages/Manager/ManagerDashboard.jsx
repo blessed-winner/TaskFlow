@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import {dashboardData, task_data, user_data} from '../../assets/assets'
 import {  AlertCircle, ClipboardList, TrendingUp, Users } from 'lucide-react'
 import AddTaskButton from '../../components/Manager/AddTaskButton'
 import CreateTaskForm from '../../components/Manager/TaskForm/CreateTaskForm'
@@ -7,9 +6,11 @@ import { useAppContext } from '../../context/AppContext'
 
 const ManagerDashboard = () => {
 
-  const {setTasks} = useAppContext()
+  const {tasks,setTasks} = useAppContext()
   const[showForm,setShowForm] = useState(false)
-  const { managerDashboardData } = useAppContext()
+  const { managerDashboardData,users } = useAppContext()
+
+  
   
   const handleTaskAdd = (newTask) => {
     setTasks(prev => [...prev,newTask])
@@ -56,39 +57,42 @@ const ManagerDashboard = () => {
       <div className='grid grid-cols-1 md:grid-cols-2 mt-6 gap-6 rounded'>
          <div className='bg-white p-6 rounded-lg shadow-md'>
           <h2 className='font-medium text-gray-800 text-lg mb-5'>Recent Tasks</h2>
-          <div className='flex flex-col gap-4'>
-              <div className='flex justify-between bg-blue-50/40 px-4 py-3 rounded-lg items-center'>
+               <div className='flex flex-col gap-4'>
+            {tasks?.length > 0 ? tasks.sort((a,b)=>newDate(b.createdAt) - (a.createdAt)).slice(0,5).map((task,index)=>(
+                    <div key={index} className='flex justify-between bg-blue-50/40 px-4 py-3 rounded-lg items-center'>
                 <span className='space-y-1'>
-                  <h4 className='font-medium text-md'>Implement user authentication</h4>
-                <p className='text-sm font-light'>Assigned to Bob Wilson</p>
+                  <h4 className='font-medium text-md'>{task.title}</h4>
+                <p className='text-sm font-light'>{new Date(task.dueDate).toLocaleDateString()}</p>
                 </span>
-                <p className='bg-blue-100/60 px-2 py-1 text-xs text-blue-700 rounded-full font-medium'>In progress</p>
+                <p className={` px-2 py-1 text-xs rounded-full font-medium ${task.status.toLowerCase() === 'in_progress' && ' text-blue-700 bg-blue-100/60'} ${task.status.toLowerCase() === 'pending' && ' text-orange-700 bg-orange-100/60'} ${task.status.toLowerCase() === 'completed' && ' text-green-700 bg-green-100/60'}`}>{task.status.toLowerCase()}</p>
              </div>
-             <div className='flex justify-between bg-blue-50/40 px-4 py-3 rounded-lg items-center'>
-                <span className='space-y-1'>
-                    <h4 className='font-medium text-md'>Database optimization</h4>
-                    <p className='text-sm font-light'>Assigned to Jane Smith</p>
-                </span>
-              <p className='bg-orange-100/60 px-2 py-1 text-xs text-orange-700 rounded-full font-medium'>Pending</p>
-             </div>
+            )) : (
+              <div className='w-full min-h-50 flex items-center justify-center'>
+                <h3 className='font-medium text-xl text-green-500'>No Tasks Found</h3>
+              </div>
+              
+            )
+         }
           </div>
             </div>
          <div className='bg-white p-6 rounded-lg shadow-md text-sm'>
             <h2 className='font-semibold text-gray-800 text-lg mb-5'>Team Performance</h2>
-            <div className='flex justify-between mb-5'>
-               <p className='font-semibold text-gray-800'>Jane Smith</p>
-               <div className='space-y-1'>
-              <p className='text-xs font-semibold'>0%</p>
-              <p className='font-light text-xs text-gray-500'>1 tasks</p>
-               </div>
-               </div>
-             <div className='flex justify-between mb-5'>
-               <p className='font-semibold text-gray-800'>Bob Wilson</p>
-               <div className='space-y-1'>
-                   <button className='text-xs font-semibold'>20%</button>
-                   <p className='font-light text-xs text-gray-500'>1 tasks</p>
-               </div>
-              </div>
+            
+              {
+                users.map((user,index)=>{
+                    const totalTasks = user?.tasks?.length || 0;
+                    const completedTasks = user?.tasks?.filter(t => t.status.toLowerCase() === "completed").length || 0;
+                    const completionRate = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+                  return(
+                  <div className='flex justify-between mb-5'>
+                  <p className='font-semibold text-gray-800'>{user.name}</p>
+                  <div className='space-y-1'>
+                  <p className='text-xs font-semibold'>{completionRate}%</p>
+                  <p className='font-light text-xs text-gray-500'>{user?.tasks?.length}tasks</p>
+                  </div>
+                </div>
+                )})
+              }
          </div>
       </div>
     </div>
