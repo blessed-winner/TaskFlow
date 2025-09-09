@@ -53,6 +53,8 @@ model Task {
   userId       Int
   user         User     @relation(fields: [userId], references: [id])
   priority     Priority @default(MEDIUM)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   dueDate      DateTime
   status       taskStatus  @default(PENDING)
   departmentId  Int
