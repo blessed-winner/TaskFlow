@@ -3,27 +3,32 @@ import { AlertCircle, CheckCircle, ClockIcon} from 'lucide-react'
 import { useAppContext } from '../../context/AppContext'
 const UserDashboard = () => {
        
-      const{userDashboardData} = useAppContext()
+      const{userDashboardData, userTasks, fetchUserTasks} = useAppContext()
       const user = JSON.parse(localStorage.getItem('user'))
       const[progress,setProgress] = useState(null)
-      const completedTasks = user?.tasks?.filter(task => task.status.toLowerCase === 'completed') || []
+      
+      // Use API data instead of localStorage
+      const completedTasks = userTasks?.filter(task => task.status.toLowerCase() === 'completed') || []
       const completedCount = completedTasks.length || 0
-      const totalTasks = user?.tasks || []
+      const totalTasks = userTasks || []
       const totalCount = totalTasks.length || 0
-      const inProgressTasks = user?.tasks?.filter(task => task.status.toLowerCase === 'in_progress') || []
+      const inProgressTasks = userTasks?.filter(task => task.status.toLowerCase() === 'in_progress') || []
       const inProgressCount = inProgressTasks.length || 0
-      const pendingTasks = user?.tasks?.filter(task => task.status.toLowerCase === 'pending') || []
+      const pendingTasks = userTasks?.filter(task => task.status.toLowerCase() === 'pending') || []
       const pendingCount = pendingTasks.length || 0
       
       
       const fetchProgress = ()=> {
-          const barProgress = totalCount > 0 ? Math.floor((completedCount/totalCount)) : 0
+          const barProgress = totalCount > 0 ? Math.floor((completedCount/totalCount) * 100) : 0
           setProgress(barProgress)
       }
 
       useEffect(()=>{
         fetchProgress()
-      },[])
+        if(user?.id) {
+          fetchUserTasks(user.id)
+        }
+      },[user?.id])
       
    
   return (
@@ -65,13 +70,13 @@ const UserDashboard = () => {
          <div className='bg-white p-6 rounded-lg shadow-md'>
           <h2 className='font-medium text-gray-800 text-lg mb-5'>Recent Tasks</h2>
           <div className='flex flex-col gap-4'>
-            {user?.tasks?.length > 0 ? user.tasks.map((task,index)=>(
+            {totalCount > 0 ? totalTasks.map((task,index)=>(
                     <div key={index} className='flex justify-between bg-blue-50/40 px-4 py-3 rounded-lg items-center'>
                 <span className='space-y-1'>
-                  <h4 className='font-medium text-md'>{task.name}</h4>
-                <p className='text-sm font-light'>{task.dueDate}</p>
+                  <h4 className='font-medium text-md'>{task.title}</h4>
+                <p className='text-sm font-light'>{new Date(task.dueDate).toLocaleDateString()}</p>
                 </span>
-                <p className={` px-2 py-1 text-xs rounded-full font-medium ${task.status.toLowerCase() === 'in_progress' && ' text-blue-700 bg-blue-100/60'} ${task.status.toLowerCase() === 'in_progress' && ' text-orange-700 bg-orange-100/60'}`}>{task.status}</p>
+                <p className={` px-2 py-1 text-xs rounded-full font-medium ${task.status.toLowerCase() === 'in_progress' && ' text-blue-700 bg-blue-100/60'} ${task.status.toLowerCase() === 'pending' && ' text-orange-700 bg-orange-100/60'} ${task.status.toLowerCase() === 'completed' && ' text-green-700 bg-green-100/60'}`}>{task.status.toLowerCase()}</p>
              </div>
             )) : (
               <div className='w-full min-h-50 flex items-center justify-center'>
@@ -90,7 +95,7 @@ const UserDashboard = () => {
                   <p className='font-semibold text-2xl text-green-600'>{user.tasks ? user.tasks.filter(task => task.status.toLowerCase() === 'completed').length : 0}</p>
                 </div>
                 <div className='w-full bg-gray-300 rounded-full h-2'>
-                    <div className='bg-green-600 h-2 rounded-full' style={{width:`${progress}`}}></div>
+                    <div className='bg-green-600 h-2 rounded-full' style={{width:`${progress}%`}}></div>
                </div>
                <p>  
                 {user?.tasks?.length === undefined && "Waiting for new task schedule..."}

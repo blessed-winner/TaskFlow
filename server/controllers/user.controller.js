@@ -114,7 +114,7 @@ module.exports.adminDashboardData = async(req,res) => {
 module.exports.userDashboardData = async (req,res) => {
   try {
     const userId = parseInt(req.params.id)
-    const totalTasks = await prisma.user.count({
+    const totalTasks = await prisma.task.count({
       where: { userId }
     })
     const completedTasks = await prisma.task.count({
@@ -126,7 +126,7 @@ module.exports.userDashboardData = async (req,res) => {
    const pendingTasks = await prisma.task.count({
      where:{ userId,status:'PENDING' }
    })
-   const completionRate = 0
+   const completionRate = totalTasks > 0
        ? Math.floor((completedTasks / totalTasks) * 100)
        : 0;
    const userDashboard = {

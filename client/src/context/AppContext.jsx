@@ -76,10 +76,21 @@ export const AppProvider = ({children})=>{
     }
 
     const [tasks,setTasks] = useState([])
+    const [userTasks,setUserTasks] = useState([])
+    
     const fetchTasks = async () => {
       try {
           const{ data } = await axios.get('/api/tasks/All')
           data.success ? setTasks(data.tasks) : toast.error(data.message)
+      } catch (error) {
+         toast.error(error.message)
+      }
+    }
+
+    const fetchUserTasks = async (userId) => {
+      try {
+          const{ data } = await axios.get(`/api/tasks/user/${userId}`)
+          data.success ? setUserTasks(data.tasks) : toast.error(data.message)
       } catch (error) {
          toast.error(error.message)
       }
@@ -118,7 +129,10 @@ export const AppProvider = ({children})=>{
         fetchManagerDashboardData,
         tasks,
         fetchTasks,
-        setTasks
+        setTasks,
+        userTasks,
+        setUserTasks,
+        fetchUserTasks
         }
 
     useEffect(()=>{
