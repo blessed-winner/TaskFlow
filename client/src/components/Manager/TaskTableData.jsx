@@ -2,6 +2,24 @@ import React from 'react'
 
 const TaskTableData = ({task,fetchTasks}) => {
     const {name,description,dueDate,user,priority,status} = task
+       const deleteTask = async () => {
+        const confirm = window.confirm("Are you sure you want to delete this task ?")
+        if(!confirm) return
+        try {
+            const { data } = await axios.delete(`/api/users/admin/delete/${id}`)
+            if(data.success){
+              toast.success(data.message)
+              await fetchUsers()
+              await fetchDashboard()
+            } else {
+              toast.error(data.message)
+            }
+            } catch (error) {
+           toast.error(error.message)
+        }
+      
+    }
+
   return (
     <tr className='border-b border-gray-200 bg-white text-gray-800 hover:bg-blue-100/20 transition-all'>
       <td className='py-3 px-2 xl:px-4 flex items-center gap-3'>
