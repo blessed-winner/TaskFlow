@@ -85,3 +85,38 @@ module.exports.deleteTask = async (req,res) => {
      return res.json( { success:false, message:error.message } )
   }
 }
+
+module.exports.toggleInProgressTasks = async(req,res) => {
+  try {
+    const { id } = req.body
+    const task = await prisma.task.findUnique({
+      where:{ id }
+    })
+    if(!task) return res.json({ success:false, message:"Task Not Found" })
+    
+    task.status = 'IN_PROGRESS'
+    const status = task.status
+
+    return res.json({ success:true,status })
+  } catch (error) {
+    return res.json({ success:false,message:error.message })
+  }
+}
+
+module.exports.toggleCompletedTasks = async(req,res) => {
+  try {
+    const { id } = req.body
+    const task = await prisma.task.findUnique({
+       where:{ id }
+    })
+
+    if(!task) return res.json({ success:false, message:"Task Not Found" })
+
+    task.status = 'COMPLETED'
+    const status = task.status
+    
+    return res.json({ success:true,status })
+  } catch (error) {
+    return res.json({ success:false, message:error.message })
+  }
+}
