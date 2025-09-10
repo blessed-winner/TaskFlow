@@ -65,8 +65,8 @@ const TaskManagement = () => {
             </tr>
          </thead>
          <tbody>
-             {tasks.map((task,index)=>(
-              <TaskTableData task={task} key={index} fetchManagerDashboard={fetchManagerDashboardData} fetchTasks={fetchTasks}/>
+             {tasks.map((task)=>(
+              <TaskTableData task={task} key={task.id} fetchManagerDashboard={fetchManagerDashboardData} fetchTasks={fetchTasks}/>
              ))}
          </tbody>
        </table>

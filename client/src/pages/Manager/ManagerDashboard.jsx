@@ -6,8 +6,42 @@ import { useAppContext } from '../../context/AppContext'
 
 const ManagerDashboard = () => {
 
-  const {tasks,setTasks,managerDashboardData,users} = useAppContext()
+  const {tasks,setTasks,managerDashboardData,users,axios} = useAppContext()
   const[showForm,setShowForm] = useState(false)
+  const [userTaskData, setUserTaskData] = useState({})
+
+  useEffect(() => {
+   
+    const fetchAllUserTasks = async () => {
+      const userRoleUsers = users.filter(user => user.role === 'USER')
+      const taskData = {}
+      
+      // Use Promise.all for better performance
+      const promises = userRoleUsers.map(async (user) => {
+        try {
+          const { data } = await axios.get(`/api/tasks/user/${user.id}`)
+          if (data.success) {
+            return { userId: user.id, tasks: data.tasks }
+          }
+          return { userId: user.id, tasks: [] }
+        } catch (error) {
+          console.error(`Error fetching tasks for user ${user.id}:`, error)
+          return { userId: user.id, tasks: [] }
+        }
+      })
+
+      const results = await Promise.all(promises)
+      results.forEach(({ userId, tasks }) => {
+        taskData[userId] = tasks
+      })
+      
+      setUserTaskData(taskData)
+    }
+
+    if (users.length > 0) {
+      fetchAllUserTasks()
+    }
+  }, [users, axios])
 
   
   const handleTaskAdd = (newTask) => {
@@ -78,15 +112,16 @@ const ManagerDashboard = () => {
             
               {
                 users.filter(user => user.role === 'USER').map((user,index)=>{
-                    const totalTasks = user?.tasks?.length || 0;
-                    const completedTasks = user?.tasks?.filter(t => t.status.toLowerCase() === "completed").length || 0;
+                    const userTasks = userTaskData[user.id] || [];
+                    const totalTasks = userTasks.length || 0;
+                    const completedTasks = userTasks.filter(t => t.status.toLowerCase() === "completed").length || 0;
                     const completionRate = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
                   return(
                   <div key={index} className='flex justify-between mb-5'>
                   <p className='font-semibold text-gray-800'>{user.fName + " " +user.lName}</p>
                   <div className='space-y-1'>
                   <p className='text-xs font-semibold'>{completionRate}%</p>
-                  <p className='font-light text-xs text-gray-500'>{totalTasks}tasks</p>
+                  <p className='font-light text-xs text-gray-500'>{totalTasks} tasks</p>
                   </div>
                 </div>
                 )})
