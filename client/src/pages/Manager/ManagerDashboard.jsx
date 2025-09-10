@@ -6,11 +6,9 @@ import { useAppContext } from '../../context/AppContext'
 
 const ManagerDashboard = () => {
 
-  const {tasks,setTasks} = useAppContext()
+  const {tasks,setTasks,managerDashboardData,users} = useAppContext()
   const[showForm,setShowForm] = useState(false)
-  const { managerDashboardData,users } = useAppContext()
 
-  
   
   const handleTaskAdd = (newTask) => {
     setTasks(prev => [...prev,newTask])
@@ -58,7 +56,7 @@ const ManagerDashboard = () => {
          <div className='bg-white p-6 rounded-lg shadow-md'>
           <h2 className='font-medium text-gray-800 text-lg mb-5'>Recent Tasks</h2>
                <div className='flex flex-col gap-4'>
-            {tasks?.length > 0 ? tasks.sort((a,b)=>newDate(b.createdAt) - (a.createdAt)).slice(0,5).map((task,index)=>(
+            {tasks?.length > 0 ? tasks.sort((a,b)=>new Date(b.createdAt) -  new Date(a.createdAt)).slice(0,5).map((task,index)=>(
                     <div key={index} className='flex justify-between bg-blue-50/40 px-4 py-3 rounded-lg items-center'>
                 <span className='space-y-1'>
                   <h4 className='font-medium text-md'>{task.title}</h4>
