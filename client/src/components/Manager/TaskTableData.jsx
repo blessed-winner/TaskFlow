@@ -1,16 +1,16 @@
 import React from 'react'
 
-const TaskTableData = ({task,fetchTasks}) => {
-    const {name,description,dueDate,user,priority,status} = task
+const TaskTableData = ({task,fetchTasks,fetchManagerDashboard}) => {
+    const {id,title,description,dueDate,user,priority,status} = task
        const deleteTask = async () => {
         const confirm = window.confirm("Are you sure you want to delete this task ?")
         if(!confirm) return
         try {
-            const { data } = await axios.delete(`/api/users/admin/delete/${id}`)
+            const { data } = await axios.delete(`/api/tasks/delete/${id}`)
             if(data.success){
               toast.success(data.message)
-              await fetchUsers()
-              await fetchDashboard()
+              await fetchTasks()
+              await fetchManagerDashboard()
             } else {
               toast.error(data.message)
             }
@@ -25,7 +25,7 @@ const TaskTableData = ({task,fetchTasks}) => {
       <td className='py-3 px-2 xl:px-4 flex items-center gap-3'>
        
         <div className='inline-block space-y-2'>
-            <h4 className='font-semibold'>{name}</h4>
+            <h4 className='font-semibold'>{title}</h4>
             <p className='font-light text-sm text-gray-500'>{description.length > 40 ? description.slice(0,40) + '...' : description}</p>
         </div>
        </td>

@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
 
-const PrioritySelect = ({value}) => {
+const PrioritySelect = ({value,onChange}) => {
      const priorities = [ "Low", "Medium", "High" ]
    
   return (
     <select onChange={(e)=>onChange(e.target.value)} value={value} className='border border-gray-300 min-w-65 px-4 py-2.5 rounded-md font-light outline-none'>
          { priorities.map((priority,index)=>(
-              <option value={priority}>{priority}</option>
+              <option value={priority} key={index}>{priority}</option>
          )) }
     </select>
   )

@@ -1,13 +1,12 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import TaskTableData from '../../components/Manager/TaskTableData'
-import { task_data,dashboardData } from '../../assets/assets'
 import { AlertCircle, ClipboardList, Clock, TrendingUp } from 'lucide-react'
 import AddTaskButton from '../../components/Manager/AddTaskButton'
 import CreateTaskForm from '../../components/Manager/TaskForm/CreateTaskForm'
 import { useAppContext } from '../../context/AppContext'
 
 const TaskManagement = () => {
-  const{managerDashboardData,tasks,fetchTasks,setTasks} = useAppContext()
+  const{managerDashboardData,tasks,fetchTasks,setTasks,fetchManagerDashboardData} = useAppContext()
   const [showForm,setShowForm] = useState(false)
 
   const handleTaskAdd = (newTask) => {
@@ -67,7 +66,7 @@ const TaskManagement = () => {
          </thead>
          <tbody>
              {tasks.map((task,index)=>(
-              <TaskTableData task={task} key={index} fetchTasks={fetchTasks}/>
+              <TaskTableData task={task} key={index} fetchManagerDashboard={fetchManagerDashboardData} fetchTasks={fetchTasks}/>
              ))}
          </tbody>
        </table>
