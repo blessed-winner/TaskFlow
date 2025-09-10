@@ -1,4 +1,3 @@
-import React from 'react'
 import { SearchIcon,Bell, UserIcon, LogOutIcon } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useAppContext } from '../../context/AppContext'
@@ -28,7 +27,7 @@ const ManagerNavbar = () => {
 
               <Bell className='p-0.5 text-gray-400 hover:bg-gray-200 transition-all cursor-pointer rounded-md'/>
               <div>
-                <p className='max-md:hidden text-xs text-gray-900 font-semibold'>John Manager</p>
+                <p className='max-md:hidden text-xs text-gray-900 font-semibold'>{user.fName + " " + user.lName}</p>
                 <p className='max-md:hidden text-xs text-gray-500 font-light text-right'>Manager</p>
               </div>
               <UserIcon className='bg-blue-500 p-1 rounded-full text-white '/>

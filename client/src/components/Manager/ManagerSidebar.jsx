@@ -4,11 +4,12 @@ import { NavLink } from 'react-router-dom'
 
 
 const ManagerSidebar = () => {
+  const user = JSON.parse(localStorage.getItem("user"))
   return (
-      <div className='flex flex-col min-h-full bg-gray-900 md:p-6 min-w-54 fixed mt-16.5'>
+      <div className='flex flex-col min-h-full bg-gray-900 md:p-6 fixed mt-14.5'>
         <div className='text-center mb-12 border-b-1 border-gray-500 p-4'>
-           <h1 className='text-white w-10 h-10 text-md bg-blue-500 flex items-center justify-center rounded-full mb-5 mx-auto'>A</h1>
-            <h4 className='font-semibold text-gray-200 text-md hidden md:block'>John Manager</h4>
+           <h1 className='text-white w-10 h-10 text-md bg-blue-500 flex items-center justify-center rounded-full mb-5 mx-auto'>{user.fName.slice(0,1)}</h1>
+            <h4 className='font-semibold text-gray-200 text-md hidden md:block'>{user.fName + " " + user.lName}</h4>
             <p className='text-sm text-gray-500 hidden md:block'>Manager</p>
         </div>
         <div className='space-y-2'>

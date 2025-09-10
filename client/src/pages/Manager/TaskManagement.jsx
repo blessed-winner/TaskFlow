@@ -15,7 +15,7 @@ const TaskManagement = () => {
 
 
   return (
-       <div className='ml-54 mt-16.5 p-4 md:p-10 bg-blue-50/50 flex-1 h-full'>
+       <div className='ml-18 md:ml-54 mt-14.5 p-4 md:p-10 bg-blue-50/50 flex-1 h-full'>
         {showForm && <CreateTaskForm onTaskAdded={handleTaskAdd} onClose={()=>setShowForm(false)}/>}
         <div className='flex justify-between'>
            <h1 className='font-semibold text-2xl mb-5'>Task Management</h1> 
