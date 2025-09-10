@@ -76,7 +76,8 @@ module.exports.getAllUsers  = async(req,res) => {
     try{
         const users = await prisma.user.findMany({
             include:{
-                department:true
+                department:true,
+                tasks:true
             }
         })
         return res.json({ success:true, users }) 
