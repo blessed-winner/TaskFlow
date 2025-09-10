@@ -1,11 +1,41 @@
-import React, { useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { AlertCircle, CheckCircle, ClockIcon,Calendar} from 'lucide-react'
+import { toast } from 'react-hot-toast'
 import { dummyTasks } from '../../assets/assets'
 import { useAppContext } from '../../context/AppContext'
 
-const MyTasks = () => {
-  const { userDashboardData, userTasks, fetchUserTasks } = useAppContext()
+
+  const MyTasks = () => {
+  const { userDashboardData, userTasks, fetchUserTasks, fetchUserDashboardData, axios } = useAppContext()
   const user = JSON.parse(localStorage.getItem('user'))
+
+  const handleToggle = async (taskId, action) => {
+    try {
+      const endpoint =
+        action === 'in_progress'
+          ? '/api/tasks/toggle-in-progress'
+          : '/api/tasks/toggle-completed'
+
+      const { data } = await axios.post(endpoint, { id: taskId })
+      if (data.success) {
+        // Re-fetch tasks and dashboard data after update so UI refreshes
+        await Promise.all([
+          fetchUserTasks(user.id),
+          fetchUserDashboardData()
+        ])
+        
+        // Show success message
+        const actionText = action === 'in_progress' ? 'started' : 'completed'
+        toast.success(`Task ${actionText} successfully!`)
+      } else {
+        toast.error(data.message || 'Failed to update task')
+      }
+    } catch (error) {
+      console.error('Error updating task:', error)
+      toast.error('Failed to update task. Please try again.')
+    }
+  }
+
   
   useEffect(() => {
     // Fetch user tasks when component mounts
@@ -62,11 +92,24 @@ const MyTasks = () => {
                     </span>
                  <p className={`text-xs px-2 py-1 font-medium rounded-full ${task.status.toLowerCase() === 'pending' && 'bg-yellow-100 text-yellow-800'} ${task.status.toLowerCase() === 'in_progress' && 'bg-blue-100 text-blue-800'} ${task.status.toLowerCase() === 'completed' && 'bg-green-100 text-green-800'}`}>{task.status.toLowerCase()}</p>
                 </div> 
-                <button className={`w-full px-4 py-2 text-sm text-white rounded-lg font-light cursor-pointer ${task.status.toLowerCase() === 'pending' && 'bg-blue-600 hover:bg-blue-800 transition-all'} ${task.status.toLowerCase() === 'in_progress' && 'bg-green-600 hover:bg-green-800 transition-all'} ${task.status.toLowerCase() === 'completed' && 'bg-gray-400 cursor-not-allowed'}` }>
-                    { task.status.toLowerCase() === 'pending' && 'Start Task'}
-                    {task.status.toLowerCase() === 'in_progress' && 'Mark Completed'}
-                    {task.status.toLowerCase() === 'completed' && 'Completed'}
+              <button
+                 onClick={() =>
+                  task.status.toLowerCase() === 'pending'
+                  ? handleToggle(task.id, 'in_progress')
+                  : task.status.toLowerCase() === 'in_progress'
+                  ? handleToggle(task.id, 'completed')
+                  : null
+                  }
+                 className={`w-full px-4 py-2 text-sm text-white rounded-lg font-light cursor-pointer 
+                 ${task.status.toLowerCase() === 'pending' && 'bg-blue-600 hover:bg-blue-800'} 
+                 ${task.status.toLowerCase() === 'in_progress' && 'bg-green-600 hover:bg-green-800'} 
+                 ${task.status.toLowerCase() === 'completed' && 'bg-gray-400 cursor-not-allowed'}`}
+                 >
+                 {task.status.toLowerCase() === 'pending' && 'Start Task'}
+                 {task.status.toLowerCase() === 'in_progress' && 'Mark Completed'}
+                 {task.status.toLowerCase() === 'completed' && 'Completed'}
                 </button>
+
                 <div className='flex items-center gap-2'>
                     <p className='text-xs font-light bg-blue-100/30 px-2 py-1 rounded-full'>{task.department?.name}</p>
                 </div>

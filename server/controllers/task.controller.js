@@ -86,37 +86,34 @@ module.exports.deleteTask = async (req,res) => {
   }
 }
 
-module.exports.toggleInProgressTasks = async(req,res) => {
+// Toggle In Progress
+module.exports.toggleInProgressTasks = async (req, res) => {
   try {
     const { id } = req.body
-    const task = await prisma.task.findUnique({
-      where:{ id }
-    })
-    if(!task) return res.json({ success:false, message:"Task Not Found" })
-    
-    task.status = 'IN_PROGRESS'
-    const status = task.status
 
-    return res.json({ success:true,status })
+    const task = await prisma.task.update({
+      where: { id },
+      data: { status: 'IN_PROGRESS' }
+    })
+
+    return res.json({ success: true, task })
   } catch (error) {
-    return res.json({ success:false,message:error.message })
+    return res.json({ success: false, message: error.message })
   }
 }
 
-module.exports.toggleCompletedTasks = async(req,res) => {
+// Toggle Completed
+module.exports.toggleCompletedTasks = async (req, res) => {
   try {
     const { id } = req.body
-    const task = await prisma.task.findUnique({
-       where:{ id }
+
+    const task = await prisma.task.update({
+      where: { id },
+      data: { status: 'COMPLETED' }
     })
 
-    if(!task) return res.json({ success:false, message:"Task Not Found" })
-
-    task.status = 'COMPLETED'
-    const status = task.status
-    
-    return res.json({ success:true,status })
+    return res.json({ success: true, task })
   } catch (error) {
-    return res.json({ success:false, message:error.message })
+    return res.json({ success: false, message: error.message })
   }
 }
