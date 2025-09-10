@@ -5,7 +5,7 @@ import toast from 'react-hot-toast'
 import { useNavigate } from 'react-router-dom'
 
 const Login = () => {
-   const{ axios,setToken } = useAppContext()
+   const{ axios,setToken,setAuthUser } = useAppContext()
     const[email,setEmail] = useState("")
     const[password,setPassword] = useState("")
     const navigate = useNavigate()
@@ -22,6 +22,7 @@ const Login = () => {
             const { data } = await axios.post('/api/auth/login',formData)
             if(data.success){
                setToken(data.token)
+               setAuthUser(data.user)
                localStorage.setItem('token',data.token)
                localStorage.setItem('user',JSON.stringify(data.user))
                axios.defaults.headers.common["Authorization"] = `Bearer ${data.token}`
