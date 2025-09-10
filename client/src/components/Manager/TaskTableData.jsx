@@ -1,7 +1,13 @@
 import React from 'react'
+import toast from 'react-hot-toast'
+import { useAppContext } from '../../context/AppContext'
 
 const TaskTableData = ({task,fetchTasks,fetchManagerDashboard}) => {
+     
+    const { axios } = useAppContext()
+
     const {id,title,description,dueDate,user,priority,status} = task
+
        const deleteTask = async () => {
         const confirm = window.confirm("Are you sure you want to delete this task ?")
         if(!confirm) return
@@ -15,7 +21,7 @@ const TaskTableData = ({task,fetchTasks,fetchManagerDashboard}) => {
               toast.error(data.message)
             }
             } catch (error) {
-           toast.error(error.message)
+           toast.error(error)
         }
       
     }
@@ -51,7 +57,7 @@ const TaskTableData = ({task,fetchTasks,fetchManagerDashboard}) => {
       <td className='py-3 px-2 xl:px-4'>
         <div className='flex gap-4 font-medium'>
             <span className='text-blue-400 text-sm cursor-pointer hover:text-blue-500 transition-all'>Edit</span>
-            <span className='text-red-400 text-sm cursor-pointer hover:text-red-500 transition-all'>Delete</span>
+            <span onClick={deleteTask} className='text-red-400 text-sm cursor-pointer hover:text-red-500 transition-all'>Delete</span>
         </div>
       </td>
     </tr>

@@ -73,11 +73,12 @@ module.exports.fetchUserTasks = async (req,res) => {
 }
 
 
-module.exports.deleteTask = async () => {
+module.exports.deleteTask = async (req,res) => {
   try {
-    const {id} = parseInt(req.params)
+    const {id} = req.params
+    const parsedId = parseInt(id)
     const task = await prisma.task.delete({
-       where: { id }
+       where: { id:parsedId }
     })
     return res.json( { success:true, message:"Task deleted successfully!!" } )
   } catch (error) {
