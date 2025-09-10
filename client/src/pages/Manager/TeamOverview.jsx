@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useAppContext } from '../../context/AppContext'
 
 const TeamOverview = () => {
-  const { axios,users } = useAppContext()
+  const { users } = useAppContext()
   const[userData,setUserData] = useState([])
   const[loading,setLoading] = useState(true)
 
