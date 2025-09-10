@@ -49,6 +49,7 @@ export const AppProvider = ({children})=>{
   }
 
   const[token,setToken] = useState("")
+  const [authUser, setAuthUser] = useState(null)
   
  
 
@@ -113,6 +114,8 @@ export const AppProvider = ({children})=>{
         axios,
         token,
         setToken,
+        authUser,
+        setAuthUser,
         dashboardData,
         setDashboardData,
         departmentData,
@@ -134,29 +137,37 @@ export const AppProvider = ({children})=>{
         fetchUserTasks
         }
 
+    // Effect 1: Initialize auth state from localStorage
     useEffect(()=>{
       const storedToken = localStorage.getItem("token")
-      const user = JSON.parse(localStorage.getItem('user'))
-      
+      const storedUser = localStorage.getItem('user')
+      const parsedUser = storedUser ? JSON.parse(storedUser) : null
+
       if(storedToken){
         setToken(storedToken)
         axios.defaults.headers.common["Authorization"] = `Bearer ${storedToken}`
       }
-      
-      // Only fetch data based on user role
-      if(user?.role === 'ADMIN') {
-        fetchUsers()
-        fetchDashboardData()
-        fetchDepartments()
-        fetchTasks()
-      } else if(user?.role === 'MANAGER') {
-        fetchManagerDashboardData()
-        fetchTasks()
-        fetchUsers()
-      } else if(user?.role === 'USER') {
-        fetchUserDashboardData()
+      if (parsedUser) {
+        setAuthUser(parsedUser)
       }
     },[])
+
+    // Effect 2: Fetch role-based data once token and role are ready
+    useEffect(()=>{
+      const runRoleFetches = async () => {
+        if(authUser?.role === 'ADMIN') {
+          await Promise.all([fetchUsers(), fetchDashboardData(), fetchDepartments(), fetchTasks()])
+        } else if(authUser?.role === 'MANAGER') {
+          await Promise.all([fetchManagerDashboardData(), fetchTasks(), fetchUsers()])
+        } else if(authUser?.role === 'USER') {
+          await fetchUserDashboardData()
+        }
+      }
+
+      if (token && authUser?.role) {
+        runRoleFetches()
+      }
+    },[token, authUser?.role])
 
 
   return(

@@ -21,7 +21,7 @@ const TeamOverview = () => {
 
   if (loading) {
     return (
-      <div className='ml-54 mt-16.5 p-4 md:p-10 bg-blue-50/50 flex-1 h-full'>
+      <div className='ml-18 md:ml-54 mt-14.5 p-4 md:p-10 bg-blue-50/50 flex-1 h-full'>
         <h1 className='font-semibold text-2xl mb-5'>Team Overview</h1>
         <div className='flex items-center justify-center h-64'>
           <div className='text-gray-500'>Loading team data...</div>
