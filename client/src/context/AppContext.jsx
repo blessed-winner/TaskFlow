@@ -1,10 +1,12 @@
 import { createContext, useContext, useEffect, useState } from "react"
 import axios from 'axios'
 import { toast } from 'react-hot-toast'
+import { useLocation } from 'react-router-dom'
 
 const AppContext = createContext()
 axios.defaults.baseURL = import.meta.env.VITE_BASE_URL
 export const AppProvider = ({children})=>{
+      const location = useLocation()
       const[dashboardData,setDashboardData] = useState({
     totalUsers:0,
     totalTasks:0,
@@ -107,6 +109,40 @@ export const AppProvider = ({children})=>{
       }
     }
 
+    const logout = () => {
+      localStorage.removeItem('token')
+      localStorage.removeItem('user')
+      setToken("")
+      setAuthUser(null)
+      axios.defaults.headers.common["Authorization"] = ""
+      // Clear all data states
+      setUsers([])
+      setTasks([])
+      setUserTasks([])
+      setDepartmentData([])
+      setDashboardData({
+        totalUsers:0,
+        totalTasks:0,
+        completed:0,
+        activeManagers:0,
+        completionRate:0,
+      })
+      setUserDashboardData({
+        totalTasks:0,
+        completedTasks:0,
+        inProgressTasks:0,
+        pendingTasks:0,
+        completionRate:0,
+      })
+      setManagerDashboardData({
+        totalTasks:0,
+        completedTasks:0,
+        teamMembers:0,
+        overDueTasks:0,
+        pendingTasks:0
+      })
+    }
+
 
       const value = {
         users,
@@ -134,7 +170,8 @@ export const AppProvider = ({children})=>{
         setTasks,
         userTasks,
         setUserTasks,
-        fetchUserTasks
+        fetchUserTasks,
+        logout
         }
 
     // Effect 1: Initialize auth state from localStorage
@@ -142,6 +179,8 @@ export const AppProvider = ({children})=>{
       const storedToken = localStorage.getItem("token")
       const storedUser = localStorage.getItem('user')
       const parsedUser = storedUser ? JSON.parse(storedUser) : null
+
+      console.log('Initializing auth state:', { storedToken: !!storedToken, parsedUser })
 
       if(storedToken){
         setToken(storedToken)
@@ -152,22 +191,43 @@ export const AppProvider = ({children})=>{
       }
     },[])
 
+    // Effect 3: Clear auth state when on auth page
+    useEffect(() => {
+      console.log('Route changed to:', location.pathname)
+      if (location.pathname === '/auth') {
+        console.log('Clearing auth state on auth page')
+        setToken("")
+        setAuthUser(null)
+        axios.defaults.headers.common["Authorization"] = ""
+      }
+    }, [location.pathname])
+
     // Effect 2: Fetch role-based data once token and role are ready
     useEffect(()=>{
       const runRoleFetches = async () => {
-        if(authUser?.role === 'ADMIN') {
-          await Promise.all([fetchUsers(), fetchDashboardData(), fetchDepartments(), fetchTasks()])
-        } else if(authUser?.role === 'MANAGER') {
-          await Promise.all([fetchManagerDashboardData(), fetchTasks(), fetchUsers()])
-        } else if(authUser?.role === 'USER') {
-          await fetchUserDashboardData()
+        try {
+          // Don't fetch data if we're on the auth page
+          if (location.pathname === '/auth') {
+            return
+          }
+          
+          console.log('Fetching data for role:', authUser?.role)
+          if(authUser?.role === 'ADMIN') {
+            await Promise.all([fetchUsers(), fetchDashboardData(), fetchDepartments(), fetchTasks()])
+          } else if(authUser?.role === 'MANAGER') {
+            await Promise.all([fetchManagerDashboardData(), fetchTasks(), fetchUsers()])
+          } else if(authUser?.role === 'USER'){
+            await fetchUserDashboardData()
+          }
+        } catch (error) {
+          console.error('Error fetching role-based data:', error)
         }
       }
 
       if (token && authUser?.role) {
         runRoleFetches()
       }
-    },[token, authUser?.role])
+    },[token, authUser?.role, location.pathname])
 
 
   return(
