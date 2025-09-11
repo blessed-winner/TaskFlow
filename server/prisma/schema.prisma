@@ -22,7 +22,7 @@ enum Priority{
 }
 
 enum taskStatus{
-  IN_PROGRESS
+  IN PROGRESS
   PENDING
   COMPLETED
   OVERDUE
