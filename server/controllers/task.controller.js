@@ -123,36 +123,61 @@ module.exports.updateTask = async (req,res) => {
     const { id } = req.params
     const parsedId = parseInt(id)
 
-    const { title,description,assigneeName,priority,dueDate } = req.body
+    const { title, description, assigneeName, priority, dueDate } = req.body
 
-    const[fName,lName] = assigneeName.split(" ")
-    const assignee = await prisma.user.findFirst({
-      where:{
-        fName,
-        lName
+    // Check if task exists
+    const existingTask = await prisma.task.findUnique({
+      where: { id: parsedId }
+    })
+
+    if(!existingTask) {
+      return res.json({ success: false, message: "Task not found" })
+    }
+
+    // If assigneeName is provided, find the assignee
+    let assignee = null
+    if(assigneeName) {
+      const [fName, lName] = assigneeName.split(" ")
+      assignee = await prisma.user.findFirst({
+        where: {
+          fName,
+          lName
+        }
+      })
+
+      if(!assignee) {
+        return res.json({ success: false, message: "Assignee not found" })
+      }
+    }
+
+    // Build update data object
+    const updateData = {}
+    
+    if(title !== undefined) updateData.title = title
+    if(description !== undefined) updateData.description = description
+    if(priority !== undefined) updateData.priority = priority.toUpperCase()
+    if(dueDate !== undefined) updateData.dueDate = new Date(dueDate)
+    if(assignee) {
+      updateData.user = { connect: { id: assignee.id } }
+      updateData.department = { connect: { id: assignee.deptId } }
+    }
+
+    const updatedTask = await prisma.task.update({
+      where: { id: parsedId },
+      data: updateData,
+      include: {
+        user: true,
+        department: true
       }
     })
 
-    if(!assignee) return res.json({ success:false, message:"Assignee Not Found" })
-
-    const data = {}
-  
-    if(title !== undefined) data.title = title
-    if(description !== undefined) data.description = description
-    if(assigneeName !== undefined) data.assigneeName = assigneeName
-    if(priority !== undefined) data.priority = priority
-    if(dueDate !== undefined) data.dueDate = dueDate
-
-    const updatedTask = await prisma.task.update({
-      where:{ id },
-      data:{ department: { connect: {id:assignee.deptId} } }
-      })
-
-    if(!updatedTask) return res.json({ success:false,message:"Task Update Failed" })
-    
-      return res.json({ success:true, message:" Task Updated Successfully!! " })
+    return res.json({ 
+      success: true, 
+      message: "Task updated successfully", 
+      task: updatedTask 
+    })
       
    } catch (error) {
-      return res.json({ success:false, message:error.message })
+      return res.json({ success: false, message: error.message })
    }
 }
