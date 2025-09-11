@@ -28,10 +28,6 @@ const ManagerSidebar = () => {
             <UserCheck className='min-w-4 w-5'/>
             <p className='hidden md:inline-block'>Team Overview</p>
           </NavLink>
-           <NavLink to='/manager/manager-tasks' className={({isActive})=>`flex gap-3 items-center py-3.5 px-3 rounded-lg text-gray-300 $${isActive ? 'bg-blue-500 text-white' : 'hover:bg-gray-800 hover:text-white transition-all'}`}>
-            <FolderOpen className='min-w-4 w-5'/>
-            <p className='hidden md:inline-block'>Projects</p>
-          </NavLink>
         </div>
     </div>
   )

@@ -13,7 +13,6 @@ import ManagerLayout from './pages/Manager/ManagerLayout'
 import ManagerDashboard from './pages/Manager/ManagerDashboard'
 import TaskManagement from './pages/Manager/TaskManagement'
 import TeamOverview from './pages/Manager/TeamOverview'
-import Projects from './pages/Manager/Projects'
 import { Toaster } from 'react-hot-toast'
 import Login from './components/auth/Login'
 import RoleGuard from './components/Guard/RoleGuard'
@@ -50,7 +49,6 @@ const App = () => {
              <Route index element ={<ManagerDashboard/>}/>
              <Route path='manage-tasks' element={<TaskManagement/>}/>
              <Route path='team-overview' element={<TeamOverview/>}/>
-             <Route path='projects' element={<Projects/>}/>
          </Route>
          <Route path='/auth' element={<Login/>}/>
          <Route path='/unauthorized' element={<Unauthorized/>}/>
