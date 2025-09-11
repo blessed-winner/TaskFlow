@@ -96,7 +96,7 @@ const ManagerDashboard = () => {
                   <h4 className='font-medium text-md'>{task.title}</h4>
                 <p className='text-sm font-light'>{new Date(task.dueDate).toLocaleDateString()}</p>
                 </span>
-                <p className={` px-2 py-1 text-xs rounded-full font-medium ${task.status.toLowerCase() === 'in_progress' && ' text-blue-700 bg-blue-100/60'} ${task.status.toLowerCase() === 'pending' && ' text-orange-700 bg-orange-100/60'} ${task.status.toLowerCase() === 'completed' && ' text-green-700 bg-green-100/60'}`}>{task.status.toLowerCase()}</p>
+                <p className={` px-2 py-1 text-xs rounded-full font-medium capitalize ${task.status.toLowerCase() === 'in progress' && ' text-blue-700 bg-blue-100/60'} ${task.status.toLowerCase() === 'pending' && ' text-orange-700 bg-orange-100/60'} ${task.status.toLowerCase() === 'completed' && ' text-green-700 bg-green-100/60'}`}>{task.status.toLowerCase()}</p>
              </div>
             )) : (
               <div className='w-full min-h-50 flex items-center justify-center'>
