@@ -35,6 +35,14 @@ module.exports.addNewTask = async(req,res) => {
           
         })
 
+        const io = req.app.get("io")
+        io.emit(`user-${newTask.userId}-notification`,{
+            type:"NEW_TASK",
+            message:`New Task assigned: ${newTask.title}`,
+            taskId:newTask.id,
+            dueTask:newTask.dueDate 
+          })
+
         return res.json({ success:true, message:"Task created successfully", newTask })
 
     } catch (error) {
@@ -170,6 +178,12 @@ module.exports.updateTask = async (req,res) => {
         department: true
       }
     })
+
+    const io = req.app.get("io")
+    io.emit(`user-${updatedTask.userId}-notification`,{
+      type:'UPDATE_TASK',
+      message:`Task Updated: ${ existingTask.title }`,
+      })
 
     return res.json({ 
       success: true, 
