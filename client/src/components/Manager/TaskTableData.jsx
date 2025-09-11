@@ -45,7 +45,7 @@ const TaskTableData = ({task,fetchTasks,fetchManagerDashboard}) => {
         ${status.toLowerCase() === 'pending' && 'text-yellow-800 bg-yellow-100/50'}`}>{status.toLowerCase()}</span>
       </td>
       <td className='py-3 px-2 xl:px-4 max-md:hidden'>
-        <span className={`px-2.5 py-1 rounded-full font-medium text-xs ${priority.toLowerCase() === 'high' && 'text-red-800 bg-red-100/40'}
+        <span className={`px-2.5 py-1 rounded-full font-medium text-xs capitalize ${priority.toLowerCase() === 'high' && 'text-red-800 bg-red-100/40'}
         ${priority.toLowerCase() === 'medium' && 'text-orange-700 bg-orange-100/40'}
         ${priority.toLowerCase() === 'low' && 'text-yellow-800 bg-yellow-100/40'}`}>
            {priority.toLowerCase()}
