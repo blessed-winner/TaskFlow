@@ -12,7 +12,7 @@ import { useAppContext } from '../../context/AppContext'
   const handleToggle = async (taskId, action) => {
     try {
       const endpoint =
-        action === 'in_progress'
+        action === 'in progress'
           ? '/api/tasks/toggle-in-progress'
           : '/api/tasks/toggle-completed'
 
@@ -25,7 +25,7 @@ import { useAppContext } from '../../context/AppContext'
         ])
         
         // Show success message
-        const actionText = action === 'in_progress' ? 'started' : 'completed'
+        const actionText = action === 'in progress' ? 'started' : 'completed'
         toast.success(`Task ${actionText} successfully!`)
       } else {
         toast.error(data.message || 'Failed to update task')
