@@ -92,7 +92,7 @@ const UserDashboard = () => {
              <div className='space-y-4'>
                 <div className='flex justify-between items-center'>
                   <h4 className='font-medium text-gray-800'>Tasks Completed Today</h4>
-                  <p className='font-semibold text-2xl text-green-600'>{user.tasks ? user.tasks.filter(task => task.status.toLowerCase() === 'completed').length : 0}</p>
+                  <p className='font-semibold text-2xl text-green-600'>{completedCount > 0 ? completedCount : 0}</p>
                 </div>
                 <div className='w-full bg-gray-300 rounded-full h-2'>
                     <div className='bg-green-600 h-2 rounded-full' style={{width:`${progress}%`}}></div>
@@ -105,7 +105,7 @@ const UserDashboard = () => {
                <div className='space-y-1'>
                 <div className='flex gap-2 items-center'>
                   <div className='bg-green-600 rounded-full h-3 w-3'></div>
-                  <p className='font-light text-sm'>Completed: {completedCount > 0 ? completedCount[0].title : 'no task recorded'}</p>
+                  <p className='font-light text-sm'>Completed: {completedCount > 0 ? completedTasks[0].title : 'no task recorded'}</p>
                 </div>
                     <div className='flex gap-2 items-center'>
                   <div className='bg-blue-600 rounded-full h-3 w-3'></div>
