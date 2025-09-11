@@ -3,20 +3,37 @@ import TaskTableData from '../../components/Manager/TaskTableData'
 import { AlertCircle, ClipboardList, Clock, TrendingUp } from 'lucide-react'
 import AddTaskButton from '../../components/Manager/AddTaskButton'
 import CreateTaskForm from '../../components/Manager/TaskForm/CreateTaskForm'
+import UpdateTaskForm from '../../components/Manager/TaskForm/UpdateTaskForm'
 import { useAppContext } from '../../context/AppContext'
 
 const TaskManagement = () => {
   const{managerDashboardData,tasks,fetchTasks,setTasks,fetchManagerDashboardData} = useAppContext()
   const [showForm,setShowForm] = useState(false)
+  const [showUpdateForm,setShowUpdateForm] = useState(false)
+  const [selectedTask,setSelectedTask] = useState(null)
 
   const handleTaskAdd = (newTask) => {
     setTasks(prev => [...prev,newTask])
+  }
+
+  const handleEditTask = (task) => {
+    setSelectedTask(task)
+    setShowUpdateForm(true)
+  }
+
+  const handleTaskUpdate = (updatedTask) => {
+    setTasks(prev => prev.map(task => 
+      task.id === updatedTask.id ? updatedTask : task
+    ))
+    setShowUpdateForm(false)
+    setSelectedTask(null)
   }
 
 
   return (
        <div className='ml-18 md:ml-54 mt-14.5 p-4 md:p-10 bg-blue-50/50 flex-1 h-full'>
         {showForm && <CreateTaskForm onTaskAdded={handleTaskAdd} onClose={()=>setShowForm(false)}/>}
+        {showUpdateForm && <UpdateTaskForm task={selectedTask} onTaskUpdated={handleTaskUpdate} onClose={()=>{setShowUpdateForm(false); setSelectedTask(null)}}/>}
         <div className='flex justify-between'>
            <h1 className='font-semibold text-2xl mb-5'>Task Management</h1> 
            <AddTaskButton onClick = {()=>setShowForm(true)}/>
@@ -66,7 +83,7 @@ const TaskManagement = () => {
          </thead>
          <tbody>
              {tasks.map((task)=>(
-              <TaskTableData task={task} key={task.id} fetchManagerDashboard={fetchManagerDashboardData} fetchTasks={fetchTasks}/>
+              <TaskTableData task={task} key={task.id} fetchManagerDashboard={fetchManagerDashboardData} fetchTasks={fetchTasks} onEditTask={handleEditTask}/>
              ))}
          </tbody>
        </table>
