@@ -74,6 +74,15 @@ module.exports.fetchUserTasks = async (req,res) => {
         department: true
       }
     })
+ 
+    const overDueTasks = tasks.filter(t => new Date(t.dueDate).getTime() < Date.now())
+     const io = req.app.get("io")
+     io.emit(`overdue-tasks-notification`,{
+      type:"OVERDUE_TASK",
+      message:`${overDueTasks.length} tasks are overdue`,
+      tasks: overDueTasks
+     })
+
     return res.json({ success:true, tasks })
   } catch (error) {
     return res.json({ success:false, message:error.message })
@@ -183,6 +192,7 @@ module.exports.updateTask = async (req,res) => {
     io.emit(`user-${updatedTask.userId}-notification`,{
       type:'UPDATE_TASK',
       message:`Task Updated: ${ existingTask.title }`,
+      task:updatedTask
       })
 
     return res.json({ 

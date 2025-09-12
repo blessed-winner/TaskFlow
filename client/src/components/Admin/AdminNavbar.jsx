@@ -1,8 +1,11 @@
 import { SearchIcon,Bell, UserIcon, LogOutIcon } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useAppContext } from '../../context/AppContext'
+import Notifications from '../Notifications'
+import { useState } from 'react'
 
 const AdminNavbar = () => {
+  const[showNotifications,setShowNotifications] = useState(false)
   const navigate = useNavigate()
   const { axios,setToken } = useAppContext()
   const user = JSON.parse(localStorage.getItem("user"))
@@ -23,8 +26,9 @@ const AdminNavbar = () => {
             <input type="text" placeholder='Search tasks...' className='text-sm outline-none text-gray-600'/>
            </div>
           </div>
-          <div className='flex justify-between gap-3'>
-              <Bell className='p-0.5 text-gray-400 hover:bg-gray-200 transition-all cursor-pointer rounded-md'/>
+          <div className='flex justify-between gap-3 relative'>
+              <Bell onClick={()=>setShowNotifications(true)} className='p-0.5 text-gray-400 hover:bg-gray-200 transition-all cursor-pointer rounded-md'/>
+                {showNotifications && <Notifications onClose={()=>setShowNotifications(false)}/>}
               <div>
                 <p className='max-md:hidden text-xs text-gray-900 font-semibold'>{user.fName + " " + user.lName}</p>
                 <p className='max-md:hidden text-xs text-gray-500 font-light text-right'>Admin</p>

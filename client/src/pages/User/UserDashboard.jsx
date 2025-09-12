@@ -24,10 +24,10 @@ const UserDashboard = () => {
       }
 
       useEffect(()=>{
-        fetchProgress()
         if(user?.id) {
           fetchUserTasks(user.id)
         }
+        fetchProgress()
       },[user?.id])
       
    
