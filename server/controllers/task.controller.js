@@ -36,11 +36,13 @@ module.exports.addNewTask = async(req,res) => {
         })
 
         const io = req.app.get("io")
-        io.emit(`user-${newTask.userId}-notification`,{
+        io.to(`user-${newTask.userId}`).emit('notification',{
             type:"NEW_TASK",
             message:`New Task assigned: ${newTask.title}`,
             taskId:newTask.id,
-            dueTask:newTask.dueDate 
+            dueTask:newTask.dueDate,
+            priority:newTask.priority,
+            timestamp:new Date()
           })
 
         return res.json({ success:true, message:"Task created successfully", newTask })
@@ -76,14 +78,18 @@ module.exports.fetchUserTasks = async (req,res) => {
     })
  
     const overDueTasks = tasks.filter(t => new Date(t.dueDate).getTime() < Date.now())
+    
      const io = req.app.get("io")
-     io.emit(`overdue-tasks-notification`,{
+     if(overDueTasks.length > 0){
+     io.to(`user-${userId}`).emit(`notification`,{
       type:"OVERDUE_TASK",
       message:`${overDueTasks.length} tasks are overdue`,
-      tasks: overDueTasks
+      tasks: overDueTasks,
+      timestamp:new Date()
      })
+    }
 
-    return res.json({ success:true, tasks })
+   return res.json({ success:true, tasks })
   } catch (error) {
     return res.json({ success:false, message:error.message })
   }
@@ -94,8 +100,14 @@ module.exports.deleteTask = async (req,res) => {
   try {
     const {id} = req.params
     const parsedId = parseInt(id)
-    const task = await prisma.task.delete({
+    const taskToDelete = await prisma.task.delete({
        where: { id:parsedId }
+    })
+    io.to(`user-${taskToDelete.id}`).emit('notification',{
+        type:'DELETED_TASK',
+        message:`Task "${taskToDelete.title}" has been deleted`,
+        taskId: taskToDelete.id,
+        timestamp:new Date()
     })
     return res.json( { success:true, message:"Task deleted successfully!!" } )
   } catch (error) {
@@ -113,6 +125,14 @@ module.exports.toggleInProgressTasks = async (req, res) => {
       data: { status: 'IN PROGRESS' }
     })
 
+    const io = req.app.get("io")
+    io.to(`user-${task.id}`).emit('notification',{
+      type:"TOGGLE_IN_PROGRESS",
+      message:`Task ${task.title} is now in progress`,
+      taskId:task.id,
+      timestamp:new Date()
+    })
+
     return res.json({ success: true, task })
   } catch (error) {
     return res.json({ success: false, message: error.message })
@@ -127,6 +147,14 @@ module.exports.toggleCompletedTasks = async (req, res) => {
     const task = await prisma.task.update({
       where: { id },
       data: { status: 'COMPLETED' }
+    })
+
+      const io = req.app.get("io")
+    io.to(`user-${task.id}`).emit('notification',{
+      type:"TOGGLE_COMPLETED",
+      message:`Task ${task.title} is now completed`,
+      taskId:task.id,
+      timestamp:new Date()
     })
 
     return res.json({ success: true, task })
@@ -188,11 +216,12 @@ module.exports.updateTask = async (req,res) => {
       }
     })
 
-    const io = req.app.get("io")
-    io.emit(`user-${updatedTask.userId}-notification`,{
-      type:'UPDATE_TASK',
-      message:`Task Updated: ${ existingTask.title }`,
-      task:updatedTask
+      const io = req.app.get('io')
+      io.to(`user-${updatedTask.userId}`).emit('notification', {
+      type: 'TASK_UPDATED',
+      message: `Task Updated: ${existingTask.title}`,
+      task: updatedTask,
+      timestamp: new Date()
       })
 
     return res.json({ 

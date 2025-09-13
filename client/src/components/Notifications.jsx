@@ -1,5 +1,8 @@
 import { Check,Trash2, X } from 'lucide-react'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { socket } from '../socket'
+
+
 
 const Notifications = ({onClose}) => {
   return (

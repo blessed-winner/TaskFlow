@@ -17,12 +17,15 @@ import { Toaster } from 'react-hot-toast'
 import Login from './components/auth/Login'
 import RoleGuard from './components/Guard/RoleGuard'
 import Unauthorized from './pages/Unauthorized'
+import Home from './pages/Home'
 
 const App = () => {
   return (
     <div>
       <Toaster/>
        <Routes>
+        <Route path="/" element={<Home/>} />
+ 
          <Route path = '/admin' element = {
           <RoleGuard role="ADMIN">
               <AdminLayout/>

@@ -192,15 +192,17 @@ export const AppProvider = ({children})=>{
     },[])
 
     // Effect 3: Clear auth state when on auth page
-    useEffect(() => {
-      console.log('Route changed to:', location.pathname)
-      if (location.pathname === '/auth') {
-        console.log('Clearing auth state on auth page')
-        setToken("")
-        setAuthUser(null)
-        axios.defaults.headers.common["Authorization"] = ""
-      }
-    }, [location.pathname])
+ // Effect 3: Clear auth state when explicitly navigating to auth page
+useEffect(() => {
+  console.log('Route changed to:', location.pathname)
+  // Only clear auth state if we're navigating TO auth page AND we have existing auth
+  if (location.pathname === '/auth' && token) {
+    console.log('Clearing auth state on auth page')
+    setToken("")
+    setAuthUser(null)
+    axios.defaults.headers.common["Authorization"] = ""
+  }
+}, [location.pathname, token])
 
     // Effect 2: Fetch role-based data once token and role are ready
     useEffect(()=>{
