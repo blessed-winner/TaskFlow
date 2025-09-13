@@ -1,5 +1,4 @@
 const express = require('express')
-const { PrismaClient } = require('./generated/prisma')
 const cors = require('cors')
 const userRouter = require('./routes/user.route')
 const deptRouter = require('./routes/dept.route')
@@ -10,7 +9,6 @@ const{ Server } = require('socket.io')
 require('dotenv').config()
 
 const app = express()
-const prisma = new PrismaClient()
 
 
 app.use(cors())
@@ -32,9 +30,23 @@ const io = new Server(server,{
 
 io.on('connection',(socket)=>{
     console.log('A client connected',socket.id)
+    socket.on('join-user-room',(userId)=>{
+        socket.join(`user-${userId}`)
+        console.log(`User ${userId} joined their room` )
+    })
+
+    socket.on('leave-user-room',(userId)=>{
+        socket.leave(`user-${userId}`)
+        console.log(`User ${userId} left their room`)
+    })
+
+    socket.on('disconnect',(socket)=>{
+       console.log('A client disconnected',socket.id)
+    })
 })
+
 
 app.set('io',io)
 
 
-app.listen(port,() => console.log(`Server running on port ${port}`))
+server.listen(port,() => console.log(`Server running on port ${port}`))

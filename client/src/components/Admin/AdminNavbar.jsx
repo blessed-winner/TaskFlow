@@ -6,9 +6,31 @@ import { useState } from 'react'
 
 const AdminNavbar = () => {
   const[showNotifications,setShowNotifications] = useState(false)
+    const user = JSON.parse(localStorage.getItem("user"))
+  const [notifications,setNotifications] = useState([])
+const[unreadCount,setUnreadCount] = useState(0)
+
+useEffect(()=>{
+  const user = JSON.parse(localStorage.getItem('user'))
+  if(!user.id) return
+   
+  socket.emit('join-user-room',user.id)
+
+  const handleNotifications = (notification) => {
+      setNotifications(prev => [notification, ...prev.slice(0,49)])
+      setUnreadCount(prev => prev + 1)
+  }
+  socket.on('notification',handleNotifications)
+
+  return() => {
+    socket.off('notification',handleNotifications)
+    socket.emit('leave-user-room',user.id)
+  }
+  
+},[user?.id])
+
   const navigate = useNavigate()
   const { axios,setToken } = useAppContext()
-  const user = JSON.parse(localStorage.getItem("user"))
   const logout = () => {
     localStorage.removeItem("token")
     localStorage.removeItem("user")
@@ -27,8 +49,11 @@ const AdminNavbar = () => {
            </div>
           </div>
           <div className='flex justify-between gap-3 relative'>
-              <Bell onClick={()=>setShowNotifications(true)} className='p-0.5 text-gray-400 hover:bg-gray-200 transition-all cursor-pointer rounded-md'/>
+            <button className='relative'>
+                 <Bell onClick={()=>setShowNotifications(true)} className='p-0.5 text-gray-400 hover:bg-gray-200 transition-all cursor-pointer rounded-md'/>
                 {showNotifications && <Notifications onClose={()=>setShowNotifications(false)}/>}
+                  {unreadCount > 0 && <span className='bg-red-500 text-white rounded-full p-2 text-xs absolute right-0.5 -top-1'>{unreadCount}</span>}
+            </button>
               <div>
                 <p className='max-md:hidden text-xs text-gray-900 font-semibold'>{user.fName + " " + user.lName}</p>
                 <p className='max-md:hidden text-xs text-gray-500 font-light text-right'>Admin</p>
