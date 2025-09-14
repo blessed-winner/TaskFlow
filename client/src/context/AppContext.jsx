@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react"
 import axios from 'axios'
 import { toast } from 'react-hot-toast'
 import { useLocation } from 'react-router-dom'
+import { connectSocket, disconnectSocket } from '../socket'
 
 const AppContext = createContext()
 axios.defaults.baseURL = import.meta.env.VITE_BASE_URL
@@ -110,6 +111,9 @@ export const AppProvider = ({children})=>{
     }
 
     const logout = () => {
+      // Disconnect socket first
+      disconnectSocket()
+      
       localStorage.removeItem('token')
       localStorage.removeItem('user')
       setToken("")
@@ -180,40 +184,22 @@ export const AppProvider = ({children})=>{
       const storedUser = localStorage.getItem('user')
       const parsedUser = storedUser ? JSON.parse(storedUser) : null
 
-      console.log('Initializing auth state:', { storedToken: !!storedToken, parsedUser })
+      //console.log('Initializing auth state:', { storedToken: !!storedToken, parsedUser })
 
       if(storedToken){
         setToken(storedToken)
         axios.defaults.headers.common["Authorization"] = `Bearer ${storedToken}`
+        // Connect socket if user is already authenticated
+        connectSocket()
       }
       if (parsedUser) {
         setAuthUser(parsedUser)
       }
     },[])
 
-    // Effect 3: Clear auth state when on auth page
- // Effect 3: Clear auth state when explicitly navigating to auth page
-useEffect(() => {
-  console.log('Route changed to:', location.pathname)
-  // Only clear auth state if we're navigating TO auth page AND we have existing auth
-  if (location.pathname === '/auth' && token) {
-    console.log('Clearing auth state on auth page')
-    setToken("")
-    setAuthUser(null)
-    axios.defaults.headers.common["Authorization"] = ""
-  }
-}, [location.pathname, token])
-
-    // Effect 2: Fetch role-based data once token and role are ready
     useEffect(()=>{
       const runRoleFetches = async () => {
         try {
-          // Don't fetch data if we're on the auth page
-          if (location.pathname === '/auth') {
-            return
-          }
-          
-          console.log('Fetching data for role:', authUser?.role)
           if(authUser?.role === 'ADMIN') {
             await Promise.all([fetchUsers(), fetchDashboardData(), fetchDepartments(), fetchTasks()])
           } else if(authUser?.role === 'MANAGER') {

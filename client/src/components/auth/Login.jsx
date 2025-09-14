@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { useAppContext } from '../../context/AppContext'
 import toast from 'react-hot-toast'
 import { useNavigate } from 'react-router-dom'
+import { connectSocket } from '../../socket'
 
 const Login = () => {
    const{ axios,setToken,setAuthUser } = useAppContext()
@@ -26,6 +27,10 @@ const Login = () => {
                localStorage.setItem('token',data.token)
                localStorage.setItem('user',JSON.stringify(data.user))
                axios.defaults.headers.common["Authorization"] = `Bearer ${data.token}`
+               
+               // Connect socket after successful authentication
+               connectSocket()
+               
                if(data.user.role === 'ADMIN') navigate('/admin')
                else if(data.user.role === 'MANAGER') navigate('/manager')
                else if(data.user.role === 'USER') navigate('/user')

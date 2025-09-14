@@ -2,7 +2,8 @@ import { SearchIcon,Bell, UserIcon, LogOutIcon } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useAppContext } from '../../context/AppContext'
 import Notifications from '../Notifications'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { socket } from '../../socket'
 
 const AdminNavbar = () => {
   const[showNotifications,setShowNotifications] = useState(false)
@@ -30,14 +31,14 @@ useEffect(()=>{
 },[user?.id])
 
   const navigate = useNavigate()
-  const { axios,setToken } = useAppContext()
-  const logout = () => {
+  const { axios,setToken,logout } = useAppContext()
+  /*const logout = () => {
     localStorage.removeItem("token")
     localStorage.removeItem("user")
     setToken(null)
     axios.defaults.headers.common['Authorization'] = null
     navigate('/')
-  }
+  }*/
   return (
     <>
         <div className='flex justify-between items-center px-6 py-3 bg-white border-b border-gray-300 shadow fixed z-1 right-0 left-0 top-0'>
