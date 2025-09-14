@@ -2,6 +2,7 @@ import { BarChart3, Home, Settings, Users } from 'lucide-react'
 import { NavLink } from 'react-router-dom'
 
 const AdminSidebar = () => {
+  const user = JSON.parse(localStorage.getItem('user'))
   return (
     <div className='flex flex-col min-h-full bg-gray-900 md:p-6 fixed mt-14.5'>
         <div className='text-center mb-12 border-b-1 border-gray-500 p-4'>

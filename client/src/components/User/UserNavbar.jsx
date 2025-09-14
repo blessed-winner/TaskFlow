@@ -5,14 +5,7 @@ import { useNavigate } from 'react-router-dom'
 const UserNavbar = () => {
    const user = JSON.parse(localStorage.getItem("user"))
      const navigate = useNavigate()
-  const { axios,setToken } = useAppContext()
-  const logout = () => {
-    localStorage.removeItem("token")
-    localStorage.removeItem("user")
-    setToken(null)
-    axios.defaults.headers.common['Authorization'] = null
-    navigate('/')
-  }
+  const { logout } = useAppContext()
   return (
     <>
         <div className='flex justify-between items-center px-6 py-3 bg-white border-b border-gray-300 shadow fixed z-1 right-0 left-0 top-0'>
@@ -31,7 +24,7 @@ const UserNavbar = () => {
                 <p className='max-md:hidden text-xs text-gray-500 font-light text-right'>User</p>
               </div>
               <UserIcon className='bg-blue-500 p-1 rounded-full text-white '/>
-              <LogOutIcon onClick={logout} className='p-1 hover:bg-gray-200 transition-all cursor-pointer rounded-md text-gray-400'/>
+              <LogOutIcon onClick={() => { logout(); navigate('/') }} className='p-1 hover:bg-gray-200 transition-all cursor-pointer rounded-md text-gray-400'/>
            </div>
         </div>
     </>
