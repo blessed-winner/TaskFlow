@@ -2,7 +2,6 @@ import { createContext, useContext, useEffect, useState } from "react"
 import axios from 'axios'
 import { toast } from 'react-hot-toast'
 import { useLocation } from 'react-router-dom'
-import { connectSocket, disconnectSocket } from '../socket'
 
 const AppContext = createContext()
 axios.defaults.baseURL = import.meta.env.VITE_BASE_URL
@@ -111,9 +110,6 @@ export const AppProvider = ({children})=>{
     }
 
     const logout = () => {
-      // Disconnect socket first
-      disconnectSocket()
-      
       localStorage.removeItem('token')
       localStorage.removeItem('user')
       setToken("")
@@ -189,8 +185,6 @@ export const AppProvider = ({children})=>{
       if(storedToken){
         setToken(storedToken)
         axios.defaults.headers.common["Authorization"] = `Bearer ${storedToken}`
-        // Connect socket if user is already authenticated
-        connectSocket()
       }
       if (parsedUser) {
         setAuthUser(parsedUser)

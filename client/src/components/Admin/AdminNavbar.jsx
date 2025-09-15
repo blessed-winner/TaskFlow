@@ -2,8 +2,7 @@ import { SearchIcon,Bell, UserIcon, LogOutIcon } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useAppContext } from '../../context/AppContext'
 import Notifications from '../Notifications'
-import { useState, useEffect } from 'react'
-import { socket } from '../../socket'
+import { useState } from 'react'
 
 const AdminNavbar = () => {
   const[showNotifications,setShowNotifications] = useState(false)
