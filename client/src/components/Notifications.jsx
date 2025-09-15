@@ -1,8 +1,16 @@
 import { Check,Trash2, X } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
-import { socket } from '../socket'
+import io from 'socket.io-client'
 
 
+const socket = io('http://localhost:8000')
+const user = JSON.parse(localStorage.getItem('user'))
+
+const[notifications,setNotifications] = useState([])
+
+useEffect(()=>{
+   socket.on('notification',)
+},[socket])
 
 const Notifications = ({onClose}) => {
   return (
