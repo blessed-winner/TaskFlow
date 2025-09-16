@@ -23,22 +23,23 @@ app.use('/api/tasks',taskRouter)
 
 const port = process.env.PORT || 3000
 
-const server = http.createServer()
+const server = http.createServer(app)
 const io = new Server(server,{
     cors: {origin:'http://localhost:5173', methods:[ 'GET','POST' ]}
 })
 
 io.on('connection',(socket)=>{
     console.log('A client connected',socket.id)
-    socket.on('join-user-room',(userId)=>{
-        socket.join(`user-${userId}`)
-        console.log(`User ${userId} joined their room` )
+    socket.on('join-user-room',(room)=>{
+        socket.join(`user-${room}`)
+        console.log(`Socket ${socket.id} joined room user-${room}` )
     })
 
-    socket.on('leave-user-room',(userId)=>{
-        socket.leave(`user-${userId}`)
-        console.log(`User ${userId} left their room`)
+    socket.on('leave-user-room',(room)=>{
+        socket.leave(`user-${room}`)
+        console.log(`Socket ${socket.id} left room user-${room}`)
     })
+
 
     socket.on('disconnect',(reason)=>{
        console.log('A client disconnected',socket.id,'Reason:',reason)

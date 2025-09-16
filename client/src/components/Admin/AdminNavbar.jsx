@@ -2,7 +2,10 @@ import { SearchIcon,Bell, UserIcon, LogOutIcon } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useAppContext } from '../../context/AppContext'
 import Notifications from '../Notifications'
-import { useState } from 'react'
+import { useState,useEffect } from 'react'
+import io from 'socket.io-client'
+
+const socket = io('http://localhost:8000')
 
 const AdminNavbar = () => {
   const[showNotifications,setShowNotifications] = useState(false)

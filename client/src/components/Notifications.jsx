@@ -4,15 +4,22 @@ import io from 'socket.io-client'
 
 
 const socket = io('http://localhost:8000')
+
+const Notifications = ({onClose}) => {
+  
 const user = JSON.parse(localStorage.getItem('user'))
 
 const[notifications,setNotifications] = useState([])
 
 useEffect(()=>{
-   socket.on('notification',)
-},[socket])
+   socket.on('notification',(data)=>{
+      setNotifications(data)
+   })
 
-const Notifications = ({onClose}) => {
+   return () => {
+    socket.off('notification')
+   }
+},[socket])
   return (
     <div className='absolute top-1 right-1 w-80 bg-white rounded-md px-5 py-6 border border-gray-200 shadow-lg'>
        <div className="flex items-center justify-between p-4 border-b border-gray-200 z-50">
@@ -32,8 +39,12 @@ const Notifications = ({onClose}) => {
             </div>
           </div>
        <div className='flex justify-center mt-5'>
-          <h4>No Notifications Available</h4>
-       </div>
+        {
+          notifications.length > 0 ? notifications.map((note,index)=>(
+               <p key={index}>{note.message}</p>
+          )) :   <h4>No Notifications Available</h4>
+        }
+         </div>
     </div>
   )
 }
