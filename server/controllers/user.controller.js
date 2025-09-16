@@ -24,7 +24,6 @@ module.exports.addNewUser = async (req, res) => {
       }
     })
     
-
     return res.json({ success: true, message: "User created successfully", user })
   } catch (error) {
     console.error(error)
