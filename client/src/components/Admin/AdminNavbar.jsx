@@ -15,9 +15,12 @@ const[unreadCount,setUnreadCount] = useState(0)
 
 useEffect(()=>{
   const user = JSON.parse(localStorage.getItem('user'))
-  if(!user.id) return
+  if(!user || !user.id) return
    
   socket.emit('join-user-room',user.id)
+  if(user.role === 'ADMIN'){
+    socket.emit('join-user-room','admin')
+  }
 
   const handleNotifications = (notification) => {
       setNotifications(prev => [notification, ...prev.slice(0,49)])
@@ -28,19 +31,15 @@ useEffect(()=>{
   return() => {
     socket.off('notification',handleNotifications)
     socket.emit('leave-user-room',user.id)
+    if(user.role === 'ADMIN'){
+      socket.emit('leave-user-room','admin')
+    }
   }
   
 },[user?.id])
 
-  const navigate = useNavigate()
-  const { axios,setToken,logout } = useAppContext()
-  /*const logout = () => {
-    localStorage.removeItem("token")
-    localStorage.removeItem("user")
-    setToken(null)
-    axios.defaults.headers.common['Authorization'] = null
-    navigate('/')
-  }*/
+  const { logout } = useAppContext()
+ 
   return (
     <>
         <div className='flex justify-between items-center px-6 py-3 bg-white border-b border-gray-300 shadow fixed z-1 right-0 left-0 top-0'>
@@ -54,8 +53,15 @@ useEffect(()=>{
           <div className='flex justify-between gap-3 relative'>
             <button className='relative'>
                  <Bell onClick={()=>setShowNotifications(true)} className='p-0.5 text-gray-400 hover:bg-gray-200 transition-all cursor-pointer rounded-md'/>
-                {showNotifications && <Notifications onClose={()=>setShowNotifications(false)}/>}
-                  {unreadCount > 0 && <span className='bg-red-500 text-white rounded-full p-2 text-xs absolute right-0.5 -top-1'>{unreadCount}</span>}
+                {showNotifications && (
+                  <Notifications 
+                    onClose={()=>setShowNotifications(false)}
+                    notifications={notifications}
+                    onMarkAllRead={()=>setUnreadCount(0)}
+                    onClearAll={()=>setNotifications([])}
+                  />
+                )}
+                  {unreadCount > 0 && <span className='absolute -top-1 bg-red-500 text-white px-1.25 rounded-full text-xs'>{unreadCount}</span>}
             </button>
               <div>
                 <p className='max-md:hidden text-xs text-gray-900 font-semibold'>{user.fName + " " + user.lName}</p>

@@ -3,11 +3,16 @@ import { useAppContext } from '../../context/AppContext'
 import AddUserButton from '../../components/Admin/AddUserButton'
 import { useState } from 'react'
 import AddUserForm from '../../components/Admin/AddUserForm'
+import io from 'socket.io-client'
+
+const socket = io('http://localhost:8000')
 
 const AdminDashboard = () => {
 
   const { dashboardData,setUsers,fetchDashboardData } = useAppContext()
   const [ showForm,setShowForm  ] = useState(false)
+
+  socket.emit('join-user-room',`admin`)
 
   const handleUserAdd = (newUser) => {
       setUsers((users) => [...users,newUser])
