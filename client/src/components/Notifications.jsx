@@ -1,35 +1,17 @@
 import { Check,Trash2, X } from 'lucide-react'
-import React, { useEffect, useState } from 'react'
-import io from 'socket.io-client'
+import React from 'react'
 
-
-const socket = io('http://localhost:8000')
-
-const Notifications = ({onClose}) => {
-  
-const user = JSON.parse(localStorage.getItem('user'))
-
-const[notifications,setNotifications] = useState([])
-
-useEffect(()=>{
-   socket.on('notification',(data)=>{
-      setNotifications(data)
-   })
-
-   return () => {
-    socket.off('notification')
-   }
-},[socket])
+const Notifications = ({ onClose, notifications = [], onMarkAllRead, onClearAll }) => {
   return (
-    <div className='absolute top-1 right-1 w-80 bg-white rounded-md px-5 py-6 border border-gray-200 shadow-lg'>
+    <div className='absolute top-1 right-1 w-80 bg-white rounded-md px-5 py-6 border border-gray-200 shadow-lg overflow-scroll h-[250px]'>
        <div className="flex items-center justify-between p-4 border-b border-gray-200 z-50">
             <h3 className="text-lg font-medium text-gray-900">Notifications</h3>
             <div className="flex items-center space-x-2">
-              <button className="text-xs text-blue-600 hover:text-blue-800 flex items-center gap-0.5 cursor-pointer">
+              <button onClick={onMarkAllRead} className="text-xs text-blue-600 hover:text-blue-800 flex items-center gap-0.5 cursor-pointer">
                   <Check className="h-3 w-3" />
                   <span>Mark all read</span>
                 </button>
-               <button className="text-sm text-red-600 hover:text-red-800 flex items-center gap-0.5 cursor-pointer">
+               <button onClick={onClearAll} className="text-sm text-red-600 hover:text-red-800 flex items-center gap-0.5 cursor-pointer">
                   <Trash2 className="h-4 w-4" />
                 </button>
               
@@ -38,10 +20,14 @@ useEffect(()=>{
               </button>
             </div>
           </div>
-       <div className='flex justify-center mt-5'>
+       <div className='flex flex-col mt-5 space-y-2'>
         {
-          notifications.length > 0 ? notifications.map((note,index)=>(
-               <p key={index}>{note.message}</p>
+          notifications.length > 0 ? notifications.map((n,index)=>(
+            <div className={ ` text-sm text-left px-2 py-3 text-gray-800 flex items-center gap-1.5 rounded-md ${n.type === 'CREATE_USER' && 'bg-green-200'}`  }>
+              <div className={`w-2 h-2 rounded-full bg-black`}></div>
+              <p key={index}>{n.message}</p>
+            </div>
+               
           )) :   <h4>No Notifications Available</h4>
         }
          </div>

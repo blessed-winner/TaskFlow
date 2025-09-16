@@ -23,6 +23,12 @@ module.exports.addNewUser = async (req, res) => {
         department: true 
       }
     })
+
+    const io = req.app.get('io')
+    io.to('user-admin').emit('notification',{
+      type:"CREATE_USER",
+      message:`User ${user.fName} created successfully`,
+    })
     
     return res.json({ success: true, message: "User created successfully", user })
   } catch (error) {
