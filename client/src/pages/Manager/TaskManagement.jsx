@@ -69,7 +69,7 @@ const TaskManagement = () => {
             <AlertCircle className='text-red-500 h-8 w-8'/>
            </div> 
       </div>
-       <div className='max-w-5xl scrollbar-hide rounded-lg overflow-x-auto h-4/5 '>
+       <div className='max-w-5xl scrollbar-hide rounded-lg overflow-x-auto h-3/5 '>
          <table className='w-full text-sm'>
             <thead className='px-4 py-2.5 text-gray-500 uppercase text-xs bg-blue-100/20 text-left w-full'>
             <tr>
@@ -83,7 +83,7 @@ const TaskManagement = () => {
          </thead>
          <tbody>
              {tasks.map((task)=>(
-              <TaskTableData task={task} key={task.id} fetchManagerDashboard={fetchManagerDashboardData} fetchTasks={fetchTasks} onEditTask={handleEditTask}/>
+              <TaskTableData task={task} key={task?.id} fetchManagerDashboard={fetchManagerDashboardData} fetchTasks={fetchTasks} onEditTask={handleEditTask}/>
              ))}
          </tbody>
        </table>

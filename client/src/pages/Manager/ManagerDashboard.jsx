@@ -43,9 +43,10 @@ const ManagerDashboard = () => {
     }
   }, [users, axios])
 
-  
+ 
   const handleTaskAdd = (newTask) => {
-    setTasks(prev => [...prev,newTask])
+    if(!newTask) return;
+    setTasks(prev => [newTask, ...prev.filter(Boolean)])
   }
 
   return (
@@ -87,18 +88,24 @@ const ManagerDashboard = () => {
            </div> 
       </div>
       <div className='grid grid-cols-1 md:grid-cols-2 mt-6 gap-6 rounded'>
-         <div className='bg-white p-6 rounded-lg shadow-md'>
+         <div className='bg-white p-6 rounded-lg shadow-md h-4/5 overflow-auto'>
           <h2 className='font-medium text-gray-800 text-lg mb-5'>Recent Tasks</h2>
                <div className='flex flex-col gap-4'>
-            {tasks?.length > 0 ? tasks.sort((a,b)=>new Date(b.createdAt) -  new Date(a.createdAt)).slice(0,5).map((task,index)=>(
+            {tasks && tasks.filter(Boolean).length > 0 ? tasks
+              .filter(Boolean)
+              .sort((a,b)=> new Date(b?.createdAt || b?.dueDate || 0) - new Date(a?.createdAt || a?.dueDate || 0))
+              .slice(0,4).map((task,index)=>{
+                const status = (task?.status || '').toLowerCase()
+                return (
                     <div key={index} className='flex justify-between bg-blue-50/40 px-4 py-3 rounded-lg items-center'>
                 <span className='space-y-1'>
-                  <h4 className='font-medium text-md'>{task.title}</h4>
-                <p className='text-sm font-light'>{new Date(task.dueDate).toLocaleDateString()}</p>
+                  <h4 className='font-medium text-md'>{task?.title || 'Untitled task'}</h4>
+                <p className='text-sm font-light'>{task?.dueDate ? new Date(task.dueDate).toLocaleDateString() : 'No due date'}</p>
                 </span>
-                <p className={` px-2 py-1 text-xs rounded-full font-medium capitalize ${task.status.toLowerCase() === 'in progress' && ' text-blue-700 bg-blue-100/60'} ${task.status.toLowerCase() === 'pending' && ' text-orange-700 bg-orange-100/60'} ${task.status.toLowerCase() === 'completed' && ' text-green-700 bg-green-100/60'}`}>{task.status.toLowerCase()}</p>
+                <p className={` px-2 py-1 text-xs rounded-full font-medium capitalize ${status === 'in progress' && ' text-blue-700 bg-blue-100/60'} ${status === 'pending' && ' text-orange-700 bg-orange-100/60'} ${status === 'completed' && ' text-green-700 bg-green-100/60'}`}>{status || 'unknown'}</p>
              </div>
-            )) : (
+                )
+              }) : (
               <div className='w-full min-h-50 flex items-center justify-center'>
                 <h3 className='font-medium text-xl text-green-500'>No Tasks Found</h3>
               </div>
@@ -107,7 +114,7 @@ const ManagerDashboard = () => {
          }
           </div>
             </div>
-         <div className='bg-white p-6 rounded-lg shadow-md text-sm'>
+         <div className='bg-white p-6 rounded-lg shadow-md text-sm h-4/5 overflow-auto'>
             <h2 className='font-semibold text-gray-800 text-lg mb-5'>Team Performance</h2>
             
               {

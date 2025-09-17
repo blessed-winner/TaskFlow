@@ -27,6 +27,7 @@ module.exports.addNewUser = async (req, res) => {
     const io = req.app.get('io')
     io.to('user-admin').emit('notification',{
       type:"CREATE_USER",
+      color:'green',
       message:`User ${user.fName} created successfully`,
     })
     
@@ -71,6 +72,12 @@ module.exports.deleteUser = async(req,res) => {
             where: {id:Number(id)}
         })
         return res.json({ success:true, message:"User deleted successfully" })
+
+        const io = req.app.get('io')
+        io.to('user-admin').emit('notification',{
+          type:"DELETE_USER",
+          message:`User ${user.fName} deleted`
+        })
     }
     catch(err){
         return res.json({ success:false, message:err.message })

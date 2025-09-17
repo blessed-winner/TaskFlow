@@ -51,7 +51,7 @@ useEffect(()=>{
            </div>
           </div>
           <div className='flex justify-between gap-3 relative'>
-            <button className='relative'>
+            <div className='relative'>
                  <Bell onClick={()=>setShowNotifications(true)} className='p-0.5 text-gray-400 hover:bg-gray-200 transition-all cursor-pointer rounded-md'/>
                 {showNotifications && (
                   <Notifications 
@@ -62,7 +62,7 @@ useEffect(()=>{
                   />
                 )}
                   {unreadCount > 0 && <span className='absolute -top-1 bg-red-500 text-white px-1.25 rounded-full text-xs'>{unreadCount}</span>}
-            </button>
+            </div>
               <div>
                 <p className='max-md:hidden text-xs text-gray-900 font-semibold'>{user.fName + " " + user.lName}</p>
                 <p className='max-md:hidden text-xs text-gray-500 font-light text-right'>Admin</p>

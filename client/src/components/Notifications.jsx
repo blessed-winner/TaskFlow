@@ -23,12 +23,20 @@ const Notifications = ({ onClose, notifications = [], onMarkAllRead, onClearAll 
        <div className='flex flex-col mt-5 space-y-2'>
         {
           notifications.length > 0 ? notifications.map((n,index)=>(
-            <div className={ ` text-sm text-left px-2 py-3 text-gray-800 flex items-center gap-1.5 rounded-md ${n.type === 'CREATE_USER' && 'bg-green-200'}`  }>
-              <div className={`w-2 h-2 rounded-full bg-black`}></div>
-              <p key={index}>{n.message}</p>
-            </div>
-               
-          )) :   <h4>No Notifications Available</h4>
+            <div className={`text-sm text-left px-2 py-3 text-gray-800 flex items-center gap-1.5 rounded-md
+  ${['CREATE_USER', 'CREATE_TASK'].includes(n.type) ? 'bg-green-200' : ''}
+  ${['DELETE_TASK', 'DELETE_USER'].includes(n.type) ? 'bg-red-200' : ''}
+  ${n.type === 'OVERDUE_TASK' ? 'bg-orange-200' : ''}
+`}
+>
+  <div className={`w-2 h-2 rounded-full
+      ${['CREATE_USER', 'CREATE_TASK'].includes(n.type) ? 'bg-green-500' : ''}
+      ${n.type === 'OVERDUE_TASK' ? 'bg-orange-500' : ''}
+      ${['DELETE_TASK', 'DELETE_USER'].includes(n.type) ? 'bg-red-500' : ''}
+  `   }></div>
+       <p key={index}>{n.message}</p>
+        </div>
+     )) :   <h4 className='text-center'>No Notifications Available</h4>
         }
          </div>
     </div>

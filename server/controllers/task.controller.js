@@ -36,8 +36,9 @@ module.exports.addNewTask = async(req,res) => {
         })
 
         const io = req.app.get("io")
-        io.to(`user-${newTask.userId}`).emit('notification',{
+        io.to('user-manager').emit('notification',{
             type:"NEW_TASK",
+            color:'blue',
             message:`New Task assigned: ${newTask.title}`,
             taskId:newTask.id,
             dueTask:newTask.dueDate,
@@ -83,6 +84,7 @@ module.exports.fetchUserTasks = async (req,res) => {
      if(overDueTasks.length > 0){
      io.to(`user-${userId}`).emit(`notification`,{
       type:"OVERDUE_TASK",
+      color:'orange',
       message:`${overDueTasks.length} tasks are overdue`,
       tasks: overDueTasks,
       timestamp:new Date()
@@ -103,8 +105,10 @@ module.exports.deleteTask = async (req,res) => {
     const taskToDelete = await prisma.task.delete({
        where: { id:parsedId }
     })
-    io.to(`user-${taskToDelete.id}`).emit('notification',{
-        type:'DELETED_TASK',
+    const io = req.app.get("io")
+    io.to(`user-manager`).emit('notification',{
+        type:'DELETE_TASK',
+        color:'red',
         message:`Task "${taskToDelete.title}" has been deleted`,
         taskId: taskToDelete.id,
         timestamp:new Date()
@@ -126,8 +130,9 @@ module.exports.toggleInProgressTasks = async (req, res) => {
     })
 
     const io = req.app.get("io")
-    io.to(`user-${task.id}`).emit('notification',{
+    io.to(`user-${task.userId}`).emit('notification',{
       type:"TOGGLE_IN_PROGRESS",
+      color:'yellow',
       message:`Task ${task.title} is now in progress`,
       taskId:task.id,
       timestamp:new Date()
@@ -150,8 +155,9 @@ module.exports.toggleCompletedTasks = async (req, res) => {
     })
 
       const io = req.app.get("io")
-    io.to(`user-${task.id}`).emit('notification',{
+    io.to(`user-${task.userId}`).emit('notification',{
       type:"TOGGLE_COMPLETED",
+      color:'green',
       message:`Task ${task.title} is now completed`,
       taskId:task.id,
       timestamp:new Date()
@@ -219,6 +225,7 @@ module.exports.updateTask = async (req,res) => {
       const io = req.app.get('io')
       io.to(`user-${updatedTask.userId}`).emit('notification', {
       type: 'TASK_UPDATED',
+      color:'blue',
       message: `Task Updated: ${existingTask.title}`,
       task: updatedTask,
       timestamp: new Date()
