@@ -1,18 +1,40 @@
 import { SearchIcon,Bell, UserIcon, LogOutIcon } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useAppContext } from '../../context/AppContext'
+import Notifications from '../Notifications'
+import { useEffect, useState } from 'react'
+import io from 'socket.io-client'
+
+const socket = io('http://localhost:8000')
 
 const ManagerNavbar = () => {
-   const navigate = useNavigate()
-   const { axios,setToken } = useAppContext()
+   const { logout } = useAppContext()
    const user = JSON.parse(localStorage.getItem("user"))
-   const logout = () => {
-    localStorage.removeItem("token")
-    localStorage.removeItem("user")
-    setToken(null)
-    axios.defaults.headers.common['Authorization'] = null
-    navigate('/')
-  }
+   const [showNotifications,setShowNotifications] = useState(false)
+   const [notifications,setNotifications] = useState([])
+   const [unreadCount,setUnreadCount] = useState(0)
+
+   useEffect(()=>{
+     socket.emit('join-user-room',user.id)
+     if(user.role === 'MANAGER' ){
+      socket.emit('join-user-room','manager')
+     }
+
+     const handleNotifications = (notification) => {
+       setNotifications(prev => [notification, ...prev.slice(0,49)])
+       setUnreadCount(prev => prev + 1)
+     }
+     socket.on('notification',handleNotifications)
+
+     return()=>{
+       socket.off('notification',handleNotifications)
+       socket.emit('leave-user-room',user.id)
+       if(user.role === 'MANAGER'){
+        socket.emit('leave-user-room','manager')
+       }
+     }
+   },[])
+
   return (
        <>
         <div className='flex justify-between items-center px-6 py-3 bg-white border-b border-gray-300 shadow fixed z-1 right-0 left-0 top-0'>
@@ -23,9 +45,20 @@ const ManagerNavbar = () => {
             <input type="text" placeholder='Search tasks...' className='text-sm outline-none text-gray-600'/>
            </div>
           </div>
-          <div className='flex justify-between gap-3'>
+          <div className='flex justify-between gap-3 relative'>
 
-              <Bell className='p-0.5 text-gray-400 hover:bg-gray-200 transition-all cursor-pointer rounded-md'/>
+              <div className='relative'>
+                <Bell onClick={()=>setShowNotifications(true)} className='p-0.5 text-gray-400 hover:bg-gray-200 transition-all cursor-pointer rounded-md'/>
+                {showNotifications && (
+                  <Notifications 
+                    onClose={()=>setShowNotifications(false)}
+                    notifications={notifications}
+                    onMarkAllRead={()=>setUnreadCount(0)}
+                    onClearAll={()=>setNotifications([])}
+                  />
+                )}
+                {unreadCount > 0 && <span className='absolute -top-1 bg-red-500 text-white px-1.25 rounded-full text-xs'>{unreadCount}</span>}
+              </div>
               <div>
                 <p className='max-md:hidden text-xs text-gray-900 font-semibold'>{user.fName + " " + user.lName}</p>
                 <p className='max-md:hidden text-xs text-gray-500 font-light text-right'>Manager</p>
