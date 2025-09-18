@@ -9,36 +9,33 @@ import { useAppContext } from '../../context/AppContext'
   const { userDashboardData, userTasks, fetchUserTasks, fetchUserDashboardData, axios } = useAppContext()
   const user = JSON.parse(localStorage.getItem('user'))
 
-  const handleToggle = async (taskId, action) => {
-    try {
-      const endpoint =
-        action === 'in progress'
-          ? '/api/tasks/toggle-in-progress'
-          : '/api/tasks/toggle-completed'
-
-      const { data } = await axios.post(endpoint, { id: taskId })
-      if (data.success) {
-        // Re-fetch tasks and dashboard data after update so UI refreshes
-        await Promise.all([
-          fetchUserTasks(user.id),
-          fetchUserDashboardData()
-        ])
-        
-        // Show success message
-        const actionText = action === 'in progress' ? 'started' : 'completed'
-        toast.success(`Task ${actionText} successfully!`)
-      } else {
-        toast.error(data.message || 'Failed to update task')
+  const toggleInProgress = async(taskId) => {
+      try {
+         const { data } = await axios.post(`/api/tasks/toggle-in-progress`,{id:taskId})
+         if(data.success) {
+          toast.success(data.message)
+         } else {
+          toast.error(data.message)
+         }
+      } catch (error) {
+          toast.error(error.message)
       }
-    } catch (error) {
-      console.error('Error updating task:', error)
-      toast.error('Failed to update task. Please try again.')
-    }
   }
 
-  
-  useEffect(() => {
-    // Fetch user tasks when component mounts
+  const toggleCompleted = async(taskId) => {
+    try {
+      const { data } = await axios.post('/api/tasks/toggle-completed',{id:taskId})
+      if(data.success){
+        toast.success(data.message)
+      } else {
+        toast.error(data.message)
+      }
+    } catch (error) {
+      toast.error(error.message)
+    }
+  }
+ 
+useEffect(() => {
     if(user?.id) {
       fetchUserTasks(user.id)
     }
@@ -81,7 +78,7 @@ import { useAppContext } from '../../context/AppContext'
                 <div key={index} className={`bg-white px-7 py-9 text-gray-800 rounded-lg space-y-3 shadow-lg ${task.priority.toLowerCase() === 'high' && 'border-l-4 border-orange-300/50'}  ${task.priority.toLowerCase() === 'medium' && 'border-l-4 border-yellow-300/50'}`}>
                     <span className='flex justify-between items-center'>
                       <h3 className='font-medium text-xl'>{task.title}</h3>
-                      <p className={`text-xs px-2 py-1 font-medium rounded-full ${task.priority.toLowerCase() === 'high' && 'bg-red-200/40 text-red-800'} ${task.priority.toLowerCase() === 'medium' && 'bg-yellow-100 text-yellow-800'} ${task.priority.toLowerCase() === 'low' && 'bg-green-100 text-green-800'}`}>{task.priority.toLowerCase()}</p>
+                      <p className={`text-xs px-2 py-1 font-medium rounded-full capitalize ${task.priority.toLowerCase() === 'high' && 'bg-red-200/40 text-red-800'} ${task.priority.toLowerCase() === 'medium' && 'bg-yellow-100 text-yellow-800'} ${task.priority.toLowerCase() === 'low' && 'bg-green-100 text-green-800'}`}>{task.priority.toLowerCase()}</p>
                     </span>
                 <p className='text-sm font-light'>{task.description}</p>
                 <p className='text-xs font-light'>Assigned to {task.user?.fName} {task.user?.lName}</p>
@@ -90,16 +87,18 @@ import { useAppContext } from '../../context/AppContext'
                           <Calendar className='h-4 w-4 text-gray-500'/>
                           <p className='text-sm font-light'>Due: {new Date(task.dueDate).toLocaleDateString()}</p>
                     </span>
-                 <p className={`text-xs px-2 py-1 font-medium rounded-full capitalize ${task.status.toLowerCase() === 'pending' && 'bg-yellow-100 text-yellow-800'} ${task.status.toLowerCase() === 'in progress' && 'bg-blue-100 text-blue-800'} ${task.status.toLowerCase() === 'completed' && 'bg-green-100 text-green-800'}`}>{task.status.toLowerCase()}</p>
+                 <p className={`text-xs px-2 py-1 font-medium rounded-full capitalize ${task.status.toLowerCase() === 'pending' && 'bg-yellow-100 text-yellow-800'} ${task.status.toLowerCase() === 'in_progress' && 'bg-blue-100 text-blue-800'} ${task.status.toLowerCase() === 'completed' && 'bg-green-100 text-green-800'}`}>{task.status.toLowerCase().replace("_"," ")}</p>
                 </div> 
               <button
-                 onClick={() =>
-                  task.status.toLowerCase() === 'pending'
-                  ? handleToggle(task.id, 'in_progress')
-                  : task.status.toLowerCase() === 'in_progress'
-                  ? handleToggle(task.id, 'completed')
-                  : null
-                  }
+                onClick={() => {
+                 const status = task.status.toLowerCase()
+                 if (status === 'pending') {
+                 toggleInProgress(task.id)
+                  } else if (status === 'in_progress') {
+                 toggleCompleted(task.id)
+                 }
+                 }}
+
                  className={`w-full px-4 py-2 text-sm text-white rounded-lg font-light cursor-pointer 
                  ${task.status.toLowerCase() === 'pending' && 'bg-blue-600 hover:bg-blue-800'} 
                  ${task.status.toLowerCase() === 'in_progress' && 'bg-green-600 hover:bg-green-800'} 

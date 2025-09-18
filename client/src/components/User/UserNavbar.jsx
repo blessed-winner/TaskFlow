@@ -58,10 +58,12 @@ const UserNavbar = () => {
                     onClose={()=>setShowNotifications(false)}
                     notifications={notifications}
                     onMarkAllRead={()=>setUnreadCount(0)}
-                    onClearAll={()=>setNotifications([])}
+                    onClearAll={()=>{setNotifications([]) 
+                                     setUnreadCount(0)
+                              }}
                   />
                 )}
-                {unreadCount > 0 && <span className='absolute -top-1 bg-red-500 text-white px-1.25 rounded-full text-xs'>{unreadCount}</span>}
+                {unreadCount > 0 && <span className='absolute -top-1.5 right-0 bg-red-500 text-white px-1.25 rounded-full text-xs'>{unreadCount}</span>}
               </div>
               <div>
                 <p className='max-md:hidden text-xs text-gray-900 font-semibold'>{user.fName + " " + user.lName}</p>

@@ -6,13 +6,13 @@ const TaskTableData = ({task,fetchTasks,fetchManagerDashboard,onEditTask}) => {
      
     const { axios } = useAppContext()
 
-    const {id,title,description,dueDate,user,priority,status} = task
+    const {title,description,dueDate,user,priority,status} = task
 
        const deleteTask = async () => {
         const confirm = window.confirm("Are you sure you want to delete this task ?")
         if(!confirm) return
         try {
-            const { data } = await axios.delete(`/api/tasks/delete/${id}`)
+            const { data } = await axios.delete(`/api/tasks/delete/${task.id}`)
             if(data.success){
               toast.success(data.message)
               await fetchTasks()
@@ -40,9 +40,9 @@ const TaskTableData = ({task,fetchTasks,fetchManagerDashboard,onEditTask}) => {
            <p className='font-light inline-block'>{user.fName + " " + user.lName}</p>
         </td>
       <td className='py-3 px-2 xl:px-4 font-light max-md:hidden'>
-        <span className={`px-2.5 py-1 rounded-full font-medium text-xs capitalize ${status.toLowerCase() === 'in progress' && 'text-blue-800 bg-blue-100/50'} 
+        <span className={`px-2.5 py-1 rounded-full font-medium text-xs capitalize ${status.toLowerCase() === 'in_progress' && 'text-blue-800 bg-blue-100/50'} 
         ${status.toLowerCase() === 'completed' && 'text-green-800 bg-green-100/50'}
-        ${status.toLowerCase() === 'pending' && 'text-yellow-800 bg-yellow-100/50'}`}>{status.toLowerCase()}</span>
+        ${status.toLowerCase() === 'pending' && 'text-yellow-800 bg-yellow-100/50'}`}>{status.toLowerCase().replace("_"," ")}</span>
       </td>
       <td className='py-3 px-2 xl:px-4 max-md:hidden'>
         <span className={`px-2.5 py-1 rounded-full font-medium text-xs capitalize ${priority.toLowerCase() === 'high' && 'text-red-800 bg-red-100/40'}

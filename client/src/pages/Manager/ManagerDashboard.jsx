@@ -102,7 +102,7 @@ const ManagerDashboard = () => {
                   <h4 className='font-medium text-md'>{task?.title || 'Untitled task'}</h4>
                 <p className='text-sm font-light'>{task?.dueDate ? new Date(task.dueDate).toLocaleDateString() : 'No due date'}</p>
                 </span>
-                <p className={` px-2 py-1 text-xs rounded-full font-medium capitalize ${status === 'in progress' && ' text-blue-700 bg-blue-100/60'} ${status === 'pending' && ' text-orange-700 bg-orange-100/60'} ${status === 'completed' && ' text-green-700 bg-green-100/60'}`}>{status || 'unknown'}</p>
+                <p className={` px-2 py-1 text-xs rounded-full font-medium capitalize ${status === 'in_progress' && ' text-blue-700 bg-blue-100/60'} ${status === 'pending' && ' text-orange-700 bg-orange-100/60'} ${status === 'completed' && ' text-green-700 bg-green-100/60'}`}>{status || 'unknown'}</p>
              </div>
                 )
               }) : (
