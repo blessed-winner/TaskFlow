@@ -31,13 +31,13 @@ const io = new Server(server,{
 io.on('connection',(socket)=>{
     console.log('A client connected',socket.id)
     socket.on('join-user-room',(room)=>{
-        socket.join(`user-${room}`)
-        console.log(`Socket ${socket.id} joined room user-${room}` )
+        socket.join(room)
+        console.log(`Socket ${socket.id} joined room ${room}` )
     })
 
     socket.on('leave-user-room',(room)=>{
-        socket.leave(`user-${room}`)
-        console.log(`Socket ${socket.id} left room user-${room}`)
+        socket.leave(room)
+        console.log(`Socket ${socket.id} left room ${room}`)
     })
 
 
@@ -47,7 +47,9 @@ io.on('connection',(socket)=>{
 })
 
 
-app.set('io',io)
+module.exports.sendNotifications = (room,notification) => {
+  io.to(room).emit('notification',notification)
+}
 
 
 server.listen(port,() => console.log(`Server running on port ${port}`))

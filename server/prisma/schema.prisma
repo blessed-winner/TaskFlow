@@ -28,6 +28,17 @@ enum taskStatus{
   OVERDUE
 }
 
+enum Notification_type{
+   NEW_TASK
+   CREATE_USER
+   TOGGLE_IN_PROGRESS
+   TOGGLE_COMPLETED
+   DELETE_TASK
+   DELETE_USER
+   UPDATE_USER
+   UPDATE_TASK
+}
+
 enum userStatus {
   ACTIVE
   AWAY
@@ -44,6 +55,15 @@ model User{
   status userStatus @default(AWAY)
   deptId Int
   department Department? @relation(fields:[deptId], references:[id])  
+}
+
+
+model Notification {
+   id       Int @id @default(autoincrement())
+   type     Notification_type
+   message  String
+   isRead   Boolean @default(false)
+   createdAt DateTime @default(now())
 }
 
 model Task {
