@@ -1,3 +1,4 @@
+const { sendNotifications } = require('../app')
 const { PrismaClient } = require('../generated/prisma')
 const prisma = new PrismaClient()
 
@@ -35,16 +36,14 @@ module.exports.addNewTask = async(req,res) => {
           
         })
 
-        const io = req.app.get("io")
-        io.to('user-manager').emit('notification',{
-            type:"NEW_TASK",
-            color:'blue',
-            message:`New Task assigned: ${newTask.title}`,
-            taskId:newTask.id,
-            dueTask:newTask.dueDate,
-            priority:newTask.priority,
-            timestamp:new Date()
-          })
+          const notification = await prisma.notification.create({
+                data:{
+                   type:"NEW_TASK",
+                   message:`New task created successfully`,
+                 }
+               })
+       
+               sendNotifications('manager',notification)
 
         return res.json({ success:true, message:"Task created successfully", newTask })
 
@@ -80,16 +79,14 @@ module.exports.fetchUserTasks = async (req,res) => {
  
     const overDueTasks = tasks.filter(t => new Date(t.dueDate).getTime() < Date.now())
     
-     const io = req.app.get("io")
-     if(overDueTasks.length > 0){
-     io.to(`user-${userId}`).emit(`notification`,{
-      type:"OVERDUE_TASK",
-      color:'orange',
-      message:`${overDueTasks.length} tasks are overdue`,
-      tasks: overDueTasks,
-      timestamp:new Date()
-     })
-    }
+      const notification = await prisma.notification.create({
+                data:{
+                   type:"OVERDUE_TASK",
+                   message:`${overDueTasks.length} tasks are overdue`,
+                 }
+               })
+       
+               sendNotifications('manager',notification)
 
    return res.json({ success:true, tasks })
   } catch (error) {
@@ -105,14 +102,14 @@ module.exports.deleteTask = async (req,res) => {
     const taskToDelete = await prisma.task.delete({
        where: { id:parsedId }
     })
-    const io = req.app.get("io")
-    io.to(`user-manager`).emit('notification',{
-        type:'DELETE_TASK',
-        color:'red',
-        message:`Task "${taskToDelete.title}" has been deleted`,
-        taskId: taskToDelete.id,
-        timestamp:new Date()
-    })
+  const notification = await prisma.notification.create({
+                data:{
+                   type:"DELETE_TASK",
+                   message:`Task ${taskToDelete.id} was removed from tasks`,
+                 }
+               })
+       
+               sendNotifications('manager',notification)
     return res.json( { success:true, message:"Task deleted successfully!!" } )
   } catch (error) {
      return res.json( { success:false, message:error.message } )
@@ -129,14 +126,14 @@ module.exports.toggleInProgressTasks = async (req, res) => {
       data: { status: 'IN_PROGRESS' }
     })
 
-    const io = req.app.get("io")
-    io.to(`user-${task.userId}`).emit('notification',{
-      type:"TOGGLE_IN_PROGRESS",
-      color:'yellow',
-      message:`Task "${task.title}" is now in progress`,
-      taskId:task.id,
-      timestamp:new Date()
-    })
+    const notification = await prisma.notification.create({
+                data:{
+                   type:"TOGGLE_IN_PROGRESS",
+                   message:`Task ${task.id} is in progress`,
+                 }
+               })
+       
+               sendNotifications('manager',notification)
 
     return res.json({ success: true, message:"Task marked in progress", task })
   } catch (error) {
@@ -154,15 +151,14 @@ module.exports.toggleCompletedTasks = async (req, res) => {
       data: { status: 'COMPLETED' }
     })
 
-      const io = req.app.get("io")
-    io.to(`user-${task.userId}`).emit('notification',{
-      type:"TOGGLE_COMPLETED",
-      color:'green',
-      message:`Task "${task.title}" is now completed`,
-      taskId:task.id,
-      timestamp:new Date()
-    })
-
+    const notification = await prisma.notification.create({
+                data:{
+                   type:"TOGGLE_COMPLETED",
+                   message:`Task ${task.id} is has been completed successfully`,
+                 }
+               })
+       
+               sendNotifications('manager',notification)
     return res.json({ success: true, message:"Task marked completed", task })
   } catch (error) {
     return res.json({ success: false, message: error.message })
@@ -200,7 +196,7 @@ module.exports.updateTask = async (req,res) => {
         return res.json({ success: false, message: "Assignee not found" })
       }
     }
-
+ 
     // Build update data object
     const updateData = {}
     
@@ -222,14 +218,14 @@ module.exports.updateTask = async (req,res) => {
       }
     })
 
-      const io = req.app.get('io')
-      io.to(`user-${updatedTask.userId}`).emit('notification', {
-      type: 'TASK_UPDATED',
-      color:'blue',
-      message: `Task Updated: ${existingTask.title}`,
-      task: updatedTask,
-      timestamp: new Date()
-      })
+   const notification = await prisma.notification.create({
+                data:{
+                   type:"UPDATE_TASK",
+                   message:`Task ${task.title} updated successfully`,
+                 }
+               })
+       
+               sendNotifications('manager',notification)
 
     return res.json({ 
       success: true, 

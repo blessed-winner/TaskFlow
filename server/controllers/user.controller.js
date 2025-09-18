@@ -1,3 +1,4 @@
+const { sendNotifications } = require('../app')
 const { PrismaClient } = require('../generated/prisma')
 const bcrypt = require('bcrypt')
 
@@ -24,12 +25,14 @@ module.exports.addNewUser = async (req, res) => {
       }
     })
 
-    const io = req.app.get('io')
-    io.to('user-admin').emit('notification',{
-      type:"CREATE_USER",
-      color:'green',
-      message:`User ${user.fName} created successfully`,
+   const notification = await prisma.notification.create({
+         data:{
+            type:"CREATE_USER",
+            message:`User ${user.fName} created successfully`,
+    }
     })
+
+    sendNotifications('admin',notification)
     
     return res.json({ success: true, message: "User created successfully", user })
   } catch (error) {
@@ -58,7 +61,18 @@ module.exports.updateUser = async (req, res) => {
       include: { department: true },
     });
 
+    const notification = await prisma.notification.create({
+         data:{
+            type:"UPDATE_USER",
+            message:`User ${user.fName} updated successfully`,
+
+         }
+    })
+
+    sendNotifications('admin',notification)
+
     return res.json({ success: true, message: "User updated successfully", user });
+
   } catch (err) {
     return res.json({ success: false, message: err.message });
   }
@@ -71,15 +85,20 @@ module.exports.deleteUser = async(req,res) => {
         await prisma.task.deleteMany({
        where: { userId: Number(id) }
         })
-        
+
         const user = await prisma.user.delete({
             where: {id:Number(id)}
         })
-        const io = req.app.get('io')
-        io.to('user-admin').emit('notification',{
-          type:"DELETE_USER",
-          message:`User ${user.fName} deleted`
+         const notification = await prisma.notification.create({
+         data:{
+            type:"DELETE_USER",
+            message:`User ${user.fName} deleted successfully`,
+          }
         })
+
+        sendNotifications('admin',notification)
+        sendNotifications('manager',notification)
+        
         return res.json({ success:true, message:"User deleted successfully" })
    }
     catch(err){
