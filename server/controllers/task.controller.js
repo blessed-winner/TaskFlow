@@ -126,19 +126,19 @@ module.exports.toggleInProgressTasks = async (req, res) => {
 
     const task = await prisma.task.update({
       where: { id },
-      data: { status: 'IN PROGRESS' }
+      data: { status: 'IN_PROGRESS' }
     })
 
     const io = req.app.get("io")
     io.to(`user-${task.userId}`).emit('notification',{
       type:"TOGGLE_IN_PROGRESS",
       color:'yellow',
-      message:`Task ${task.title} is now in progress`,
+      message:`Task "${task.title}" is now in progress`,
       taskId:task.id,
       timestamp:new Date()
     })
 
-    return res.json({ success: true, task })
+    return res.json({ success: true, message:"Task marked in progress", task })
   } catch (error) {
     return res.json({ success: false, message: error.message })
   }
@@ -158,12 +158,12 @@ module.exports.toggleCompletedTasks = async (req, res) => {
     io.to(`user-${task.userId}`).emit('notification',{
       type:"TOGGLE_COMPLETED",
       color:'green',
-      message:`Task ${task.title} is now completed`,
+      message:`Task "${task.title}" is now completed`,
       taskId:task.id,
       timestamp:new Date()
     })
 
-    return res.json({ success: true, task })
+    return res.json({ success: true, message:"Task marked completed", task })
   } catch (error) {
     return res.json({ success: false, message: error.message })
   }

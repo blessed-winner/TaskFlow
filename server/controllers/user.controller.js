@@ -68,17 +68,20 @@ module.exports.updateUser = async (req, res) => {
 module.exports.deleteUser = async(req,res) => {
     try{
         const{ id } = req.params
+        await prisma.task.deleteMany({
+       where: { userId: Number(id) }
+        })
+        
         const user = await prisma.user.delete({
             where: {id:Number(id)}
         })
-        return res.json({ success:true, message:"User deleted successfully" })
-
         const io = req.app.get('io')
         io.to('user-admin').emit('notification',{
           type:"DELETE_USER",
           message:`User ${user.fName} deleted`
         })
-    }
+        return res.json({ success:true, message:"User deleted successfully" })
+   }
     catch(err){
         return res.json({ success:false, message:err.message })
     }
