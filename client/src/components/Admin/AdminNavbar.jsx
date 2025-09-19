@@ -13,6 +13,7 @@ const AdminNavbar = () => {
     const user = JSON.parse(localStorage.getItem("user"))
   const [notifications,setNotifications] = useState([])
 const[unreadCount,setUnreadCount] = useState(0)
+const{axios} = useAppContext()
 
      const id = user.id;
 
@@ -30,14 +31,11 @@ useEffect(()=>{
   if(!user || !user.id) return
    
   socket.emit('join-user-room',user.id)
-  if(user.role === 'ADMIN'){
-    socket.emit('join-user-room','admin')
-  }
 
   fetchUserNotifications()
 
   const handleNotifications = (notification) => {
-      setNotifications(prev => [notification, ...prev.slice(0,49)])
+      setNotifications(prev => [notification, ...(prev || []).slice(0,49)])
       setUnreadCount(prev => prev + 1)
   }
   socket.on('notification',handleNotifications)
@@ -45,9 +43,6 @@ useEffect(()=>{
   return() => {
     socket.off('notification',handleNotifications)
     socket.emit('leave-user-room',user.id)
-    if(user.role === 'ADMIN'){
-      socket.emit('leave-user-room','admin')
-    }
   }
   
 },[user?.id])

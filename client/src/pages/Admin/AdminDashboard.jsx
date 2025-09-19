@@ -11,8 +11,9 @@ const AdminDashboard = () => {
 
   const { dashboardData,setUsers,fetchDashboardData } = useAppContext()
   const [ showForm,setShowForm  ] = useState(false)
+  const user = JSON.parse(localStorage.getItem('user'))
 
-  socket.emit('join-user-room',`admin`)
+  socket.emit('join-user-room',user.id)
 
   const handleUserAdd = (newUser) => {
       setUsers((users) => [...users,newUser])

@@ -6,7 +6,7 @@ module.exports.fetchUserNotifications = async (req,res)=>{
     try {
       const { id } = req.params  
       const userNotifications = await prisma.notification.findMany({
-        where: { id },
+        where: { id:Number(id) },
         include: {
             user:true
         }
