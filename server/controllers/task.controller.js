@@ -1,5 +1,5 @@
-const { sendNotifications } = require('../app')
 const { PrismaClient } = require('../generated/prisma')
+const { sendNotifications } = require('../utils/notifications')
 const prisma = new PrismaClient()
 
 module.exports.addNewTask = async(req,res) => {
@@ -105,7 +105,7 @@ module.exports.deleteTask = async (req,res) => {
   const notification = await prisma.notification.create({
                 data:{
                    type:"DELETE_TASK",
-                   message:`Task ${taskToDelete.id} was removed from tasks`,
+                   message:`Task "${taskToDelete.title}" was removed from tasks`,
                  }
                })
        

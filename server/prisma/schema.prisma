@@ -54,7 +54,8 @@ model User{
   tasks  Task[]   
   status userStatus @default(AWAY)
   deptId Int
-  department Department? @relation(fields:[deptId], references:[id])  
+  department Department? @relation(fields:[deptId], references:[id])
+  Notifications  Notification[] 
 }
 
 
@@ -64,6 +65,8 @@ model Notification {
    message  String
    isRead   Boolean @default(false)
    createdAt DateTime @default(now())
+   userId    Int
+   user      User @relation(fields: [userId], references: [id])
 }
 
 model Task {

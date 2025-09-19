@@ -4,9 +4,11 @@ const userRouter = require('./routes/user.route')
 const deptRouter = require('./routes/dept.route')
 const authRouter = require('./routes/auth.route')
 const taskRouter = require('./routes/task.route')
-const http = require('http')
-const{ Server } = require('socket.io')
 require('dotenv').config()
+const http = require('http')
+const { initIO } = require('./utils/notifications')
+const noteRouter = require('./routes/notification.route')
+
 
 const app = express()
 
@@ -19,14 +21,14 @@ app.use('/api/auth',authRouter)
 app.use('/api/users',userRouter)
 app.use('/api/departments',deptRouter)
 app.use('/api/tasks',taskRouter)
+app.use('/api/notifications',noteRouter)
 
 
 const port = process.env.PORT || 3000
 
 const server = http.createServer(app)
-const io = new Server(server,{
-    cors: {origin:'http://localhost:5173', methods:[ 'GET','POST' ]}
-})
+
+const io = initIO(server)
 
 io.on('connection',(socket)=>{
     console.log('A client connected',socket.id)
@@ -45,11 +47,6 @@ io.on('connection',(socket)=>{
        console.log('A client disconnected',socket.id,'Reason:',reason)
     })
 })
-
-
-module.exports.sendNotifications = (room,notification) => {
-  io.to(room).emit('notification',notification)
-}
 
 
 server.listen(port,() => console.log(`Server running on port ${port}`))
