@@ -38,7 +38,7 @@ const UserNavbar = () => {
     fetchUserNotifications()
 
     const handleNotifications = (notification) => {
-      setNotifications(prev => [notification, ...prev.slice(0,49)])
+      setNotifications(prev => [notification, ...(prev || [] ).slice(0,49)])
       setUnreadCount(prev => prev + 1)
     }
     socket.on('notification',handleNotifications)

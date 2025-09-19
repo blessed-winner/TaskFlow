@@ -10,6 +10,7 @@ const socket = io('http://localhost:8000')
 const ManagerNavbar = () => {
    const { logout } = useAppContext()
    const user = JSON.parse(localStorage.getItem("user"))
+   const {axios} = useAppContext()
    const [showNotifications,setShowNotifications] = useState(false)
    const [notifications,setNotifications] = useState([])
    const [unreadCount,setUnreadCount] = useState(0)
@@ -31,14 +32,11 @@ const ManagerNavbar = () => {
      
 
      socket.emit('join-user-room',user.id)
-     if(user.role === 'MANAGER' ){
-      socket.emit('join-user-room','manager')
-     }
 
      fetchUserNotifications()
 
      const handleNotifications = (notification) => {
-       setNotifications(prev => [notification, ...prev.slice(0,49)])
+       setNotifications(prev => [notification, ...(prev || []).slice(0,49)])
        setUnreadCount(prev => prev + 1)
      }
      socket.on('notification',handleNotifications)
@@ -46,9 +44,6 @@ const ManagerNavbar = () => {
      return()=>{
        socket.off('notification',handleNotifications)
        socket.emit('leave-user-room',user.id)
-       if(user.role === 'MANAGER'){
-        socket.emit('leave-user-room','manager')
-       }
      }
    },[])
 
