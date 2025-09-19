@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import Notifications from '../Notifications'
 import { useEffect, useState } from 'react'
 import io from 'socket.io-client'
+import toast from 'react-hot-toast'
 
 const socket = io('http://localhost:8000')
 
@@ -15,10 +16,26 @@ const UserNavbar = () => {
   const [notifications,setNotifications] = useState([])
   const [unreadCount,setUnreadCount] = useState(0)
 
+  const id = u.id;
+
+  const fetchUserNotifications = async () => {
+        try {
+          const {data} = await axios.get(`/api/notifications/user/${ id }`)
+          data.success ? setNotifications(data.notifications) : toast.error(data.message)
+
+        } catch (error) {
+           toast.error(error.message)
+        }
+  }
+
   useEffect(()=>{
-    const u = JSON.parse(localStorage.getItem('user'))
+
+    
+    
     if(!u || !u.id) return
     socket.emit('join-user-room',u.id)
+
+    fetchUserNotifications()
 
     const handleNotifications = (notification) => {
       setNotifications(prev => [notification, ...prev.slice(0,49)])

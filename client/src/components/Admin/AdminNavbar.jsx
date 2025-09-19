@@ -13,14 +13,27 @@ const AdminNavbar = () => {
   const [notifications,setNotifications] = useState([])
 const[unreadCount,setUnreadCount] = useState(0)
 
+     const id = user.id;
+
+  const fetchUserNotifications = async () => {
+        try {
+          const {data} = await axios.get(`/api/notifications/user/${ id }`)
+          data.success ? setNotifications(data.notifications) : toast.error(data.message)
+
+        } catch (error) {
+           toast.error(error.message)
+        }
+  }
+
 useEffect(()=>{
-  const user = JSON.parse(localStorage.getItem('user'))
   if(!user || !user.id) return
    
   socket.emit('join-user-room',user.id)
   if(user.role === 'ADMIN'){
     socket.emit('join-user-room','admin')
   }
+
+  fetchUserNotifications()
 
   const handleNotifications = (notification) => {
       setNotifications(prev => [notification, ...prev.slice(0,49)])

@@ -39,7 +39,7 @@ module.exports.addNewTask = async(req,res) => {
           const notification = await prisma.notification.create({
                 data:{
                    type:"NEW_TASK",
-                   message:`New task created successfully`,
+                   message:`New task ${newTask.title} created successfully`,
                  }
                })
        
@@ -129,7 +129,7 @@ module.exports.toggleInProgressTasks = async (req, res) => {
     const notification = await prisma.notification.create({
                 data:{
                    type:"TOGGLE_IN_PROGRESS",
-                   message:`Task ${task.id} is in progress`,
+                   message:`Task in progress:${task.title}`,
                  }
                })
        
@@ -154,7 +154,7 @@ module.exports.toggleCompletedTasks = async (req, res) => {
     const notification = await prisma.notification.create({
                 data:{
                    type:"TOGGLE_COMPLETED",
-                   message:`Task ${task.id} is has been completed successfully`,
+                   message:`Task completed ${task.title}`,
                  }
                })
        
@@ -221,7 +221,7 @@ module.exports.updateTask = async (req,res) => {
    const notification = await prisma.notification.create({
                 data:{
                    type:"UPDATE_TASK",
-                   message:`Task ${task.title} updated successfully`,
+                   message:`Task updated : ${updatedTask.title}`,
                  }
                })
        

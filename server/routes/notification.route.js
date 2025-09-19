@@ -3,6 +3,6 @@ const { fetchUserNotifications } = require('../controllers/notification.controll
 
 const noteRouter = express.Router()
 
-noteRouter.get('/All',fetchUserNotifications)
+noteRouter.get('/user/:id',fetchUserNotifications)
 
 module.exports = noteRouter

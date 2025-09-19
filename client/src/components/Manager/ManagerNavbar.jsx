@@ -14,11 +14,28 @@ const ManagerNavbar = () => {
    const [notifications,setNotifications] = useState([])
    const [unreadCount,setUnreadCount] = useState(0)
 
+     const id = user.id;
+
+  const fetchUserNotifications = async () => {
+        try {
+          const {data} = await axios.get(`/api/notifications/user/${ id }`)
+          data.success ? setNotifications(data.notifications) : toast.error(data.message)
+
+        } catch (error) {
+           toast.error(error.message)
+        }
+  }
+
    useEffect(()=>{
+
+     
+
      socket.emit('join-user-room',user.id)
      if(user.role === 'MANAGER' ){
       socket.emit('join-user-room','manager')
      }
+
+     fetchUserNotifications()
 
      const handleNotifications = (notification) => {
        setNotifications(prev => [notification, ...prev.slice(0,49)])
