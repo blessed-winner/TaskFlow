@@ -12,8 +12,24 @@ module.exports.fetchUserNotifications = async (req,res)=>{
         }
       })
 
-      return res.json({ success:true, userNotifications })
+     const unreadCount = userNotifications.filter(note => { note.isRead === false })
+
+      return res.json({ success:true, userNotifications, unreadCount })
     } catch (error) {
        return res.json({ success:false, message:error.message })
     }
+}
+
+module.exports.toggleStatus = async (req,res) => {
+  try {
+    await prisma.notification.update({
+      data:{
+        isRead:true
+      }
+    })
+
+    return res.json({ success:true })
+  } catch (error) {
+    return res.json({success:false, message:error.message})
+  }
 }
