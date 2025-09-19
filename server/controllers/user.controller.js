@@ -1,6 +1,6 @@
-const { sendNotifications } = require('../app')
 const { PrismaClient } = require('../generated/prisma')
 const bcrypt = require('bcrypt')
+const { sendNotifications } = require('../utils/notifications')
 
 const prisma = new PrismaClient()
 

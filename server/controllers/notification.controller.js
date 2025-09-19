@@ -2,11 +2,10 @@ const { PrismaClient } = require('../generated/prisma')
 
 const prisma = new PrismaClient()
 
-module.export.fetchNotifications = async(req,res) =>{
- try {
-        const notifications = await prisma.notification.findMany()
-        return res.json({success:true, notifications})
+module.exports.fetchUserNotifications = async (req,res)=>{
+    try {
+        
     } catch (error) {
-        return res.json({ success:false, message:error.message })
+        
     }
 }
