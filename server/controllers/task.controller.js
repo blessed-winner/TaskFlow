@@ -5,6 +5,12 @@ const prisma = new PrismaClient()
 module.exports.addNewTask = async(req,res) => {
     try {
         const { title, description, assigneeName, priority, dueDate } = req.body
+
+        const managers = await prisma.user.findMany({
+           where:{ role: 'MANAGER' }
+        })
+
+
         const existingTask = await prisma.task.findUnique({
             where:{ title }
         })
@@ -21,9 +27,13 @@ module.exports.addNewTask = async(req,res) => {
             }
         })
 
+
         if(!assignee){
             return res.json({ success:false, message:"Assignee not found" })
         }
+
+         const assigneeId = assignee.id
+
         const newTask = await prisma.task.create({
             data:{
                title,
@@ -36,16 +46,32 @@ module.exports.addNewTask = async(req,res) => {
           
         })
 
-          const notification = await prisma.notification.create({
+          await Promise.all(
+            managers.map(m=>{
+                prisma.notification.create({
                 data:{
                    type:"NEW_TASK",
                    message:`New task ${newTask.title} created successfully`,
+                   user: {connect:{id:Number(m.id)}}
                  }
-               })
-       
-               sendNotifications('manager',notification)
+               }).then(notification => {
+                sendNotifications(m.id,notification)
+              })
+              })
+          )
 
-        return res.json({ success:true, message:"Task created successfully", newTask })
+          const userNotification = await prisma.notification.create({
+            data:{
+              type:"NEW_TASK",
+              message:"You have been assigned a task",
+              user:{connect:{id:Number()}}
+            }
+          })
+
+          sendNotifications(newTask.assigneeId,userNotification)
+
+     
+    return res.json({ success:true, message:"Task created successfully", newTask })
 
     } catch (error) {
         return res.json({ success:false, message:error.message })
@@ -69,6 +95,11 @@ module.exports.fetchAllTasks = async (req,res) => {
 module.exports.fetchUserTasks = async (req,res) => {
   try {
     const userId = parseInt(req.params.userId)
+
+    const managers = await prisma.user.findMany({
+      where: { role:"MANAGER" }
+    })
+
     const tasks = await prisma.task.findMany({
       where: { userId },
       include: {
@@ -76,17 +107,37 @@ module.exports.fetchUserTasks = async (req,res) => {
         department: true
       }
     })
+
+    const user = await prisma.user.findUnique({
+      where: { id:userId }
+    })
  
     const overDueTasks = tasks.filter(t => new Date(t.dueDate).getTime() < Date.now())
     
-      const notification = await prisma.notification.create({
-                data:{
-                   type:"OVERDUE_TASK",
-                   message:`${overDueTasks.length} tasks are overdue`,
-                 }
-               })
-       
-               sendNotifications('manager',notification)
+   await Promise.all(
+      managers.map(m =>
+        prisma.notification.create({
+          data: {
+            type: "OVERDUE_TASK",
+            message: `${overDueTasks.length} tasks are overdue for ${user.fName} ${user.lName}`,
+            user: { connect: { id: m.id } }
+          }
+        }).then(notification => {
+          sendNotifications(m.id, notification)
+        })
+      )
+    )
+
+       const userNotification = await prisma.notification.create({
+        data: {
+        type: "OVERDUE_TASK",
+        message: `You have ${overDueTasks.length} overdue task(s).`,
+        user: { connect: { id: userId } }
+       }
+      })
+
+
+      sendNotifications(userId,userNotification)
 
    return res.json({ success:true, tasks })
   } catch (error) {
@@ -98,42 +149,82 @@ module.exports.fetchUserTasks = async (req,res) => {
 module.exports.deleteTask = async (req,res) => {
   try {
     const {id} = req.params
+    const managers = await prisma.user.findMany({
+      where: { role:'MANAGER' }
+    })
     const parsedId = parseInt(id)
     const taskToDelete = await prisma.task.delete({
        where: { id:parsedId }
     })
-  const notification = await prisma.notification.create({
-                data:{
-                   type:"DELETE_TASK",
-                   message:`Task "${taskToDelete.title}" was removed from tasks`,
-                 }
-               })
-       
-               sendNotifications('manager',notification)
+
+    const userId = taskToDelete.userId
+
+    await Promise.all(
+      managers.map(m =>
+        prisma.notification.create({
+          data: {
+            type: "DELETE_TASK",
+            message: `Task deleted : ${taskToDelete.title}`,
+            user: { connect: { id: m.id } }
+          }
+        }).then(notification => {
+          sendNotifications(m.id, notification)
+        })
+      )
+    )
+
+    const userNotification = await prisma.notification.create({
+      data: {
+        type: "DELETE_TASK",
+        message: `Task deleted: ${taskToDelete.title}`,
+        user: { connect: { id: userId } }
+      }
+    })
+
+    sendNotifications(userId,userNotification)
+
     return res.json( { success:true, message:"Task deleted successfully!!" } )
   } catch (error) {
      return res.json( { success:false, message:error.message } )
   }
 }
 
-// Toggle In Progress
 module.exports.toggleInProgressTasks = async (req, res) => {
   try {
     const { id } = req.body
+    const managers = await prisma.user.findMany({
+      where: { role:'MANAGER' }
+    })
 
     const task = await prisma.task.update({
       where: { id },
       data: { status: 'IN_PROGRESS' }
     })
 
-    const notification = await prisma.notification.create({
-                data:{
-                   type:"TOGGLE_IN_PROGRESS",
-                   message:`Task in progress:${task.title}`,
-                 }
-               })
-       
-               sendNotifications('manager',notification)
+    await Promise.all(
+      managers.map(m =>
+        prisma.notification.create({
+          data: {
+            type: "TOGGLE_IN_PROGRESS",
+            message: `Task ${task.title} is now in progress`,
+            user: { connect: { id: m.id } }
+          }
+        }).then(notification => {
+          sendNotifications(m.id, notification)
+        })
+      )
+    )
+
+    const userNotification = await prisma.notification.create({
+      data: {
+        type: "TOGGLE_IN_PROGRESS",
+        message: `Task ${task.title} is in progress`,
+        user: { connect: { id: task.userId } }
+      }
+    })
+
+    sendNotifications(task.userId,userNotification)
+
 
     return res.json({ success: true, message:"Task marked in progress", task })
   } catch (error) {
@@ -145,20 +236,39 @@ module.exports.toggleInProgressTasks = async (req, res) => {
 module.exports.toggleCompletedTasks = async (req, res) => {
   try {
     const { id } = req.body
+    const managers = await prisma.user.findMany({
+      where: { role:"MANAGER" }
+    })
 
     const task = await prisma.task.update({
       where: { id },
       data: { status: 'COMPLETED' }
     })
 
-    const notification = await prisma.notification.create({
-                data:{
-                   type:"TOGGLE_COMPLETED",
-                   message:`Task completed ${task.title}`,
-                 }
-               })
-       
-               sendNotifications('manager',notification)
+  await Promise.all(
+      managers.map(m =>
+        prisma.notification.create({
+          data: {
+            type: "TOGGLE_COMPLETED",
+            message: `Task ${task.title} is completed successfully`,
+            user: { connect: { id: m.id } }
+          }
+        }).then(notification => {
+          sendNotifications(m.id, notification)
+        })
+      )
+    )
+
+    const userNotification = await prisma.notification.create({
+      data: {
+        type: "TOGGLE_COMPLETED",
+        message: `Task ${task.title} is completed successfully`,
+        user: { connect: { id: task.userId } }
+      }
+    })
+
+    sendNotifications(task.userId,userNotification)
+
     return res.json({ success: true, message:"Task marked completed", task })
   } catch (error) {
     return res.json({ success: false, message: error.message })
@@ -218,14 +328,29 @@ module.exports.updateTask = async (req,res) => {
       }
     })
 
-   const notification = await prisma.notification.create({
+  await Promise.all(
+            managers.map(m=>{
+                prisma.notification.create({
                 data:{
                    type:"UPDATE_TASK",
-                   message:`Task updated : ${updatedTask.title}`,
+                   message:`Task ${updatedTask.title} updated successfully`,
+                   user: {connect:{id:Number(m.id)}}
                  }
-               })
-       
-               sendNotifications('manager',notification)
+               }).then(notification => {
+                sendNotifications(m.id,notification)
+              })
+              })
+          )
+
+          const userNotification = await prisma.notification.create({
+            data:{
+              type:"UPDATE_TASK",
+              message:`Task ${updatedTask.title} was updated`,
+              user:{connect:{id:Number(updatedTask.userId)}}
+            }
+          })
+
+          sendNotifications(updatedTask.userId,userNotification)
 
     return res.json({ 
       success: true, 

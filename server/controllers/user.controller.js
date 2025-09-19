@@ -9,6 +9,9 @@ module.exports.addNewUser = async (req, res) => {
     const { fName, lName, email,password, role, deptId } = req.body
     
     const salt = await bcrypt.genSalt()
+    const admins = await prisma.user.findMany({
+      where: { role:"ADMIN" }
+    })
     const hashedPassword = await bcrypt.hash(password, salt)
 
     const user = await prisma.user.create({
@@ -24,15 +27,20 @@ module.exports.addNewUser = async (req, res) => {
         department: true 
       }
     })
-
-   const notification = await prisma.notification.create({
-         data:{
+ await Promise.all(
+          admins.map( admin=>{
+          prisma.notification.create({
+          data:{
             type:"CREATE_USER",
-            message:`User ${user.fName} created successfully`,
-    }
-    })
+            message:`New User Added : ${user.fName} ${user.lName}`,
+            user:{ connect: { id:Number(admin.id) } }
+          }
+        }).then(notification => {
+          sendNotifications(admin.id,notification)
+        })
+        })
+        )
 
-    sendNotifications('admin',notification)
     
     return res.json({ success: true, message: "User created successfully", user })
   } catch (error) {
@@ -44,6 +52,9 @@ module.exports.addNewUser = async (req, res) => {
 module.exports.updateUser = async (req, res) => {
   try {
     const { id } = req.params;
+    const admins = await prisma.user.findMany({
+         where: { role:"ADMIN" }
+    })
     const { fName, lName, email, role, deptId } = req.body; 
 
     const data = {};
@@ -61,15 +72,19 @@ module.exports.updateUser = async (req, res) => {
       include: { department: true },
     });
 
-    const notification = await prisma.notification.create({
-         data:{
+        await Promise.all(
+          admins.map( admin=>{
+          prisma.notification.create({
+          data:{
             type:"UPDATE_USER",
-            message:`User ${user.fName} updated successfully`,
-
-         }
-    })
-
-    sendNotifications('admin',notification)
+            message:`User ${user.fName} ${user.lName} updated successfully`,
+            user:{ connect: { id:Number(admin.id) } }
+          }
+        }).then(notification => {
+          sendNotifications(admin.id,notification)
+        })
+        })
+        )
 
     return res.json({ success: true, message: "User updated successfully", user });
 
@@ -82,6 +97,10 @@ module.exports.updateUser = async (req, res) => {
 module.exports.deleteUser = async(req,res) => {
     try{
         const{ id } = req.params
+        const admins = await prisma.user.findMany({
+           where:{ role:'ADMIN' }
+        })
+
         await prisma.task.deleteMany({
        where: { userId: Number(id) }
         })
@@ -89,15 +108,20 @@ module.exports.deleteUser = async(req,res) => {
         const user = await prisma.user.delete({
             where: {id:Number(id)}
         })
-         const notification = await prisma.notification.create({
-         data:{
-            type:"DELETE_USER",
-            message:`User ${user.fName} deleted successfully`,
-          }
-        })
 
-        sendNotifications('admin',notification)
-        sendNotifications('manager',notification)
+        await Promise.all(
+          admins.map( admin=>{
+          prisma.notification.create({
+          data:{
+            type:"DELETE_USER",
+            message:`User ${user.fName} ${user.lName} removed from the system`,
+            user:{ connect: { id:Number(admin.id) } }
+          }
+        }).then(notification => {
+          sendNotifications(admin.id,notification)
+        })
+        })
+        )
         
         return res.json({ success:true, message:"User deleted successfully" })
    }
