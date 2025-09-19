@@ -4,6 +4,7 @@ import { useAppContext } from '../../context/AppContext'
 import Notifications from '../Notifications'
 import { useState,useEffect } from 'react'
 import io from 'socket.io-client'
+import toast from 'react-hot-toast'
 
 const socket = io('http://localhost:8000')
 
