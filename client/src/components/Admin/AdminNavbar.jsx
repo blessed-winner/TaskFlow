@@ -20,7 +20,12 @@ const{axios} = useAppContext()
   const fetchUserNotifications = async () => {
         try {
           const {data} = await axios.get(`/api/notifications/user/${ id }`)
-          data.success ? setNotifications(data.notifications) : toast.error(data.message)
+          if(data.success){
+            setNotifications(data.userNotifications)
+            setUnreadCount(data.unreadCount)
+          } else {
+            toast.error(data.message)
+          }
 
         } catch (error) {
            toast.error(error.message)

@@ -20,7 +20,7 @@ const ManagerNavbar = () => {
   const fetchUserNotifications = async () => {
         try {
           const {data} = await axios.get(`/api/notifications/user/${ id }`)
-          data.success ? setNotifications(data.notifications) : toast.error(data.message)
+          data.success ? setNotifications(data.userNotifications) : toast.error(data.message)
 
         } catch (error) {
            toast.error(error.message)
