@@ -77,12 +77,12 @@ const AdminDashboard = () => {
             <ul className='text-sm space-y-6'>
               {notifications.length > 0 ? notifications.map((note,index) => (
               <li key={index} className={` px-4 py-2.5 rounded-md flex items-center gap-2 
-              ${['CREATE_USER'].includes(note.type) ? 'bg-green-200' : ''}
-              ${['DELETE_USER'].includes(note.type) ? 'bg-red-200' : ''}
+              ${['CREATE_USER','CREATE_DEPT'].includes(note.type) ? 'bg-green-200' : ''}
+              ${['DELETE_USER','DELETE_DEPT'].includes(note.type) ? 'bg-red-200' : ''}
               ${['UPDATE_USER','NEW_TASK'].includes(note.type) ? 'bg-blue-200' : ''}`}>
               <div className={`w-2 h-2 rounded-full
-              ${['CREATE_USER'].includes(note.type) ? 'bg-green-500' : ''}
-              ${['DELETE_USER'].includes(note.type) ? 'bg-red-500' : ''}
+              ${['CREATE_USER','CREATE_DEPT'].includes(note.type) ? 'bg-green-500' : ''}
+              ${['DELETE_USER','DELETE_DEPT'].includes(note.type) ? 'bg-red-500' : ''}
               ${['UPDATE_USER'].includes(note.type) ? 'bg-blue-500' : ''}
   `           }></div>
                 {note.message}

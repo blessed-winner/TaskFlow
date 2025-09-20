@@ -1,4 +1,5 @@
 const { PrismaClient } = require('../generated/prisma')
+const { sendNotifications } = require('../utils/notifications')
 
 const prisma = new PrismaClient()
 
@@ -9,6 +10,11 @@ module.exports.createDepartment = async( req,res ) => {
         const managers = await prisma.user.findMany({
             where:{role:'MANAGER'}
         })
+
+        const admins = await prisma.user.findMany({
+            where:{role:"ADMIN"}
+        })
+
         const dept = await prisma.department.create({
             data:{
                 name
@@ -18,7 +24,22 @@ module.exports.createDepartment = async( req,res ) => {
         await Promise.all(
             managers.map(m => {
                 prisma.notification.create({
-                    type:"CREATE_DEPT"
+                    type:"CREATE_DEPT",
+                    message:`Department created: ${dept.name}`,
+                    user: { connect:{id:m.id} }
+                }).then(notification => {
+                    sendNotifications(m.id,notification)
+                })
+            })
+        )
+            await Promise.all(
+            admins.map(a => {
+                prisma.notification.create({
+                    type:"CREATE_DEPT",
+                    message:`Department created: ${dept.name}`,
+                    user: { connect:{id:a.id} }
+                }).then(notification => {
+                    sendNotifications(a.id,notification)
                 })
             })
         )
@@ -31,9 +52,39 @@ module.exports.createDepartment = async( req,res ) => {
 module.exports.deleteDepartment = async(req,res) => {
    try{
     const {id} = req.params
+    const managers = await prisma.user.findMany({
+        where:{role:"MANAGER"}
+    })
+    const admins = await prisma.user.findMany({
+            where:{role:"ADMIN"}
+        })
     const dept = await prisma.department.delete({
         where:{ id:Number(id) }
     })
+
+      await Promise.all(
+            managers.map(m => {
+                prisma.notification.create({
+                    type:"DELETE_DEPT",
+                    message:`Department deleted: ${dept.name}`,
+                    user: { connect:{id:m.id} }
+                }).then(notification => {
+                    sendNotifications(m.id,notification)
+                })
+            })
+        )
+          await Promise.all(
+            admins.map(a => {
+                prisma.notification.create({
+                    type:"DELETE_DEPT",
+                    message:`Department deleted: ${dept.name}`,
+                    user: { connect:{id:a.id} }
+                }).then(notification => {
+                    sendNotifications(a.id,notification)
+                })
+            })
+        )
+
     return res.json({ success:true, message:"Department removed successfully" })
    }
    catch(err){

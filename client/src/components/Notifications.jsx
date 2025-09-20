@@ -24,16 +24,16 @@ const Notifications = ({ onClose, notifications = [], onMarkAllRead, onClearAll 
         {
           notifications.length > 0 ? notifications.map((n,index)=>(
             <div className={`text-sm text-left px-2 py-3 text-gray-800 flex items-center gap-1.5 rounded-md
-            ${['CREATE_USER','TOGGLE_COMPLETED'].includes(n.type) ? 'bg-green-200' : ''}
-            ${['DELETE_TASK', 'DELETE_USER'].includes(n.type) ? 'bg-red-200' : ''}
+            ${['CREATE_USER','TOGGLE_COMPLETED','CREATE_DEPT'].includes(n.type) ? 'bg-green-200' : ''}
+            ${['DELETE_TASK', 'DELETE_USER','DELETE_DEPT'].includes(n.type) ? 'bg-red-200' : ''}
             ${['TOGGLE_IN_PROGRESS','UPDATE_TASK','UPDATE_USER','NEW_TASK'].includes(n.type) ? 'bg-blue-200' : ''}
             ${n.type === 'OVERDUE_TASK' ? 'bg-orange-200' : ''}
        `}
        >
   <div className={`w-2 h-2 rounded-full
-      ${['CREATE_USER', 'NEW_TASK','TOGGLE_COMPLETED'].includes(n.type) ? 'bg-green-500' : ''}
+      ${['CREATE_USER', 'NEW_TASK','TOGGLE_COMPLETED','CREATE_DEPT'].includes(n.type) ? 'bg-green-500' : ''}
       ${n.type === 'OVERDUE_TASK' ? 'bg-orange-500' : ''}
-      ${['DELETE_TASK', 'DELETE_USER'].includes(n.type) ? 'bg-red-500' : ''}
+      ${['DELETE_TASK', 'DELETE_USER','DELETE_DEPT'].includes(n.type) ? 'bg-red-500' : ''}
       ${['TOGGLE_IN_PROGRESS','UPDATE_TASK','UPDATE_USER'].includes(n.type) ? 'bg-blue-500' : ''}
   `   }></div>
        <p key={index}>{n.message}</p>
