@@ -2,83 +2,26 @@ import { SearchIcon,Bell, UserIcon, LogOutIcon } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useAppContext } from '../../context/AppContext'
 import Notifications from '../Notifications'
-import { useState,useEffect } from 'react'
-import io from 'socket.io-client'
-import toast from 'react-hot-toast'
-
-const socket = io('http://localhost:8000')
+import { useState } from 'react'
 
 const AdminNavbar = () => {
-  const[showNotifications,setShowNotifications] = useState(false)
-    const user = JSON.parse(localStorage.getItem("user"))
-  const [notifications,setNotifications] = useState([])
-const[unreadCount,setUnreadCount] = useState(0)
-const{axios} = useAppContext()
+  const [showNotifications, setShowNotifications] = useState(false)
+  const user = JSON.parse(localStorage.getItem("user"))
+  const { 
+    notifications, 
+    unreadCount, 
+    deleteNotifications, 
+    markAllRead, 
+    logout 
+  } = useAppContext()
 
-     const id = user.id;
-
-  const fetchUserNotifications = async () => {
-        try {
-          const {data} = await axios.get(`/api/notifications/user/${ id }`)
-          if(data.success){
-            setNotifications(data.userNotifications)
-            setUnreadCount(data.unreadCount)
-          } else {
-            toast.error(data.message)
-          }
-
-        } catch (error) {
-           toast.error(error.message)
-        }
+  const handleDeleteNotifications = () => {
+    deleteNotifications(user.id)
   }
 
-  const deleteNotifications = async () => {
-    try {
-      const{data} = await axios.delete(`/api/notifications/delete/${id}`)
-      if(data.success){
-        toast.success(data.message)
-        setNotifications([])
-        setUnreadCount(0)
-       } else {
-          toast.error(data.message)
-       } 
-    } catch (error) {
-      toast.error(error.message)
-    }
+  const handleMarkAllRead = () => {
+    markAllRead(user.id)
   }
-
-  const markAllRead = async () => {
-    try {
-        const { data } = await axios.put(`/api/notifications/toggle-is-read/${id}`)
-        if(data.success){
-            setUnreadCount(0)
-        }
-    } catch (error) {
-        toast.error(error.message)
-    }
-  }
-
-useEffect(()=>{
-  if(!user || !user.id) return
-   
-  socket.emit('join-user-room',user.id)
-
-  fetchUserNotifications()
-
-  const handleNotifications = (notification) => {
-      setNotifications(prev => [notification, ...(prev || []).slice(0,49)])
-      setUnreadCount(prev => prev + 1)
-  }
-  socket.on('notification',handleNotifications)
-
-  return() => {
-    socket.off('notification',handleNotifications)
-    socket.emit('leave-user-room',user.id)
-  }
-  
-},[user?.id])
-
-  const { logout } = useAppContext()
  
   return (
     <>
@@ -97,8 +40,8 @@ useEffect(()=>{
                   <Notifications 
                     onClose={()=>setShowNotifications(false)}
                     notifications={notifications}
-                    onMarkAllRead={ markAllRead }
-                    onClearAll= { deleteNotifications }
+                    onMarkAllRead={handleMarkAllRead}
+                    onClearAll={handleDeleteNotifications}
                   />
                 )}
                   {unreadCount > 0 && <span className='absolute -top-1.5 right-0 bg-red-500 text-white px-1.25 rounded-full text-xs'>{unreadCount}</span>}

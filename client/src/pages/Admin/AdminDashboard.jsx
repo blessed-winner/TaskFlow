@@ -9,11 +9,26 @@ const socket = io('http://localhost:8000')
 
 const AdminDashboard = () => {
 
-  const { dashboardData,setUsers,fetchDashboardData } = useAppContext()
+  const { dashboardData,setUsers,fetchDashboardData,notifications } = useAppContext()
   const [ showForm,setShowForm  ] = useState(false)
   const user = JSON.parse(localStorage.getItem('user'))
 
-  socket.emit('join-user-room',user.id)
+
+  const id = user.id;
+
+  const fetchUserNotifications = async () => {
+        try {
+          const {data} = await axios.get(`/api/notifications/user/${ id }`)
+          if(data.success){
+            setNotifications(data.userNotifications)
+            setUnreadCount(data.unreadCount)
+          } else {
+            toast.error(data.message)
+          }
+        } catch (error) {
+           toast.error(error.message)
+        }
+  }
 
   const handleUserAdd = (newUser) => {
       setUsers((users) => [...users,newUser])
@@ -56,25 +71,26 @@ const AdminDashboard = () => {
             <Activity className='text-orange-500 h-8 w-8'/>
            </div> 
       </div>
-      <div className='grid grid-cols-1 md:grid-cols-2 mt-6 gap-6 rounded'>
-         <div className='bg-white p-6 rounded-lg shadow-md'>
+      <div className='grid grid-cols-1 md:grid-cols-2 mt-6 gap-6 rounded h-3/5'>
+         <div className='bg-white p-6 rounded-lg shadow-md h-4/5  overflow-auto'>
           <h2 className='font-semibold text-gray-800 text-lg mb-5'>Recent Activity</h2>
             <ul className='text-sm space-y-6'>
-              <li className='bg-blue-100/50 px-4 py-2.5 rounded-md flex items-center gap-2'>
-              <div className='h-2 w-2 bg-blue-600 rounded-full'></div>
-              New user registered: Jane Smith
+              {notifications.length > 0 ? notifications.map((note,index) => (
+              <li key={index} className={` px-4 py-2.5 rounded-md flex items-center gap-2 
+              ${['CREATE_USER'].includes(note.type) ? 'bg-green-200' : ''}
+              ${['DELETE_USER'].includes(note.type) ? 'bg-red-200' : ''}
+              ${['UPDATE_USER','NEW_TASK'].includes(note.type) ? 'bg-blue-200' : ''}`}>
+              <div className={`w-2 h-2 rounded-full
+              ${['CREATE_USER'].includes(note.type) ? 'bg-green-500' : ''}
+              ${['DELETE_USER'].includes(note.type) ? 'bg-red-500' : ''}
+              ${['UPDATE_USER'].includes(note.type) ? 'bg-blue-500' : ''}
+  `           }></div>
+                {note.message}
               </li>
-              <li className='bg-green-100/50 px-4 py-2.5 rounded-md flex items-center gap-2'>
-              <div className='h-2 w-2 bg-green-600 rounded-full'></div>
-              Task completed: Design user dashboard
-              </li>
-              <li className='bg-orange-100/50 px-4 py-2.5 rounded-md flex items-center gap-2'>
-              <div className='h-2 w-2 bg-orange-600 rounded-full'></div>
-              New task assigned: Database optimization
-              </li>
+              )) : <div className='text-gray-800 text-md min-h-30 flex items-center justify-center'>No recent activities available</div>}
             </ul>
          </div>
-         <div className='bg-white p-6 rounded-lg shadow-md text-sm'>
+         <div className='bg-white p-6 rounded-lg shadow-md text-sm h-4/5 overflow-auto'>
             <h2 className='font-semibold text-gray-800 text-lg mb-5'>System Health</h2>
             <div className='flex justify-between mb-5'>
                <p className='font-semibold text-gray-800'>Server status</p>

@@ -38,6 +38,7 @@ enum Notification_type{
    UPDATE_USER
    UPDATE_TASK
    OVERDUE_TASK
+   CREATE_DEPT
 }
 
 enum userStatus {
@@ -56,7 +57,7 @@ model User{
   status userStatus @default(AWAY)
   deptId Int
   department Department? @relation(fields:[deptId], references:[id])
-  Notifications  Notification[] 
+  Notifications  Notification[]
 }
 
 
@@ -67,7 +68,7 @@ model Notification {
    isRead   Boolean @default(false)
    createdAt DateTime @default(now())
    userId    Int
-   user      User @relation(fields: [userId], references: [id])
+   user      User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Task {

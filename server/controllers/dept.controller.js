@@ -6,11 +6,22 @@ const prisma = new PrismaClient()
 module.exports.createDepartment = async( req,res ) => {
     try {
         const { name } = req.body
+        const managers = await prisma.user.findMany({
+            where:{role:'MANAGER'}
+        })
         const dept = await prisma.department.create({
             data:{
                 name
             }
         })
+
+        await Promise.all(
+            managers.map(m => {
+                prisma.notification.create({
+                    type:"CREATE_DEPT"
+                })
+            })
+        )
         return res.json({ success:true, message:"Department created successfully", dept })
     } catch (error) {
          return res.json({ success:false, message:error.message })
