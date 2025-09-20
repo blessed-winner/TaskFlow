@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react"
 import axios from 'axios'
 import { toast } from 'react-hot-toast'
 import { useLocation } from 'react-router-dom'
+import io from 'socket.io-client'
 
 const AppContext = createContext()
 axios.defaults.baseURL = import.meta.env.VITE_BASE_URL
@@ -53,6 +54,10 @@ export const AppProvider = ({children})=>{
   const[token,setToken] = useState("")
   const [authUser, setAuthUser] = useState(null)
   
+  // Notification state
+  const [notifications, setNotifications] = useState([])
+  const [unreadCount, setUnreadCount] = useState(0)
+  const [socket, setSocket] = useState(null)
  
 
   const fetchDashboardData = async() => {
@@ -109,17 +114,86 @@ export const AppProvider = ({children})=>{
       }
     }
 
+    // Notification functions
+    const fetchUserNotifications = async (userId) => {
+      try {
+        const { data } = await axios.get(`/api/notifications/user/${userId}`)
+        if (data.success) {
+          setNotifications(data.userNotifications)
+          setUnreadCount(data.unreadCount)
+        } else {
+          toast.error(data.message)
+        }
+      } catch (error) {
+        toast.error(error.message)
+      }
+    }
+
+    const deleteNotifications = async (userId) => {
+      try {
+        const { data } = await axios.delete(`/api/notifications/delete/${userId}`)
+        if (data.success) {
+          toast.success(data.message)
+          setNotifications([])
+          setUnreadCount(0)
+        } else {
+          toast.error(data.message)
+        }
+      } catch (error) {
+        toast.error(error.message)
+      }
+    }
+
+    const markAllRead = async (userId) => {
+      try {
+        const { data } = await axios.put(`/api/notifications/toggle-is-read/${userId}`)
+        if (data.success) {
+          setUnreadCount(0)
+        }
+      } catch (error) {
+        toast.error(error.message)
+      }
+    }
+
+    // Initialize socket connection
+    const initializeSocket = (userId) => {
+      if (socket) {
+        socket.disconnect()
+      }
+      
+      const newSocket = io('http://localhost:8000')
+      setSocket(newSocket)
+      
+      newSocket.emit('join-user-room', userId)
+      
+      newSocket.on('notification', (notification) => {
+        setNotifications(prev => [notification, ...(prev || []).slice(0, 49)])
+        setUnreadCount(prev => prev + 1)
+      })
+      
+      return newSocket
+    }
+
     const logout = () => {
       localStorage.removeItem('token')
       localStorage.removeItem('user')
       setToken("")
       setAuthUser(null)
       axios.defaults.headers.common["Authorization"] = ""
+      
+      // Disconnect socket
+      if (socket) {
+        socket.disconnect()
+        setSocket(null)
+      }
+      
       // Clear all data states
       setUsers([])
       setTasks([])
       setUserTasks([])
       setDepartmentData([])
+      setNotifications([])
+      setUnreadCount(0)
       setDashboardData({
         totalUsers:0,
         totalTasks:0,
@@ -171,6 +245,16 @@ export const AppProvider = ({children})=>{
         userTasks,
         setUserTasks,
         fetchUserTasks,
+        // Notification functions and state
+        notifications,
+        setNotifications,
+        unreadCount,
+        setUnreadCount,
+        fetchUserNotifications,
+        deleteNotifications,
+        markAllRead,
+        initializeSocket,
+        socket,
         logout
         }
 
@@ -210,6 +294,25 @@ export const AppProvider = ({children})=>{
         runRoleFetches()
       }
     },[token, authUser?.role, location.pathname])
+
+    // Initialize notifications and socket when user is authenticated
+    useEffect(() => {
+      if (authUser?.id) {
+        // Fetch notifications
+        fetchUserNotifications(authUser.id)
+        
+        // Initialize socket connection
+        initializeSocket(authUser.id)
+        
+        // Cleanup function
+        return () => {
+          if (socket) {
+            socket.emit('leave-user-room', authUser.id)
+            socket.disconnect()
+          }
+        }
+      }
+    }, [authUser?.id])
 
 
 

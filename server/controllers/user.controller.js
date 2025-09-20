@@ -32,7 +32,7 @@ module.exports.addNewUser = async (req, res) => {
           prisma.notification.create({
           data:{
             type:"CREATE_USER",
-            message:`New User Added : ${user.fName} ${user.lName}`,
+            message:`New User Registered : ${user.fName} ${user.lName}`,
             user:{ connect: { id:Number(admin.id) } }
           }
         }).then(notification => {
@@ -77,7 +77,7 @@ module.exports.updateUser = async (req, res) => {
           prisma.notification.create({
           data:{
             type:"UPDATE_USER",
-            message:`User ${user.fName} ${user.lName} updated successfully`,
+            message:`User updated: ${user.fName} ${user.lName}`,
             user:{ connect: { id:Number(admin.id) } }
           }
         }).then(notification => {
@@ -114,7 +114,7 @@ module.exports.deleteUser = async(req,res) => {
           prisma.notification.create({
           data:{
             type:"DELETE_USER",
-            message:`User ${user.fName} ${user.lName} removed from the system`,
+            message:`User deleted: ${user.fName} ${user.lName}`,
             user:{ connect: { id:Number(admin.id) } }
           }
         }).then(notification => {

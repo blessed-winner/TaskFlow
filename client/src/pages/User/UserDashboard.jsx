@@ -17,18 +17,18 @@ const UserDashboard = () => {
       const pendingTasks = userTasks?.filter(task => task.status.toLowerCase() === 'pending') || []
       const pendingCount = pendingTasks.length || 0
       
-      
-      const fetchProgress = ()=> {
-          const barProgress = totalCount > 0 ? Math.floor((completedCount/totalCount) * 100) : 0
-          setProgress(barProgress)
-      }
-
-      useEffect(()=>{
+    useEffect(()=>{
         if(user?.id) {
           fetchUserTasks(user.id)
         }
-        fetchProgress()
-      },[user?.id,progress])
+      },[user?.id])
+
+      useEffect(() => {
+      const totalCount = userTasks?.length || 0;
+      const completedCount = userTasks?.filter(t => t.status.toLowerCase() === 'completed').length || 0;
+      const barProgress = totalCount > 0 ? Math.floor((completedCount / totalCount) * 100) : 0;
+      setProgress(barProgress);
+      }, [userTasks]);
       
    
   return (
@@ -80,7 +80,7 @@ const UserDashboard = () => {
              </div>
             )) : (
               <div className='w-full min-h-50 flex items-center justify-center'>
-                <h3 className='font-medium text-xl text-green-500'>No Tasks Found</h3>
+                <h3 className='font-medium text-lg text-green-500'>No Tasks Available</h3>
               </div>
               
             )
