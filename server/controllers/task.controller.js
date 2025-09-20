@@ -51,7 +51,7 @@ module.exports.addNewTask = async(req,res) => {
                 prisma.notification.create({
                 data:{
                    type:"NEW_TASK",
-                   message:`New task ${newTask.title} created successfully`,
+                   message:`Task created: ${newTask.title}`,
                    user: {connect:{id:Number(m.id)}}
                  }
                }).then(notification => {
@@ -63,8 +63,8 @@ module.exports.addNewTask = async(req,res) => {
           const userNotification = await prisma.notification.create({
             data:{
               type:"NEW_TASK",
-              message:"You have been assigned a task",
-              user:{connect:{id:Number()}}
+              message:`Task assigned: ${newTask.title}`,
+              user:{connect:{id:Number(assigneeId)}}
             }
           })
 
@@ -114,7 +114,8 @@ module.exports.fetchUserTasks = async (req,res) => {
  
     const overDueTasks = tasks.filter(t => new Date(t.dueDate).getTime() < Date.now())
     
-   await Promise.all(
+    if(overDueTasks > 0){
+           await Promise.all(
       managers.map(m =>
         prisma.notification.create({
           data: {
@@ -138,6 +139,8 @@ module.exports.fetchUserTasks = async (req,res) => {
 
 
       sendNotifications(userId,userNotification)
+    }
+
 
    return res.json({ success:true, tasks })
   } catch (error) {
@@ -206,7 +209,7 @@ module.exports.toggleInProgressTasks = async (req, res) => {
         prisma.notification.create({
           data: {
             type: "TOGGLE_IN_PROGRESS",
-            message: `Task ${task.title} is now in progress`,
+            message: `Task in progress: ${task.title}`,
             user: { connect: { id: m.id } }
           }
         }).then(notification => {
@@ -218,7 +221,7 @@ module.exports.toggleInProgressTasks = async (req, res) => {
     const userNotification = await prisma.notification.create({
       data: {
         type: "TOGGLE_IN_PROGRESS",
-        message: `Task ${task.title} is in progress`,
+        message: `Task in progress: ${task.title}`,
         user: { connect: { id: task.userId } }
       }
     })
@@ -250,7 +253,7 @@ module.exports.toggleCompletedTasks = async (req, res) => {
         prisma.notification.create({
           data: {
             type: "TOGGLE_COMPLETED",
-            message: `Task ${task.title} is completed successfully`,
+            message: `Task completed: ${task.title}`,
             user: { connect: { id: m.id } }
           }
         }).then(notification => {
@@ -262,7 +265,7 @@ module.exports.toggleCompletedTasks = async (req, res) => {
     const userNotification = await prisma.notification.create({
       data: {
         type: "TOGGLE_COMPLETED",
-        message: `Task ${task.title} is completed successfully`,
+        message: `Task completed: ${task.title}`,
         user: { connect: { id: task.userId } }
       }
     })

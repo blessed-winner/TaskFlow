@@ -95,10 +95,8 @@ const ManagerNavbar = () => {
                   <Notifications 
                     onClose={()=>setShowNotifications(false)}
                     notifications={notifications}
-                    onMarkAllRead={()=>setUnreadCount(0)}
-                    onClearAll={()=>{setNotifications([]) 
-                                     setUnreadCount(0)
-                              }}
+                    onMarkAllRead={markAllRead}
+                    onClearAll={deleteNotifications}
                   />
                 )}
                 {unreadCount > 0 && <span className='absolute -top-1.5 right-0 bg-red-500 text-white px-1.25 rounded-full text-xs'>{unreadCount}</span>}

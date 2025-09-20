@@ -10,8 +10,7 @@ const socket = io('http://localhost:8000')
 
 const UserNavbar = () => {
    const user = JSON.parse(localStorage.getItem("user"))
-     const navigate = useNavigate()
-  const { axios,setToken } = useAppContext()
+  const { axios,setToken,logout } = useAppContext()
   const [showNotifications,setShowNotifications] = useState(false)
   const [notifications,setNotifications] = useState([])
   const [unreadCount,setUnreadCount] = useState(0)
@@ -79,13 +78,7 @@ const UserNavbar = () => {
     }
   },[user?.id])
 
-  const logout = () => {
-    localStorage.removeItem("token")
-    localStorage.removeItem("user")
-    setToken(null)
-    axios.defaults.headers.common['Authorization'] = null
-    navigate('/')
-  }
+ 
   return (
     <>
         <div className='flex justify-between items-center px-6 py-3 bg-white border-b border-gray-300 shadow fixed z-1 right-0 left-0 top-0'>

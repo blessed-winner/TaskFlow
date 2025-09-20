@@ -6,7 +6,7 @@ import { useAppContext } from '../../context/AppContext'
 
 
   const MyTasks = () => {
-  const { userDashboardData, userTasks, fetchUserTasks, fetchUserDashboardData, axios } = useAppContext()
+  const { userDashboardData, userTasks,setUserTasks, fetchUserTasks, fetchUserDashboardData, axios } = useAppContext()
   const user = JSON.parse(localStorage.getItem('user'))
 
   const toggleInProgress = async(taskId) => {
@@ -14,6 +14,11 @@ import { useAppContext } from '../../context/AppContext'
          const { data } = await axios.post(`/api/tasks/toggle-in-progress`,{id:taskId})
          if(data.success) {
           toast.success(data.message)
+          setUserTasks(prev =>
+            prev.map(task => 
+              task.id === taskId ? {...task, status:"IN_PROGRESS"} : task
+            )
+          )
          } else {
           toast.error(data.message)
          }
@@ -27,6 +32,11 @@ import { useAppContext } from '../../context/AppContext'
       const { data } = await axios.post('/api/tasks/toggle-completed',{id:taskId})
       if(data.success){
         toast.success(data.message)
+          setUserTasks(prev =>
+            prev.map(task => 
+              task.id === taskId ? {...task, status:"COMPLETED"} : task
+            )
+          )
       } else {
         toast.error(data.message)
       }
