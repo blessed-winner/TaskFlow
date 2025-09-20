@@ -37,6 +37,7 @@ enum Notification_type{
    DELETE_USER
    UPDATE_USER
    UPDATE_TASK
+   OVERDUE_TASK
 }
 
 enum userStatus {

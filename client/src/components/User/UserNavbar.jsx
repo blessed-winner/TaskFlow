@@ -16,24 +16,54 @@ const UserNavbar = () => {
   const [notifications,setNotifications] = useState([])
   const [unreadCount,setUnreadCount] = useState(0)
 
-  const id = u.id;
+  const id = user.id;
 
   const fetchUserNotifications = async () => {
         try {
           const {data} = await axios.get(`/api/notifications/user/${ id }`)
-          data.success ? setNotifications(data.userNotifications) : toast.error(data.message)
-
+          if(data.success){
+            setNotifications(data.userNotifications)
+            setUnreadCount(data.unreadCount)
+          } else {
+            toast.error(data.message)
+          }
         } catch (error) {
            toast.error(error.message)
         }
+  }
+
+  const deleteNotifications = async () => {
+    try {
+      const{data} = await axios.delete(`/api/notifications/delete/${id}`)
+      if(data.success){
+        toast.success(data.message)
+        setNotifications([])
+        setUnreadCount(0)
+       } else {
+          toast.error(data.message)
+       } 
+    } catch (error) {
+      toast.error(error.message)
+    }
+  }
+
+  const markAllRead = async () => {
+    try {
+        const { data } = await axios.put(`/api/notifications/toggle-is-read/${id}`)
+        if(data.success){
+            setUnreadCount(0)
+        }
+    } catch (error) {
+        toast.error(error.message)
+    }
   }
 
   useEffect(()=>{
 
     
     
-    if(!u || !u.id) return
-    socket.emit('join-user-room',u.id)
+    if(!user || !user.id) return
+    socket.emit('join-user-room',user.id)
 
     fetchUserNotifications()
 
@@ -45,7 +75,7 @@ const UserNavbar = () => {
 
     return()=>{
       socket.off('notification',handleNotifications)
-      socket.emit('leave-user-room',u.id)
+      socket.emit('leave-user-room',user.id)
     }
   },[user?.id])
 
@@ -74,10 +104,8 @@ const UserNavbar = () => {
                   <Notifications 
                     onClose={()=>setShowNotifications(false)}
                     notifications={notifications}
-                    onMarkAllRead={()=>setUnreadCount(0)}
-                    onClearAll={()=>{setNotifications([]) 
-                                     setUnreadCount(0)
-                              }}
+                    onMarkAllRead={markAllRead}
+                    onClearAll={deleteNotifications}
                   />
                 )}
                 {unreadCount > 0 && <span className='absolute -top-1.5 right-0 bg-red-500 text-white px-1.25 rounded-full text-xs'>{unreadCount}</span>}

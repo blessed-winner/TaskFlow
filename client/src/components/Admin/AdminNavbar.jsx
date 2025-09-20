@@ -32,6 +32,32 @@ const{axios} = useAppContext()
         }
   }
 
+  const deleteNotifications = async () => {
+    try {
+      const{data} = await axios.delete(`/api/notifications/delete/${id}`)
+      if(data.success){
+        toast.success(data.message)
+        setNotifications([])
+        setUnreadCount(0)
+       } else {
+          toast.error(data.message)
+       } 
+    } catch (error) {
+      toast.error(error.message)
+    }
+  }
+
+  const markAllRead = async () => {
+    try {
+        const { data } = await axios.put(`/api/notifications/toggle-is-read/${id}`)
+        if(data.success){
+            setUnreadCount(0)
+        }
+    } catch (error) {
+        toast.error(error.message)
+    }
+  }
+
 useEffect(()=>{
   if(!user || !user.id) return
    
@@ -71,10 +97,8 @@ useEffect(()=>{
                   <Notifications 
                     onClose={()=>setShowNotifications(false)}
                     notifications={notifications}
-                    onMarkAllRead={()=>setUnreadCount(0)}
-                    onClearAll={()=>{setNotifications([]) 
-                                     setUnreadCount(0)
-                              }}
+                    onMarkAllRead={ markAllRead }
+                    onClearAll= { deleteNotifications }
                   />
                 )}
                   {unreadCount > 0 && <span className='absolute -top-1.5 right-0 bg-red-500 text-white px-1.25 rounded-full text-xs'>{unreadCount}</span>}
