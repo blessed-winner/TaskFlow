@@ -24,9 +24,11 @@ module.exports.createDepartment = async( req,res ) => {
         await Promise.all(
             managers.map(m => {
                 prisma.notification.create({
+                    data:{
                     type:"CREATE_DEPT",
                     message:`Department created: ${dept.name}`,
                     user: { connect:{id:m.id} }
+                    }
                 }).then(notification => {
                     sendNotifications(m.id,notification)
                 })
@@ -35,9 +37,11 @@ module.exports.createDepartment = async( req,res ) => {
             await Promise.all(
             admins.map(a => {
                 prisma.notification.create({
+                    data:{
                     type:"CREATE_DEPT",
                     message:`Department created: ${dept.name}`,
                     user: { connect:{id:a.id} }
+                    }
                 }).then(notification => {
                     sendNotifications(a.id,notification)
                 })
@@ -65,9 +69,11 @@ module.exports.deleteDepartment = async(req,res) => {
       await Promise.all(
             managers.map(m => {
                 prisma.notification.create({
+                    data:{
                     type:"DELETE_DEPT",
                     message:`Department deleted: ${dept.name}`,
                     user: { connect:{id:m.id} }
+                    }
                 }).then(notification => {
                     sendNotifications(m.id,notification)
                 })
@@ -76,9 +82,11 @@ module.exports.deleteDepartment = async(req,res) => {
           await Promise.all(
             admins.map(a => {
                 prisma.notification.create({
+                    data:{
                     type:"DELETE_DEPT",
                     message:`Department deleted: ${dept.name}`,
                     user: { connect:{id:a.id} }
+                    }
                 }).then(notification => {
                     sendNotifications(a.id,notification)
                 })

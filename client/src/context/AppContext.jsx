@@ -16,6 +16,7 @@ export const AppProvider = ({children})=>{
     completionRate:0,
   })
 
+
   const [userDashboardData,setUserDashboardData] = useState({
     totalTasks:0,
     completedTasks:0,
@@ -176,6 +177,7 @@ export const AppProvider = ({children})=>{
 
     const logout = () => {
       localStorage.removeItem('token')
+      const user = localStorage.getItem('user')
       localStorage.removeItem('user')
       setToken("")
       setAuthUser(null)
