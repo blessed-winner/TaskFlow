@@ -36,14 +36,14 @@ const UserTableData = ({user,fetchUsers,fetchDashboard,onShowUpdateForm,setSelec
         </div>
        </td>
       <td className='py-3 px-2 xl:px-4 '>
-        <span className={`px-2.5 py-1 rounded-full text-xs font-medium lowercase ${role.toLowerCase() === 'admin' && 'bg-purple-100 text-purple-800'} ${user.role.toLowerCase() === 'user' && 'bg-green-100 text-green-800'} ${user.role.toLowerCase() === 'manager' && 'bg-blue-100 text-blue-800'}`}>
-          {role}
+        <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${role.toLowerCase() === 'admin' && 'bg-purple-100 text-purple-800'} ${user.role.toLowerCase() === 'user' && 'bg-green-100 text-green-800'} ${user.role.toLowerCase() === 'manager' && 'bg-blue-100 text-blue-800'}`}>
+          {role && (role.charAt(0).toUpperCase() + role.slice(1).toLowerCase())}
         </span>
         </td>
       <td className='py-3 px-2 xl:px-4 font-light max-md:hidden'>{department.name}</td>
       <td className='py-3 px-2 xl:px-4 max-md:hidden'>
-        <span className={`bg-orange-200 px-2.5 py-1 rounded-full text-xs text-orange-800 font-medium ${status === 'ACTIVE' && 'bg-green-100 text-green-800'}`}>
-            {status === 'ACTIVE' ? 'Active' : 'Away'}
+        <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${status === 'ACTIVE' ? 'bg-green-100 text-green-800' : 'bg-orange-100 text-orange-800'}`}>
+            {status && (status.charAt(0).toUpperCase() + status.slice(1).toLowerCase())}
             </span>
       </td>
       <td className='py-3 px-2 xl:px-4'>

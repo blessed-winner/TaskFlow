@@ -176,20 +176,25 @@ export const AppProvider = ({children})=>{
     }
 
     const logout = () => {
+      const stored = localStorage.getItem('user')
+      const user = stored ? JSON.parse(stored) : null
       localStorage.removeItem('token')
-      const user = localStorage.getItem('user')
       localStorage.removeItem('user')
       setToken("")
       setAuthUser(null)
       axios.defaults.headers.common["Authorization"] = ""
-      
-      // Disconnect socket
-      if (socket) {
+
+      if (socket && user?.id) {
+        socket.emit('leave-user-room', user.id, (ack) => {
+          // proceed to disconnect after server processed status
+          socket.disconnect()
+          setSocket(null)
+        })
+      } else if (socket) {
         socket.disconnect()
         setSocket(null)
       }
       
-      // Clear all data states
       setUsers([])
       setTasks([])
       setUserTasks([])
@@ -218,6 +223,27 @@ export const AppProvider = ({children})=>{
         pendingTasks:0
       })
     }
+
+    // Cross-tab logout: listen for token/user removals
+    useEffect(() => {
+      const onStorage = (e) => {
+        if ((e.key === 'token' || e.key === 'user') && e.newValue === null) {
+          if (socket) {
+            const storedUser = localStorage.getItem('user')
+            const parsed = storedUser ? JSON.parse(storedUser) : null
+            if (parsed?.id) {
+              socket.emit('leave-user-room', parsed.id, () => {
+                socket.disconnect()
+              })
+            } else {
+              socket.disconnect()
+            }
+          }
+        }
+      }
+      window.addEventListener('storage', onStorage)
+      return () => window.removeEventListener('storage', onStorage)
+    }, [socket])
 
 
       const value = {
