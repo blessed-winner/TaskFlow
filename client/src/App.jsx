@@ -17,7 +17,7 @@ import { Toaster } from 'react-hot-toast'
 import Login from './components/auth/Login'
 import RoleGuard from './components/Guard/RoleGuard'
 import Unauthorized from './pages/Unauthorized'
-import Home from './pages/Home'
+import Home from './pages/Landing/Home'
 
 const App = () => {
   return (
