@@ -109,8 +109,9 @@ module.exports.deleteUser = async(req,res) => {
             where: {id:Number(id)}
         })
 
+        const remainingAdmins = admins.filter(a => a.id !== Number(id))
         await Promise.all(
-          admins.map( admin=>{
+          remainingAdmins.map( admin=>{
           prisma.notification.create({
           data:{
             type:"DELETE_USER",
