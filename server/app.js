@@ -54,7 +54,7 @@ io.on('connection', (socket) => {
     console.log(`Socket ${socket.id} joined room ${parsedId}`)
   })
 
-  socket.on('leave-user-room', async (userId) => {
+  socket.on('leave-user-room', async (userId, ack) => {
     const parsedId = Number(userId)
     socket.leave(parsedId.toString())
 
@@ -72,9 +72,35 @@ io.on('connection', (socket) => {
     }
 
     console.log(`Socket ${socket.id} left room ${parsedId}`)
+    if (typeof ack === 'function') {
+      try {
+        const user = await prisma.user.findUnique({ where: { id: parsedId }, select: { status: true } })
+        ack({ ok: true, status: user?.status || 'AWAY' })
+      } catch (e) {
+        ack({ ok: false, error: e.message })
+      }
+    }
   })
 
-  socket.on('disconnect', (reason) => {
+  socket.on('disconnect', async(reason) => {
+    for(const[userId,sockets] of activeUsers.entries()){
+        if(sockets.has(socket.id)){
+            sockets.delete(socket.id)
+
+            if(sockets.size === 0 ){
+                activeUsers.delete(Number(userId))
+            
+
+            await prisma.user.update({
+                where: { id:Number(userId) },
+                data:{
+                     status:"AWAY"
+                }
+            })
+            break
+        }
+        }
+    }
     console.log('A client disconnected', socket.id, 'Reason:', reason)
   })
 })
