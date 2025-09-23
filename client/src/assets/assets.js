@@ -1,3 +1,5 @@
+import { BarChart3, Calendar, CheckCircle, Users } from "lucide-react"
+
 export const user_data = [ 
 {
   name:"Admin User",
@@ -161,6 +163,30 @@ export const task_data = [
       completed:0
    }
  ]
+
+ export const features =[
+  {
+    icon:CheckCircle,
+    title:"Smart Task Management",
+    content:"Organize, prioritize, and track your tasks with intelligent automation and intuitive workflows."
+  },
+  {
+    icon:Calendar,
+    title:"Seamless Scheduling",
+    content:"Integrate with your calendar and never miss a deadline with smart reminders and time blocking."
+  },
+  {
+    icon:Users,
+    title:"Team Collaboration",
+    content:"Work together efficiently with real-time updates, shared projects, and team communication tools."
+  },
+  {
+    icon:BarChart3,
+    title:"Advanced Analytics",
+    content:"Gain insights into your productivity patterns with detailed reports and performance tracking."
+  }
+ ]
+
 
  export const taskPriority = [ 'Low', 'Medium', 'High' ]
 
