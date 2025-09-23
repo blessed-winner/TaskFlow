@@ -88,7 +88,7 @@ const ManagerDashboard = () => {
            </div> 
       </div>
       <div className='grid grid-cols-1 md:grid-cols-2 mt-6 gap-6 rounded'>
-         <div className='bg-white p-6 rounded-lg shadow-md h-4/5 overflow-auto'>
+         <div className='bg-white p-6 rounded-lg shadow-md min-h-50 overflow-auto'>
           <h2 className='font-medium text-gray-800 text-lg mb-5'>Recent Tasks</h2>
                <div className='flex flex-col gap-4'>
             {tasks && tasks.filter(Boolean).length > 0 ? tasks
@@ -114,7 +114,7 @@ const ManagerDashboard = () => {
          }
           </div>
             </div>
-         <div className='bg-white p-6 rounded-lg shadow-md text-sm h-4/5 overflow-auto'>
+         <div className='bg-white p-6 rounded-lg shadow-md text-sm min-h-50 overflow-auto'>
             <h2 className='font-semibold text-gray-800 text-lg mb-5'>Team Performance</h2>
             
               {

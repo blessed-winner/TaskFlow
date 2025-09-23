@@ -8,7 +8,8 @@ require('dotenv').config()
 const http = require('http')
 const { initIO } = require('./utils/notifications')
 const noteRouter = require('./routes/notification.route')
-
+const { PrismaClient } = require('./generated/prisma')
+const prisma = new PrismaClient()
 
 
 const app = express()
@@ -31,23 +32,53 @@ const server = http.createServer(app)
 
 const io = initIO(server)
 
-io.on('connection',(socket)=>{
-    console.log('A client connected',socket.id)
-    socket.on('join-user-room',(room)=>{
-        socket.join(room)
-        console.log(`Socket ${socket.id} joined room ${room}` )
+const activeUsers = new Map()
+
+io.on('connection', (socket) => {
+  console.log('A client connected', socket.id)
+
+  socket.on('join-user-room', async (userId) => {
+    const parsedId = Number(userId) // always use number for consistency
+    socket.join(parsedId.toString()) // rooms are always strings
+
+    if (!activeUsers.has(parsedId)) {
+      activeUsers.set(parsedId, new Set())
+    }
+    activeUsers.get(parsedId).add(socket.id)
+
+    await prisma.user.update({
+      where: { id: parsedId },
+      data: { status: "ACTIVE" }
     })
 
-    socket.on('leave-user-room',(room)=>{
-        socket.leave(room)
-        console.log(`Socket ${socket.id} left room ${room}`)
-    })
+    console.log(`Socket ${socket.id} joined room ${parsedId}`)
+  })
 
+  socket.on('leave-user-room', async (userId) => {
+    const parsedId = Number(userId)
+    socket.leave(parsedId.toString())
 
-    socket.on('disconnect',(reason)=>{
-       console.log('A client disconnected',socket.id,'Reason:',reason)
-    })
+    if (activeUsers.has(parsedId)) {
+      activeUsers.get(parsedId).delete(socket.id)
+
+      if (activeUsers.get(parsedId).size === 0) {
+        activeUsers.delete(parsedId)
+
+        await prisma.user.update({
+          where: { id: parsedId },
+          data: { status: "AWAY" }
+        })
+      }
+    }
+
+    console.log(`Socket ${socket.id} left room ${parsedId}`)
+  })
+
+  socket.on('disconnect', (reason) => {
+    console.log('A client disconnected', socket.id, 'Reason:', reason)
+  })
 })
+
 
 
 server.listen(port,() => console.log(`Server running on port ${port}`))
