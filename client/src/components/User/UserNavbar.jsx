@@ -9,6 +9,8 @@ const UserNavbar = () => {
    const { setToken, logout, notifications, unreadCount, deleteNotifications, markAllRead } = useAppContext()
    const [showNotifications, setShowNotifications] = useState(false)
 
+   const navigate = useNavigate()
+
    const handleDeleteNotifications = () => {
      deleteNotifications(user.id)
    }
@@ -23,15 +25,14 @@ const UserNavbar = () => {
     <>
         <div className='flex justify-between items-center px-6 py-3 bg-white border-b border-gray-300 shadow fixed z-1 right-0 left-0 top-0'>
           <div className='flex gap-3 items-center'>
-              <h1 className='font-bold text-2xl text-gray-900'>TaskFlow</h1>
+              <h1 onClick={()=>navigate('/')} className='font-bold text-2xl text-gray-900 cursor-pointer'>TaskFlow</h1>
            <div className='flex gap-3 items-center border border-gray-300 px-3 py-2 rounded-lg w-[250px] max-md:hidden'>
              <SearchIcon className='w-4 text-gray-400'/>
             <input type="text" placeholder='Search tasks...' className='text-sm outline-none text-gray-600'/>
            </div>
           </div>
           <div className='flex justify-between gap-3 relative'>
-
-              <div className='relative'>
+               <div className='relative'>
                 <Bell onClick={()=>setShowNotifications(true)} className='p-0.5 text-gray-400 hover:bg-gray-200 transition-all cursor-pointer rounded-md'/>
                 {showNotifications && (
                   <Notifications 

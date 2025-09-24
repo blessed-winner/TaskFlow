@@ -9,6 +9,8 @@ const ManagerNavbar = () => {
    const user = JSON.parse(localStorage.getItem("user"))
    const [showNotifications, setShowNotifications] = useState(false)
 
+   const navigate = useNavigate()
+
    const handleDeleteNotifications = () => {
      deleteNotifications(user.id)
    }
@@ -22,7 +24,7 @@ const ManagerNavbar = () => {
        <>
         <div className='flex justify-between items-center px-6 py-3 bg-white border-b border-gray-300 shadow fixed z-1 right-0 left-0 top-0'>
           <div className='flex gap-3 items-center'>
-              <h1 className='font-bold text-2xl text-gray-900'>TaskFlow</h1>
+              <h1 onClick={()=>navigate('/')} className='font-bold text-2xl text-gray-900 cursor-pointer'>TaskFlow</h1>
            <div className='flex gap-3 items-center border border-gray-300 px-3 py-2 rounded-lg w-[250px] max-md:hidden'>
              <SearchIcon className='w-4 text-gray-400'/>
             <input type="text" placeholder='Search tasks...' className='text-sm outline-none text-gray-600'/>
