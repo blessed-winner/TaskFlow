@@ -246,47 +246,8 @@ export const AppProvider = ({children})=>{
     }, [socket])
 
 
-      const value = {
-        users,
-        setUsers,
-        axios,
-        token,
-        setToken,
-        authUser,
-        setAuthUser,
-        dashboardData,
-        setDashboardData,
-        departmentData,
-        setDepartmentData,
-        fetchUsers,
-        fetchDashboardData,
-        fetchDepartments,
-        userDashboardData,
-        setUserDashboardData,
-        fetchUserDashboardData,
-        managerDashboardData,
-        setManagerDashboardData,
-        fetchManagerDashboardData,
-        tasks,
-        fetchTasks,
-        setTasks,
-        userTasks,
-        setUserTasks,
-        fetchUserTasks,
-        // Notification functions and state
-        notifications,
-        setNotifications,
-        unreadCount,
-        setUnreadCount,
-        fetchUserNotifications,
-        deleteNotifications,
-        markAllRead,
-        initializeSocket,
-        socket,
-        logout
-        }
-
-    // Effect 1: Initialize auth state from localStorage
+      const [loading,setLoading] = useState(true)
+          // Effect 1: Initialize auth state from localStorage
     useEffect(()=>{
       const storedToken = localStorage.getItem("token")
       const storedUser = localStorage.getItem('user')
@@ -301,9 +262,10 @@ export const AppProvider = ({children})=>{
       if (parsedUser) {
         setAuthUser(parsedUser)
       }
+      setLoading(false)
     },[])
 
-    useEffect(()=>{
+     useEffect(()=>{
       const runRoleFetches = async () => {
         try {
           if(authUser?.role === 'ADMIN') {
@@ -343,6 +305,53 @@ export const AppProvider = ({children})=>{
     }, [authUser?.id])
 
 
+    
+      const value = {
+        users,
+        setUsers,
+        axios,
+        token,
+        setToken,
+        authUser,
+        setAuthUser,
+        dashboardData,
+        setDashboardData,
+        departmentData,
+        setDepartmentData,
+        fetchUsers,
+        fetchDashboardData,
+        fetchDepartments,
+        userDashboardData,
+        setUserDashboardData,
+        fetchUserDashboardData,
+        managerDashboardData,
+        setManagerDashboardData,
+        fetchManagerDashboardData,
+        tasks,
+        fetchTasks,
+        setTasks,
+        userTasks,
+        setUserTasks,
+        fetchUserTasks,
+        // Notification functions and state
+        notifications,
+        setNotifications,
+        unreadCount,
+        setUnreadCount,
+        fetchUserNotifications,
+        deleteNotifications,
+        markAllRead,
+        initializeSocket,
+        socket,
+        logout,
+        loading,
+        setLoading
+        }
+
+    
+
+
+   
 
   return(
     <AppContext.Provider value={value}>

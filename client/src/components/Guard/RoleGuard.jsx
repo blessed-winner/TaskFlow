@@ -1,16 +1,20 @@
 import React from 'react'
 import { Navigate } from 'react-router-dom'
 import { useAppContext } from '../../context/AppContext'
+import Loading from '../utils/Loading'
 
 const RoleGuard = ({ role,children }) => {
-    const{token} = useAppContext()
-    const user = JSON.parse(localStorage.getItem('user'))
-    if(!user || !token){
-        return <Navigate to='/auth'/>
+    const{token,loading,authUser} = useAppContext()
+
+    if(loading) return <Loading/>
+
+    if(!authUser || !token){
+        return <Navigate to='/'/>
     }
 
+
     
-    if(user.role !== role){
+    if(authUser.role !== role){
         return <Navigate to='/unauthorized'/>
     }
 
