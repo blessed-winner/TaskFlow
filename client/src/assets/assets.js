@@ -187,6 +187,21 @@ export const task_data = [
   }
  ]
 
+ export const footerLinks = [
+  { 
+    title:"Product",
+    links: [ "Features","Pricing","Integrations","API" ]
+  },
+  {
+    title:"Company",
+    links: [ "About","Blog","Careers","Contact" ]
+  },
+  {
+    title:"Support",
+    links: [ "Help Center", "Documentation", "Community", "Status" ]
+  }
+ ]
+
 
  export const taskPriority = [ 'Low', 'Medium', 'High' ]
 
