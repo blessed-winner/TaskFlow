@@ -1,9 +1,11 @@
 import React from 'react'
 import { features } from '../../assets/assets'
+import { useAppContext } from '../../context/AppContext'
 
 const Features = () => {
+  const {featuresRef} = useAppContext()
   return (
-    <section className='min-h-screen flex flex-col items-center px-12 py-24 space-y-8'>
+    <section ref={featuresRef} className='min-h-screen flex flex-col items-center px-12 py-24 space-y-8'>
         <div className='text-center flex flex-col items-center space-y-5'>
            <h1 className='text-6xl font-bold'>Everything you need to stay <span className='text-indigo-500'>productive</span></h1>
            <p className='text-xl max-w-2xl text-gray-700'>Powerful features designed to help you manage tasks, collaborate with teams, and achieve your goals more efficiently</p>
