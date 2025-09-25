@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react"
+import { createContext, useContext, useEffect, useRef, useState } from "react"
 import axios from 'axios'
 import { toast } from 'react-hot-toast'
 import { useLocation } from 'react-router-dom'
@@ -304,6 +304,11 @@ export const AppProvider = ({children})=>{
       }
     }, [authUser?.id])
 
+    const featuresRef = useRef(null)
+
+    const scrollToFeatures = () => {
+         featuresRef.current?.scrollIntoView({behavior:"smooth"})
+    }
 
     
       const value = {
@@ -345,7 +350,9 @@ export const AppProvider = ({children})=>{
         socket,
         logout,
         loading,
-        setLoading
+        setLoading,
+        featuresRef,
+        scrollToFeatures
         }
 
     

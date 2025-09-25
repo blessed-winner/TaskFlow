@@ -1,8 +1,10 @@
 import React from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import {useNavigate } from 'react-router-dom'
+import { useAppContext } from '../../context/AppContext'
 
 const HomeNav = () => {
   const navigate = useNavigate()
+  const { scrollToFeatures } = useAppContext()
   const token = localStorage.getItem('token')
   const user = JSON.parse(localStorage.getItem('user'))
 
@@ -20,8 +22,8 @@ const HomeNav = () => {
               <h1 className='font-bold text-xl text-gray-900'>TaskFlow</h1>
           </div>
           <div className='flex gap-2 text-sm text-gray-800 font-medium'>
-              <Link className='cursor-pointer hover:scale-102 transiton-all'>Features</Link>
-              <Link className='cursor-pointer hover:scale-102 transition-all'>About</Link>
+              <p onClick={scrollToFeatures} className='cursor-pointer hover:scale-102 transiton-all'>Features</p>
+              <p className='cursor-pointer hover:scale-102 transition-all'>About</p>
           </div>
            <div className='flex gap-5 items-center'>
                 { token && user ?  (<p onClick={handleNavigation} className='max-md:hidden text-sm text-white font-medium text-right px-2 py-1.5 bg-gradient-to-tl from-indigo-600 via-purple-600 to-pink-400 rounded-md hover:scale-102 transition-all cursor-pointer'>Dashboard</p>) :  (<><p onClick={()=>navigate('/auth')} className='max-md:hidden text-sm text-gray-800 font-medium cursor-pointer'>Sign In</p>
