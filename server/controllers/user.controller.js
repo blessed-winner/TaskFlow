@@ -15,7 +15,7 @@ module.exports.addNewUser = async (req, res) => {
         fName,
         lName,
         email,
-        hashedPassword,
+        password:hashedPassword,
         role: role.toUpperCase(),
         department: deptId ? { connect: { id: Number(deptId) } } : undefined
       },
@@ -23,6 +23,7 @@ module.exports.addNewUser = async (req, res) => {
         department: true 
       }
     })
+    
 
     return res.json({ success: true, message: "User created successfully", user })
   } catch (error) {

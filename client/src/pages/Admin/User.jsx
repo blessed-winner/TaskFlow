@@ -39,7 +39,7 @@ const User = () => {
          </thead>
          <tbody>
              {users.map((user,index)=>(
-              <UserTableData user={user} key={index} fetchUsers={fetchUsers} fetchDashboard={fetchDashboardData}
+              <UserTableData user={user} key={user.id} fetchUsers={fetchUsers} fetchDashboard={fetchDashboardData}
               onShowUpdateForm={()=>setShowUpdateForm(true)} setSelectedUser={setSelectedUser}/>
      ))}
          </tbody>

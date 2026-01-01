@@ -1,21 +1,13 @@
 import { useState,useEffect } from 'react'
 import { AlertCircle, CheckCircle, ClockIcon} from 'lucide-react'
-import {userDashboardData, task_data, user_data} from '../../assets/assets'
+import { useAppContext } from '../../context/AppContext'
 const UserDashboard = () => {
-      const[userData,setUserData] = useState([])
-      const fetchUserData = () => {
-        setUserData(user_data)
-      }
+       
+      const{userDashboardData} = useAppContext()
+     
     
-      const[taskData,setTaskData] = useState([])
-      const fetchTaskData = () => {
-        setTaskData(task_data)
-      }
       
-      useEffect(()=>{
-        fetchUserData()
-        fetchTaskData()
-      },[])
+   
   return (
     <div className='ml-54 mt-16.5 p-4 md:p-10 bg-blue-50/50 flex-1 h-full'>
       <h1 className='font-semibold text-2xl text-gray-900 mb-6'>My Dashboard</h1>
@@ -30,14 +22,14 @@ const UserDashboard = () => {
             <div className='bg-white p-4 py-6 flex items-center rounded-lg justify-between min-w-58 shadow'>
             <span className='space-y-1'>
               <p className='text-sm font-semibold text-gray-600'>Completed</p>
-              <p className='text-2xl font-semibold text-green-600'>{userDashboardData.completed}</p>
+              <p className='text-2xl font-semibold text-green-600'>{userDashboardData.completedTasks}</p>
             </span>
             <CheckCircle className='text-green-600 h-8 w-8'/>
            </div> 
             <div className='bg-white p-4 py-6 flex items-center rounded-lg justify-between min-w-58 shadow'>
             <span className='space-y-1'>
               <p className='text-sm font-semibold text-gray-600'>In Progress</p>
-              <p className='text-2xl font-semibold text-blue-600'>{userDashboardData.inProgress}</p>
+              <p className='text-2xl font-semibold text-blue-600'>{userDashboardData.inProgressTasks}</p>
             </span>
             <AlertCircle className='text-blue-600 h-8 w-8'/>
            </div> 
