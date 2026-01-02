@@ -28,7 +28,7 @@ const Login = () => {
                if(data.user.role === 'ADMIN') navigate('/admin')
                else if(data.user.role === 'MANAGER') navigate('/manager')
                else if(data.user.role === 'USER') navigate('/user')
-               toast.success(`Welcome back, ${data.user.fName}`)
+               toast.success(`Okaeri nasai, ${data.user.fName}`)
             }else{
                toast.error(data.message)
             }

@@ -3,27 +3,21 @@ import {dashboardData, task_data, user_data} from '../../assets/assets'
 import {  AlertCircle, ClipboardList, TrendingUp, Users } from 'lucide-react'
 import AddTaskButton from '../../components/Manager/AddTaskButton'
 import CreateTaskForm from '../../components/Manager/TaskForm/CreateTaskForm'
+import { useAppContext } from '../../context/AppContext'
 
 const ManagerDashboard = () => {
 
-  const[userData,setUserData] = useState([])
+  const {setTasks} = useAppContext()
   const[showForm,setShowForm] = useState(false)
-  const fetchUserData = () => {
-    setUserData(user_data)
+  const { managerDashboardData } = useAppContext()
+  
+  const handleTaskAdd = (newTask) => {
+    setTasks(prev => [...prev,newTask])
   }
 
-  const[taskData,setTaskData] = useState([])
-  const fetchTaskData = () => {
-    setTaskData(task_data)
-  }
-  
-  useEffect(()=>{
-    fetchUserData()
-    fetchTaskData()
-  },[])
   return (
     <div className='ml-54 mt-16.5 p-4 md:p-10 bg-blue-50/50 flex-1 h-full'>
-      {showForm && <CreateTaskForm onClose={()=>setShowForm(false)}/>}
+      {showForm && <CreateTaskForm onTaskAdded={handleTaskAdd} onClose={()=>setShowForm(false)}/>}
       <div className='flex justify-between'>
          <h1 className='font-semibold text-2xl text-gray-900 mb-6'>Manager Dashboard</h1>
          <AddTaskButton onClick = {()=>setShowForm(true)}/>
@@ -33,28 +27,28 @@ const ManagerDashboard = () => {
          <div className='bg-white p-4 py-6 flex items-center rounded-lg justify-between min-w-58 shadow'>
             <span className='space-y-1'>
               <p className='text-sm font-semibold text-gray-600'>Total Tasks</p>
-              <p className='text-2xl font-semibold text-blue-500'>{dashboardData.totalTasks}</p>
+              <p className='text-2xl font-semibold text-blue-500'>{managerDashboardData.totalTasks}</p>
             </span>
             <ClipboardList className='text-blue-500 h-8 w-8'/>
            </div> 
             <div className='bg-white p-4 py-6 flex items-center rounded-lg justify-between min-w-58 shadow'>
             <span className='space-y-1'>
               <p className='text-sm font-semibold text-gray-600'>Completed</p>
-              <p className='text-2xl font-semibold text-green-500'>{dashboardData.completedTasks}</p>
+              <p className='text-2xl font-semibold text-green-500'>{managerDashboardData.completedTasks}</p>
             </span>
             <TrendingUp className='text-green-500 h-8 w-8'/>
            </div> 
             <div className='bg-white p-4 py-6 flex items-center rounded-lg justify-between min-w-58 shadow'>
             <span className='space-y-1'>
               <p className='text-sm font-semibold text-gray-600'>Team Members</p>
-              <p className='text-2xl font-semibold text-purple-500'>{dashboardData.totalUsers}</p>
+              <p className='text-2xl font-semibold text-purple-500'>{managerDashboardData.teamMembers}</p>
             </span>
             <Users className='text-purple-500 h-8 w-8'/>
            </div> 
             <div className='bg-white p-4 py-6 flex items-center rounded-lg justify-between min-w-58 shadow'>
             <span className='space-y-1'>
               <p className='text-sm font-semibold text-gray-600'>Overdue Tasks</p>
-              <p className='text-2xl font-semibold text-red-500'>{dashboardData.overDueTasks}</p>
+              <p className='text-2xl font-semibold text-red-500'>{managerDashboardData.overDueTasks}</p>
             </span>
             <AlertCircle className='text-red-500 h-8 w-8'/>
            </div> 
