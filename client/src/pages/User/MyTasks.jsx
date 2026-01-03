@@ -51,7 +51,7 @@ const MyTasks = () => {
                 <div key={index} className={`bg-white px-7 py-9 text-gray-800 rounded-lg space-y-3 shadow-lg ${task.priority.toLowerCase() === 'high' && 'border-l-4 border-orange-300/50'}  ${task.priority.toLowerCase() === 'medium' && 'border-l-4 border-yellow-300/50'}`}>
                     <span className='flex justify-between items-center'>
                       <h3 className='font-medium text-xl'>{task.title}</h3>
-                      <p className={`text-xs px-2 py-1 font-medium rounded-full ${task.priority.toLowerCase() === 'high' && 'bg-red-200/40 text-red-800'} ${task.priority.toLowerCase() === 'medium' && 'bg-yellow-100 text-yellow-800'} ${task.priority.toLowerCase() === 'low' && 'bg-green-100 text-green-800'}`}>{task.priority}</p>
+                      <p className={`text-xs px-2 py-1 font-medium rounded-full ${task.priority.toLowerCase() === 'high' && 'bg-red-200/40 text-red-800'} ${task.priority.toLowerCase() === 'medium' && 'bg-yellow-100 text-yellow-800'} ${task.priority.toLowerCase() === 'low' && 'bg-green-100 text-green-800'}`}>{task.priority.toLowerCase()}</p>
                     </span>
                 <p className='text-sm font-light'>{task.description}</p>
                 <p className='text-xs font-light'>Assigned to {task.user?.fName} {task.user?.lName}</p>
@@ -60,7 +60,7 @@ const MyTasks = () => {
                           <Calendar className='h-4 w-4 text-gray-500'/>
                           <p className='text-sm font-light'>Due: {new Date(task.dueDate).toLocaleDateString()}</p>
                     </span>
-                 <p className={`text-xs px-2 py-1 font-medium rounded-full ${task.status.toLowerCase() === 'pending' && 'bg-yellow-100 text-yellow-800'} ${task.status.toLowerCase() === 'in_progress' && 'bg-blue-100 text-blue-800'} ${task.status.toLowerCase() === 'completed' && 'bg-green-100 text-green-800'}`}>{task.status}</p>
+                 <p className={`text-xs px-2 py-1 font-medium rounded-full ${task.status.toLowerCase() === 'pending' && 'bg-yellow-100 text-yellow-800'} ${task.status.toLowerCase() === 'in_progress' && 'bg-blue-100 text-blue-800'} ${task.status.toLowerCase() === 'completed' && 'bg-green-100 text-green-800'}`}>{task.status.toLowerCase()}</p>
                 </div> 
                 <button className={`w-full px-4 py-2 text-sm text-white rounded-lg font-light cursor-pointer ${task.status.toLowerCase() === 'pending' && 'bg-blue-600 hover:bg-blue-800 transition-all'} ${task.status.toLowerCase() === 'in_progress' && 'bg-green-600 hover:bg-green-800 transition-all'} ${task.status.toLowerCase() === 'completed' && 'bg-gray-400 cursor-not-allowed'}` }>
                     { task.status.toLowerCase() === 'pending' && 'Start Task'}
