@@ -1,9 +1,13 @@
 import { Calendar, Flag, User, X } from 'lucide-react'
 import React, { useState } from 'react'
 import PrioritySelect from './PrioritySelect'
+import toast from 'react-hot-toast'
+import { useAppContext } from '../../../context/AppContext'
 
-const CreateTaskForm = ({onClose}) => {
+const CreateTaskForm = ({onClose,onTaskAdded}) => {
   
+    const { axios } = useAppContext()
+    
    const [title,setTitle] = useState("")
     const [description,setDescription] = useState("")
     const [assigneeName,setAssigneeName] = useState("")
@@ -15,7 +19,7 @@ const CreateTaskForm = ({onClose}) => {
     e.preventDefault()
   }
 
-  const handleCreateTask = async ({onTaskAdded}) => {
+  const handleCreateTask = async () => {
     const formData = {
        title,
        description,
