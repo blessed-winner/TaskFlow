@@ -105,15 +105,15 @@ const UserDashboard = () => {
                <div className='space-y-1'>
                 <div className='flex gap-2 items-center'>
                   <div className='bg-green-600 rounded-full h-3 w-3'></div>
-                  <p className='font-light text-sm'>Completed: {completedCount > 0 ? completedTasks.slice(0,1).name : 'no task recorded'}</p>
+                  <p className='font-light text-sm'>Completed: {completedCount > 0 ? completedCount[0].title : 'no task recorded'}</p>
                 </div>
                     <div className='flex gap-2 items-center'>
                   <div className='bg-blue-600 rounded-full h-3 w-3'></div>
-                  <p className='font-light text-sm '>In progress: {inProgressCount > 0 ? inProgressTasks.slice(0,1).name : 'no task recorded'}</p>
+                  <p className='font-light text-sm '>In progress: {inProgressCount > 0 ? inProgressTasks[0].title : 'no task recorded'}</p>
                 </div>
                     <div className='flex gap-2 items-center'>
                   <div className='bg-orange-600 rounded-full h-3 w-3'></div>
-                  <p className='font-light text-sm'>Pending: {pendingCount > 0 ? pendingTasks.slice(0,1).name : 'no task recorded'}</p>
+                  <p className='font-light text-sm'> Pending: {pendingCount > 0 ? pendingTasks[0].title : 'no task recorded'}</p>
                 </div>
                </div>
              </div>
