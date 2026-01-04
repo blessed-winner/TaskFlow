@@ -17,6 +17,7 @@ import Projects from './pages/Manager/Projects'
 import { Toaster } from 'react-hot-toast'
 import Login from './components/auth/Login'
 import RoleGuard from './components/Guard/RoleGuard'
+import Unauthorized from './pages/Unauthorized'
 
 const App = () => {
   return (
@@ -52,6 +53,7 @@ const App = () => {
              <Route path='projects' element={<Projects/>}/>
          </Route>
          <Route path='/auth' element={<Login/>}/>
+         <Route path='/unauthorized' element={<Unauthorized/>}/>
        </Routes>
     </div>
   )
