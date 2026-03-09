@@ -43,7 +43,7 @@ const Login = () => {
     <div className='min-h-screen flex justify-center items-center px-4'>
       <div className='panel w-full max-w-md rounded-3xl p-8'>
         <div className='mb-8 flex flex-col items-center space-y-3'>
-          <span className='bg-blue-600 p-4 rounded-2xl flex'>
+          <span className='bg-cyan-600 p-4 rounded-2xl flex'>
             <LogIn className='w-7 h-7 text-white' />
           </span>
           <h2 className='text-3xl text-slate-900 font-semibold'>Welcome Back</h2>
@@ -52,14 +52,14 @@ const Login = () => {
         <form onSubmit={handleFormSubmit} className='space-y-4'>
           <div className='space-y-1.5'>
             <label className='font-semibold text-xs text-slate-700'>Email address</label>
-            <div className='flex gap-2 border border-blue-100 w-full px-4 py-2.5 rounded-xl items-center bg-white'>
+            <div className='flex gap-2 border border-cyan-100 w-full px-4 py-2.5 rounded-xl items-center bg-white'>
               <Mail className='w-4 text-slate-500' />
               <input type='email' value={email} onChange={(e) => setEmail(e.target.value)} placeholder='Enter your email' className='outline-none text-sm w-full' />
             </div>
           </div>
           <div className='space-y-1.5'>
             <label className='font-semibold text-xs text-slate-700'>Password</label>
-            <div className='flex gap-2 border border-blue-100 w-full px-4 py-2.5 rounded-xl items-center bg-white'>
+            <div className='flex gap-2 border border-cyan-100 w-full px-4 py-2.5 rounded-xl items-center bg-white'>
               <Lock className='w-4 text-slate-500' />
               <input type='password' value={password} onChange={(e) => setPassword(e.target.value)} placeholder='Enter your password' className='outline-none text-sm w-full' />
             </div>
@@ -69,7 +69,7 @@ const Login = () => {
           </button>
           <p className='text-center text-sm text-slate-600'>
             Don't have an account?{' '}
-            <span onClick={() => navigate('/signup')} className='text-blue-600 font-semibold cursor-pointer'>
+            <span onClick={() => navigate('/signup')} className='text-cyan-600 font-semibold cursor-pointer'>
               Sign Up
             </span>
           </p>
