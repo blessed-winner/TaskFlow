@@ -4,34 +4,78 @@ const bcrypt = require('bcrypt');
 const prisma = new PrismaClient();
 
 async function main() {
-  // Seed a department first if not exists
-  const department = await prisma.department.upsert({
+  const engineering = await prisma.department.upsert({
     where: { id: 1 },
-    update: {},
+    update: { name: 'Engineering' },
     create: {
       id: 1,
       name: 'Engineering',
     },
   });
 
-  // Hash the password
-  const hashedPassword = await bcrypt.hash('test123', 10);
-
-  // Seed initial admin user
-  const adminUser = await prisma.user.upsert({
-    where: { email: 'zoro@company.com' },
-    update: {}, // do nothing if user exists
+  const operations = await prisma.department.upsert({
+    where: { id: 2 },
+    update: { name: 'Operations' },
     create: {
-      fName: 'Roronoa',
-      lName: 'Zoro',
-      email: 'zoro@company.com',
-      password: hashedPassword,
-      role: 'ADMIN', // make it ADMIN
-      deptId: department.id,
+      id: 2,
+      name: 'Operations',
     },
   });
 
-  console.log('✅ Seeder finished:', adminUser);
+  const usersToSeed = [
+    {
+      fName: 'Admin',
+      lName: 'User',
+      email: 'admin@taskflow.local',
+      role: 'ADMIN',
+      deptId: engineering.id,
+      password: 'Admin123!',
+    },
+    {
+      fName: 'Manager',
+      lName: 'User',
+      email: 'manager@taskflow.local',
+      role: 'MANAGER',
+      deptId: operations.id,
+      password: 'Manager123!',
+    },
+    {
+      fName: 'Team',
+      lName: 'User',
+      email: 'user@taskflow.local',
+      role: 'USER',
+      deptId: engineering.id,
+      password: 'User123!',
+    },
+  ];
+
+  for (const seedUser of usersToSeed) {
+    const hashedPassword = await bcrypt.hash(seedUser.password, 10);
+
+    await prisma.user.upsert({
+      where: { email: seedUser.email },
+      update: {
+        fName: seedUser.fName,
+        lName: seedUser.lName,
+        role: seedUser.role,
+        deptId: seedUser.deptId,
+        password: hashedPassword,
+      },
+      create: {
+        fName: seedUser.fName,
+        lName: seedUser.lName,
+        email: seedUser.email,
+        password: hashedPassword,
+        role: seedUser.role,
+        deptId: seedUser.deptId,
+      },
+    });
+  }
+
+  console.log('Seed complete. Test users created/updated:');
+  console.log('Admin   -> admin@taskflow.local / Admin123!');
+  console.log('Manager -> manager@taskflow.local / Manager123!');
+  console.log('User    -> user@taskflow.local / User123!');
 }
 
 main()
