@@ -6,7 +6,7 @@ const Notifications = ({ onClose, notifications = [], onMarkAllRead, onClearAll 
       <div className='flex items-center justify-between pb-3 border-b border-cyan-100'>
         <h3 className='text-lg font-semibold text-slate-900'>Notifications</h3>
         <div className='flex items-center gap-2'>
-          <button onClick={onMarkAllRead} className='text-xs text-cyan-700 hover:text-blue-900 flex items-center gap-1 cursor-pointer'>
+          <button onClick={onMarkAllRead} className='text-xs text-cyan-700 hover:text-cyan-900 flex items-center gap-1 cursor-pointer'>
             <Check className='h-3 w-3' />
             Mark all read
           </button>

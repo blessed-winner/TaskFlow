@@ -74,7 +74,7 @@ const Hero = () => {
                   <p className='text-sm font-semibold text-slate-900'>Backend API migration</p>
                   <p className='text-xs text-slate-500'>Assigned by Manager</p>
                 </div>
-                <span className='text-xs font-semibold text-blue-700 bg-blue-100 px-2 py-1 rounded-full flex items-center gap-1'>
+                <span className='text-xs font-semibold text-cyan-700 bg-cyan-100 px-2 py-1 rounded-full flex items-center gap-1'>
                   <Clock3 className='w-3.5 h-3.5' /> In Progress
                 </span>
               </div>
