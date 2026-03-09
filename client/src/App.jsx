@@ -18,6 +18,7 @@ import Login from './components/auth/Login'
 import RoleGuard from './components/Guard/RoleGuard'
 import Unauthorized from './pages/Unauthorized'
 import Home from './pages/Landing/Home'
+import Signup from './components/auth/Signup'
 
 const App = () => {
   return (
@@ -54,6 +55,7 @@ const App = () => {
              <Route path='team-overview' element={<TeamOverview/>}/>
          </Route>
          <Route path='/auth' element={<Login/>}/>
+         <Route path='/signup' element={<Signup/>}/>
          <Route path='/unauthorized' element={<Unauthorized/>}/>
        </Routes>
     </div>
