@@ -8,6 +8,8 @@ const AppContext = createContext()
 axios.defaults.baseURL = import.meta.env.VITE_BASE_URL
 export const AppProvider = ({children})=>{
       const location = useLocation()
+      const authErrorHandledRef = useRef(false)
+      const logoutRef = useRef(() => {})
       const[dashboardData,setDashboardData] = useState({
     totalUsers:0,
     totalTasks:0,
@@ -36,19 +38,19 @@ export const AppProvider = ({children})=>{
   const fetchManagerDashboardData = async() => {
     try{
       const { data } = await axios.get('/api/users/manager/dashboard')
-      data.success ? setManagerDashboardData(data.managerDashboard) : toast.error(data.message)   
+      data.success ? setManagerDashboardData(data.managerDashboard) : reportError(data.message)   
     }
     catch(err){
-      toast.error(err.message)
+      reportError(err.message)
     }
   }
 
   const fetchUserDashboardData = async () => {
     try {
       const { data } = await axios.get('/api/users/user/dashboard')
-      data.success ? setUserDashboardData(data.userDashboard) : toast.error(data.error)
+      data.success ? setUserDashboardData(data.userDashboard) : reportError(data.error)
     } catch (error) {
-      toast.error(error.message)
+      reportError(error.message)
     }
   }
 
@@ -59,14 +61,41 @@ export const AppProvider = ({children})=>{
   const [notifications, setNotifications] = useState([])
   const [unreadCount, setUnreadCount] = useState(0)
   const [socket, setSocket] = useState(null)
+
+  const isAuthErrorMessage = (message = "") => {
+    const normalized = String(message).toLowerCase()
+    return (
+      normalized.includes("jwt expired") ||
+      normalized.includes("token expired") ||
+      normalized.includes("invalid token") ||
+      normalized.includes("no token found") ||
+      normalized.includes("unauthorized")
+    )
+  }
+
+  const handleSessionExpired = () => {
+    if (authErrorHandledRef.current) return
+    authErrorHandledRef.current = true
+    toast.error("Session expired. Please sign in again.")
+    logoutRef.current()
+  }
+
+  const reportError = (message) => {
+    if (!message) return
+    if (isAuthErrorMessage(message)) {
+      handleSessionExpired()
+      return
+    }
+    toast.error(message)
+  }
  
 
   const fetchDashboardData = async() => {
     try {
        const { data } = await axios.get('/api/users/admin/dashboard')
-       data.success ? setDashboardData(data.dashboardData) : toast.error(data.error)
+       data.success ? setDashboardData(data.dashboardData) : reportError(data.error)
     } catch (error) {
-      toast.error(error.message)
+      reportError(error.message)
     }
   }
 
@@ -75,10 +104,10 @@ export const AppProvider = ({children})=>{
     const fetchUsers = async()=>{
         try {
             const {data}  = await axios.get('/api/users/All')
-            data.success ? setUsers(data.users) : toast.error(data.message) 
+            data.success ? setUsers(data.users) : reportError(data.message) 
 
         } catch (err) {
-            toast.error(err.message)
+            reportError(err.message)
         }
         
     }
@@ -89,18 +118,18 @@ export const AppProvider = ({children})=>{
     const fetchTasks = async () => {
       try {
           const{ data } = await axios.get('/api/tasks/All')
-          data.success ? setTasks(data.tasks) : toast.error(data.message)
+          data.success ? setTasks(data.tasks) : reportError(data.message)
       } catch (error) {
-         toast.error(error.message)
+         reportError(error.message)
       }
     }
 
     const fetchUserTasks = async (userId) => {
       try {
           const{ data } = await axios.get(`/api/tasks/user/${userId}`)
-          data.success ? setUserTasks(data.tasks) : toast.error(data.message)
+          data.success ? setUserTasks(data.tasks) : reportError(data.message)
       } catch (error) {
-         toast.error(error.message)
+         reportError(error.message)
       }
     }
 
@@ -109,9 +138,9 @@ export const AppProvider = ({children})=>{
     const fetchDepartments = async () => {
       try {
         const { data } = await axios.get('/api/departments/All')
-        data.success ? setDepartmentData(data.departments) : toast.error(data.message)
+        data.success ? setDepartmentData(data.departments) : reportError(data.message)
       } catch (error) {
-         toast.error(error.message)
+         reportError(error.message)
       }
     }
 
@@ -123,10 +152,10 @@ export const AppProvider = ({children})=>{
           setNotifications(data.userNotifications)
           setUnreadCount(data.unreadCount)
         } else {
-          toast.error(data.message)
+          reportError(data.message)
         }
       } catch (error) {
-        toast.error(error.message)
+        reportError(error.message)
       }
     }
 
@@ -138,10 +167,10 @@ export const AppProvider = ({children})=>{
           setNotifications([])
           setUnreadCount(0)
         } else {
-          toast.error(data.message)
+          reportError(data.message)
         }
       } catch (error) {
-        toast.error(error.message)
+        reportError(error.message)
       }
     }
 
@@ -152,7 +181,7 @@ export const AppProvider = ({children})=>{
           setUnreadCount(0)
         }
       } catch (error) {
-        toast.error(error.message)
+        reportError(error.message)
       }
     }
 
@@ -224,6 +253,34 @@ export const AppProvider = ({children})=>{
       })
     }
 
+    logoutRef.current = logout
+
+    useEffect(() => {
+      if (token) {
+        authErrorHandledRef.current = false
+      }
+    }, [token])
+
+    useEffect(() => {
+      const responseInterceptor = axios.interceptors.response.use(
+        (response) => {
+          const message = response?.data?.message || response?.data?.error
+          if (response?.data?.success === false && isAuthErrorMessage(message)) {
+            handleSessionExpired()
+          }
+          return response
+        },
+        (error) => {
+          const message = error?.response?.data?.message || error?.response?.data?.error || error?.message
+          if (error?.response?.status === 401 || isAuthErrorMessage(message)) {
+            handleSessionExpired()
+          }
+          return Promise.reject(error)
+        }
+      )
+      return () => axios.interceptors.response.eject(responseInterceptor)
+    }, [])
+
     // Cross-tab logout: listen for token/user removals
     useEffect(() => {
       const onStorage = (e) => {
@@ -276,7 +333,7 @@ export const AppProvider = ({children})=>{
             await fetchUserDashboardData()
           }
         } catch (error) {
-          console.error('Error fetching role-based data:', error)
+          reportError(error?.message)
         }
       }
 

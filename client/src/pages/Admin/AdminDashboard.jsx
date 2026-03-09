@@ -3,111 +3,99 @@ import { useAppContext } from '../../context/AppContext'
 import AddUserButton from '../../components/Admin/AddUserButton'
 import { useState } from 'react'
 import AddUserForm from '../../components/Admin/AddUserForm'
-import io from 'socket.io-client'
-
-const socket = io('http://localhost:8000')
 
 const AdminDashboard = () => {
-
-  const { dashboardData,setUsers,fetchDashboardData,notifications } = useAppContext()
-  const [ showForm,setShowForm  ] = useState(false)
-  const user = JSON.parse(localStorage.getItem('user'))
-
-
-  const id = user.id;
-
-  const fetchUserNotifications = async () => {
-        try {
-          const {data} = await axios.get(`/api/notifications/user/${ id }`)
-          if(data.success){
-            setNotifications(data.userNotifications)
-            setUnreadCount(data.unreadCount)
-          } else {
-            toast.error(data.message)
-          }
-        } catch (error) {
-           toast.error(error.message)
-        }
-  }
+  const { dashboardData, setUsers, fetchDashboardData, notifications } = useAppContext()
+  const [showForm, setShowForm] = useState(false)
 
   const handleUserAdd = (newUser) => {
-      setUsers((users) => [...users,newUser])
+    setUsers((users) => [...users, newUser])
+  }
+
+  const StatCard = ({ title, value, icon: Icon, color }) => (
+    <div className='stat-card rounded-2xl p-5 flex items-center justify-between'>
+      <div className='space-y-1'>
+        <p className='text-sm font-semibold text-slate-600'>{title}</p>
+        <p className={`text-3xl font-bold ${color}`}>{value}</p>
+      </div>
+      <div className='w-12 h-12 rounded-xl bg-white flex items-center justify-center border border-cyan-100'>
+        <Icon className={`${color} h-6 w-6`} />
+      </div>
+    </div>
+  )
+
+  const getNotificationStyle = (type) => {
+    switch (type) {
+      case 'CREATE_USER':
+      case 'CREATE_DEPT':
+        return { bg: 'bg-emerald-100/80', dot: 'bg-emerald-500' }
+      case 'DELETE_USER':
+      case 'DELETE_DEPT':
+        return { bg: 'bg-red-100/80', dot: 'bg-red-500' }
+      case 'UPDATE_USER':
+      case 'NEW_TASK':
+        return { bg: 'bg-cyan-100/80', dot: 'bg-cyan-500' }
+      default:
+        return { bg: 'bg-slate-100', dot: 'bg-slate-500' }
+    }
   }
 
   return (
-    <div className=' ml-18 md:ml-54 mt-14.5 p-4 md:p-10 bg-blue-50/50 flex-1 h-full'>
-          {showForm && <AddUserForm onClose={()=>setShowForm(false)} onUserAdded={handleUserAdd} fetchDashboard={fetchDashboardData}/>}
-          <div className='flex justify-between'>
-         <h1 className='font-semibold text-2xl text-gray-900 mb-6'>Admin Dashboard</h1>
-         <AddUserButton onClick = {()=>setShowForm(true)}/>
+    <main className='flex-1'>
+      {showForm && <AddUserForm onClose={() => setShowForm(false)} onUserAdded={handleUserAdd} fetchDashboard={fetchDashboardData} />}
+      <div className='flex justify-between items-center mb-8 gap-4'>
+        <div>
+          <h1 className='font-semibold text-3xl text-slate-900'>Admin Dashboard</h1>
+          <p className='text-slate-600 text-sm mt-1'>System pulse, users, and operational activity in one place.</p>
+        </div>
+        <AddUserButton onClick={() => setShowForm(true)} />
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-         <div className='bg-white p-4 py-6 flex items-center rounded-lg justify-between min-w-58 shadow'>
-            <span className='space-y-1'>
-              <p className='text-sm font-semibold text-gray-600'>Total Users</p>
-              <p className='text-2xl font-semibold text-blue-500'>{dashboardData.totalUsers}</p>
-            </span>
-            <Users className='text-blue-500 h-8 w-8'/>
-           </div> 
-            <div className='bg-white p-4 py-6 flex items-center rounded-lg justify-between min-w-58 shadow'>
-            <span className='space-y-1'>
-              <p className='text-sm font-semibold text-gray-600'>Total Tasks</p>
-              <p className='text-2xl font-semibold text-green-500'>{dashboardData.totalTasks}</p>
-            </span>
-            <ClipboardList className='text-green-500 h-8 w-8'/>
-           </div> 
-            <div className='bg-white p-4 py-6 flex items-center rounded-lg justify-between min-w-58 shadow'>
-            <span className='space-y-1'>
-              <p className='text-sm font-semibold text-gray-600'>Completed Tasks</p>
-              <p className='text-2xl font-semibold text-purple-500'>{dashboardData.completed}</p>
-            </span>
-            <TrendingUp className='text-purple-500 h-8 w-8'/>
-           </div> 
-            <div className='bg-white p-4 py-6 flex items-center rounded-lg justify-between min-w-58 shadow'>
-            <span className='space-y-1'>
-              <p className='text-sm font-semibold text-gray-600'>Active Managers</p>
-              <p className='text-2xl font-semibold text-orange-500'>{dashboardData.activeManagers}</p>
-            </span>
-            <Activity className='text-orange-500 h-8 w-8'/>
-           </div> 
+      <div className='grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5'>
+        <StatCard title='Total Users' value={dashboardData.totalUsers} icon={Users} color='text-cyan-600' />
+        <StatCard title='Total Tasks' value={dashboardData.totalTasks} icon={ClipboardList} color='text-emerald-600' />
+        <StatCard title='Completed Tasks' value={dashboardData.completed} icon={TrendingUp} color='text-indigo-600' />
+        <StatCard title='Active Managers' value={dashboardData.activeManagers} icon={Activity} color='text-amber-600' />
       </div>
-      <div className='grid grid-cols-1 md:grid-cols-2 mt-6 gap-6 rounded h-3/5'>
-         <div className='bg-white p-6 rounded-lg shadow-md h-4/5  overflow-auto'>
-          <h2 className='font-semibold text-gray-800 text-lg mb-5'>Recent Activity</h2>
-            <ul className='text-sm space-y-6'>
-              {notifications.length > 0 ? notifications.map((note,index) => (
-              <li key={index} className={` px-4 py-2.5 rounded-md flex items-center gap-2 
-              ${['CREATE_USER','CREATE_DEPT'].includes(note.type) ? 'bg-green-200' : ''}
-              ${['DELETE_USER','DELETE_DEPT'].includes(note.type) ? 'bg-red-200' : ''}
-              ${['UPDATE_USER','NEW_TASK'].includes(note.type) ? 'bg-blue-200' : ''}`}>
-              <div className={`w-2 h-2 rounded-full
-              ${['CREATE_USER','CREATE_DEPT'].includes(note.type) ? 'bg-green-500' : ''}
-              ${['DELETE_USER','DELETE_DEPT'].includes(note.type) ? 'bg-red-500' : ''}
-              ${['UPDATE_USER'].includes(note.type) ? 'bg-blue-500' : ''}
-  `           }></div>
-                {note.message}
-              </li>
-              )) : <div className='text-gray-800 text-md min-h-30 flex items-center justify-center'>No recent activities available</div>}
-            </ul>
-         </div>
-         <div className='bg-white p-6 rounded-lg shadow-md text-sm h-4/5 overflow-auto'>
-            <h2 className='font-semibold text-gray-800 text-lg mb-5'>System Health</h2>
-            <div className='flex justify-between mb-5'>
-               <p className='font-semibold text-gray-800'>Server status</p>
-               <button className='text-xs bg-green-100/80 px-4 py-1 rounded-full text-green-600 font-semibold'>Online</button>
+      <div className='grid grid-cols-1 lg:grid-cols-3 mt-6 gap-5'>
+        <div className='lg:col-span-2 panel p-6 rounded-2xl min-h-[420px] overflow-auto'>
+          <h2 className='font-semibold text-slate-900 text-lg mb-4'>Recent Activity</h2>
+          <ul className='text-sm space-y-3'>
+            {notifications.length > 0 ? (
+              notifications.map((note, index) => {
+                const { bg, dot } = getNotificationStyle(note.type)
+                return (
+                  <li key={index} className={`px-4 py-3 rounded-xl flex items-center gap-3 ${bg}`}>
+                    <div className={`w-2 h-2 rounded-full ${dot}`}></div>
+                    <span className='text-slate-700'>{note.message}</span>
+                  </li>
+                )
+              })
+            ) : (
+              <div className='text-slate-500 text-md min-h-[280px] flex items-center justify-center'>No recent activity available</div>
+            )}
+          </ul>
+        </div>
+        <div className='panel p-6 rounded-2xl h-fit'>
+          <h2 className='font-semibold text-slate-900 text-lg mb-4'>System Health</h2>
+          <div className='space-y-4'>
+            <div className='flex justify-between items-center'>
+              <p className='font-semibold text-slate-700'>Server status</p>
+              <span className='text-xs bg-emerald-100 px-3 py-1 rounded-full text-emerald-700 font-semibold'>Online</span>
             </div>
-             <div className='flex justify-between mb-5'>
-               <p className='font-semibold text-gray-800'>Database</p>
-               <button className='text-xs bg-green-100/80 px-4 py-1 rounded-full text-green-600 font-semibold'>Connected</button>
+            <div className='flex justify-between items-center'>
+              <p className='font-semibold text-slate-700'>Database</p>
+              <span className='text-xs bg-emerald-100 px-3 py-1 rounded-full text-emerald-700 font-semibold'>Connected</span>
             </div>
-             <div className='flex justify-between'>
-               <p className='font-semibold text-gray-800'>Last Backup</p>
-               <p className='font-light text-gray-500 text-xs'>2 hours ago</p>
+            <div className='flex justify-between items-center'>
+              <p className='font-semibold text-slate-700'>Last Backup</p>
+              <p className='font-medium text-slate-500 text-xs'>2 hours ago</p>
             </div>
-         </div>
+          </div>
+        </div>
       </div>
-    </div>
+    </main>
   )
 }
 
 export default AdminDashboard
+

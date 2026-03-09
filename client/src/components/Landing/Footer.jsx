@@ -1,28 +1,31 @@
-import React from 'react'
-import { footerLinks } from '../../assets/assets'
+import { useNavigate } from 'react-router-dom'
 
 const Footer = () => {
+  const navigate = useNavigate()
+
   return (
-    <footer className='bg-blue-50/50 px-16 py-6'>
-         
-        <div className='grid grid-cols-1 md:grid-cols-4 gap-8 py-4'>
-            <div>
-            <h3 className='text-xl font-semibold text-gray-800 mb-2'>TaskFlow</h3>
-            <p className='max-w-xs text-gray-500'>Streamline your workflow and boost productivity with our intuitive task management platform.</p>
+    <footer className='px-6 md:px-8 pb-10'>
+      <div className='max-w-7xl mx-auto rounded-3xl border border-slate-200 bg-white/85 backdrop-blur p-7 md:p-9'>
+        <div className='flex flex-col md:flex-row items-start md:items-center justify-between gap-5'>
+          <div>
+            <h3 className='text-2xl font-bold text-slate-900'>Ready to run TaskFlow?</h3>
+            <p className='text-slate-600 mt-1'>Launch your workspace and start managing work with clear ownership.</p>
           </div>
-            {footerLinks.map((l,idx)=>(
-                <div key={idx}>
-                    <h4 className='font-semibold mb-2 text-gray-800'>{l.title}</h4>
-                    { l.links.map((link,index) => (
-                        <p key={index} className='text-gray-500 cursor-pointer'>{link}</p>
-                    )) }
-                </div>
-            ))}
+          <div className='flex gap-3'>
+            <button onClick={() => navigate('/signup')} className='rounded-xl px-5 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-cyan-600 to-blue-700 cursor-pointer'>
+              Get Started
+            </button>
+            <button onClick={() => navigate('/auth')} className='rounded-xl px-5 py-2.5 text-sm font-semibold text-slate-700 border border-slate-300 bg-white cursor-pointer'>
+              Sign In
+            </button>
+          </div>
         </div>
-        <div className='py-4 border-t border-gray-300 text-center'>
-            <p className='text-gray-500'>&copy; 2025 TaskFlow. All rights reserved</p>
+        <div className='mt-6 pt-5 border-t border-slate-200 text-sm text-slate-500 flex flex-col md:flex-row justify-between gap-2'>
+          <span>TaskFlow</span>
+          <span>&copy; {new Date().getFullYear()} All rights reserved.</span>
         </div>
-        </footer>
+      </div>
+    </footer>
   )
 }
 
