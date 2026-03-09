@@ -1,5 +1,4 @@
 import { useNavigate } from 'react-router-dom'
-import { CheckCircle2, Clock3, Layers3, Target } from 'lucide-react'
 
 const Hero = () => {
   const navigate = useNavigate()
@@ -17,14 +16,13 @@ const Hero = () => {
     <section className='relative min-h-screen flex items-center pt-28 pb-18 bg-gradient-to-b from-cyan-50/70 via-white to-amber-50/50'>
       <div className='max-w-7xl mx-auto px-6 md:px-8 grid lg:grid-cols-2 gap-12 items-center'>
         <div className='space-y-7'>
-          <div className='inline-flex items-center gap-2 rounded-full bg-cyan-100 text-cyan-800 px-4 py-1.5 text-xs font-semibold'>
-            <Layers3 className='w-4 h-4' />
-            Role-based task operating system
+          <div className='inline-flex items-center rounded-full bg-cyan-100 text-cyan-800 px-4 py-1.5 text-xs font-semibold'>
+            ROLE-BASED TASK OPERATING SYSTEM
           </div>
 
           <h1 className='text-4xl md:text-6xl font-bold leading-tight text-slate-900'>
             One workspace for
-            <span className='text-transparent bg-clip-text bg-gradient-to-r from-cyan-600 via-blue-600 to-amber-500'> teams, tasks, and execution</span>
+            <span className='text-cyan-700'> teams, tasks, and execution</span>
           </h1>
 
           <p className='text-lg text-slate-600 max-w-xl'>
@@ -33,15 +31,15 @@ const Hero = () => {
 
           <div className='flex flex-wrap gap-3'>
             {token && user ? (
-              <button onClick={handleNavigation} className='rounded-xl px-8 py-3 font-semibold text-white bg-gradient-to-r from-cyan-600 to-blue-700 shadow-lg shadow-cyan-900/20 cursor-pointer'>
+              <button onClick={handleNavigation} className='primary-btn rounded-xl px-8 py-3 font-semibold cursor-pointer'>
                 Open Dashboard
               </button>
             ) : (
               <>
-                <button onClick={() => navigate('/signup')} className='rounded-xl px-8 py-3 font-semibold text-white bg-gradient-to-r from-cyan-600 to-blue-700 shadow-lg shadow-cyan-900/20 cursor-pointer'>
+                <button onClick={() => navigate('/signup')} className='primary-btn rounded-xl px-8 py-3 font-semibold cursor-pointer'>
                   Create Account
                 </button>
-                <button onClick={() => navigate('/auth')} className='rounded-xl px-8 py-3 font-semibold text-slate-700 border border-slate-300 bg-white cursor-pointer hover:bg-slate-50'>
+                <button onClick={() => navigate('/auth')} className='secondary-btn rounded-xl px-8 py-3 font-semibold cursor-pointer'>
                   Sign In
                 </button>
               </>
@@ -61,7 +59,6 @@ const Hero = () => {
         </div>
 
         <div className='relative'>
-          <div className='absolute -inset-6 rounded-3xl bg-gradient-to-tr from-cyan-300/35 via-blue-200/30 to-amber-200/35 blur-2xl'></div>
           <div className='relative rounded-3xl border border-cyan-100 bg-white/90 backdrop-blur p-6 shadow-2xl shadow-slate-900/10'>
             <div className='flex items-center justify-between border-b border-slate-100 pb-4'>
               <h3 className='text-lg font-bold text-slate-900'>Execution Snapshot</h3>
@@ -74,9 +71,7 @@ const Hero = () => {
                   <p className='text-sm font-semibold text-slate-900'>Backend API migration</p>
                   <p className='text-xs text-slate-500'>Assigned by Manager</p>
                 </div>
-                <span className='text-xs font-semibold text-cyan-700 bg-cyan-100 px-2 py-1 rounded-full flex items-center gap-1'>
-                  <Clock3 className='w-3.5 h-3.5' /> In Progress
-                </span>
+                <span className='text-xs font-semibold text-cyan-700 bg-cyan-100 px-2 py-1 rounded-full'>In Progress</span>
               </div>
 
               <div className='rounded-xl bg-slate-50 border border-slate-100 p-3 flex justify-between items-center'>
@@ -84,9 +79,7 @@ const Hero = () => {
                   <p className='text-sm font-semibold text-slate-900'>UI approval workflow</p>
                   <p className='text-xs text-slate-500'>Queued by Admin</p>
                 </div>
-                <span className='text-xs font-semibold text-amber-700 bg-amber-100 px-2 py-1 rounded-full flex items-center gap-1'>
-                  <Target className='w-3.5 h-3.5' /> Pending
-                </span>
+                <span className='text-xs font-semibold text-amber-700 bg-amber-100 px-2 py-1 rounded-full'>Pending</span>
               </div>
 
               <div className='rounded-xl bg-slate-50 border border-slate-100 p-3 flex justify-between items-center'>
@@ -94,9 +87,7 @@ const Hero = () => {
                   <p className='text-sm font-semibold text-slate-900'>Auth + role checks</p>
                   <p className='text-xs text-slate-500'>Completed by User</p>
                 </div>
-                <span className='text-xs font-semibold text-emerald-700 bg-emerald-100 px-2 py-1 rounded-full flex items-center gap-1'>
-                  <CheckCircle2 className='w-3.5 h-3.5' /> Complete
-                </span>
+                <span className='text-xs font-semibold text-emerald-700 bg-emerald-100 px-2 py-1 rounded-full'>Complete</span>
               </div>
             </div>
 

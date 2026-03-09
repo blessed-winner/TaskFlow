@@ -12,10 +12,10 @@ const Footer = () => {
             <p className='text-slate-600 mt-1'>Launch your workspace and start managing work with clear ownership.</p>
           </div>
           <div className='flex gap-3'>
-            <button onClick={() => navigate('/signup')} className='rounded-xl px-5 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-cyan-600 to-blue-700 cursor-pointer'>
+            <button onClick={() => navigate('/signup')} className='primary-btn rounded-xl px-5 py-2.5 text-sm font-semibold cursor-pointer'>
               Get Started
             </button>
-            <button onClick={() => navigate('/auth')} className='rounded-xl px-5 py-2.5 text-sm font-semibold text-slate-700 border border-slate-300 bg-white cursor-pointer'>
+            <button onClick={() => navigate('/auth')} className='secondary-btn rounded-xl px-5 py-2.5 text-sm font-semibold cursor-pointer'>
               Sign In
             </button>
           </div>

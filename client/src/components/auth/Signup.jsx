@@ -1,4 +1,3 @@
-import { Lock, Mail, User, Building } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { useAppContext } from '../../context/AppContext'
 import toast from 'react-hot-toast'
@@ -63,10 +62,7 @@ const Signup = () => {
   return (
     <div className='min-h-screen flex justify-center items-center px-4 py-8'>
       <div className='panel w-full max-w-xl rounded-3xl p-8'>
-        <div className='mb-8 flex flex-col items-center space-y-3'>
-          <span className='bg-cyan-600 p-4 rounded-2xl flex'>
-            <User className='w-7 h-7 text-white' />
-          </span>
+        <div className='mb-8 flex flex-col items-center space-y-2'>
           <h2 className='text-3xl text-slate-900 font-semibold'>Create your account</h2>
           <p className='text-slate-600 text-sm'>Join TaskFlow and start shipping work faster.</p>
         </div>
@@ -74,37 +70,32 @@ const Signup = () => {
           <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
             <div className='space-y-1.5'>
               <label className='font-semibold text-xs text-slate-700'>First Name</label>
-              <div className='flex gap-2 border border-cyan-100 w-full px-4 py-2.5 rounded-xl items-center bg-white'>
-                <User className='w-4 text-slate-500' />
+              <div className='border border-cyan-100 w-full px-4 py-2.5 rounded-xl bg-white'>
                 <input type='text' value={fName} onChange={(e) => setFName(e.target.value)} placeholder='John' className='outline-none text-sm w-full' />
               </div>
             </div>
             <div className='space-y-1.5'>
               <label className='font-semibold text-xs text-slate-700'>Last Name</label>
-              <div className='flex gap-2 border border-cyan-100 w-full px-4 py-2.5 rounded-xl items-center bg-white'>
-                <User className='w-4 text-slate-500' />
+              <div className='border border-cyan-100 w-full px-4 py-2.5 rounded-xl bg-white'>
                 <input type='text' value={lName} onChange={(e) => setLName(e.target.value)} placeholder='Doe' className='outline-none text-sm w-full' />
               </div>
             </div>
           </div>
           <div className='space-y-1.5'>
             <label className='font-semibold text-xs text-slate-700'>Email address</label>
-            <div className='flex gap-2 border border-cyan-100 w-full px-4 py-2.5 rounded-xl items-center bg-white'>
-              <Mail className='w-4 text-slate-500' />
+            <div className='border border-cyan-100 w-full px-4 py-2.5 rounded-xl bg-white'>
               <input type='email' value={email} onChange={(e) => setEmail(e.target.value)} placeholder='Enter your email' className='outline-none text-sm w-full' />
             </div>
           </div>
           <div className='space-y-1.5'>
             <label className='font-semibold text-xs text-slate-700'>Password</label>
-            <div className='flex gap-2 border border-cyan-100 w-full px-4 py-2.5 rounded-xl items-center bg-white'>
-              <Lock className='w-4 text-slate-500' />
+            <div className='border border-cyan-100 w-full px-4 py-2.5 rounded-xl bg-white'>
               <input type='password' value={password} onChange={(e) => setPassword(e.target.value)} placeholder='Enter your password' className='outline-none text-sm w-full' />
             </div>
           </div>
           <div className='space-y-1.5'>
             <label className='font-semibold text-xs text-slate-700'>Department</label>
-            <div className='flex gap-2 border border-cyan-100 w-full px-4 py-2.5 rounded-xl items-center bg-white'>
-              <Building className='w-4 text-slate-500' />
+            <div className='border border-cyan-100 w-full px-4 py-2.5 rounded-xl bg-white'>
               <select value={deptId} onChange={(e) => setDeptId(e.target.value)} className='outline-none text-sm w-full bg-transparent'>
                 <option value='' disabled>
                   Select a department

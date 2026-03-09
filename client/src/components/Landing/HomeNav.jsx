@@ -37,15 +37,15 @@ const HomeNav = () => {
 
         <div className='flex gap-3 items-center'>
           {token && user ? (
-            <button onClick={handleNavigation} className='rounded-xl px-4 py-2 text-sm font-semibold text-white bg-gradient-to-r from-cyan-600 to-blue-700 shadow-md shadow-cyan-900/20 cursor-pointer'>
+            <button onClick={handleNavigation} className='primary-btn rounded-xl px-4 py-2 text-sm font-semibold cursor-pointer'>
               Dashboard
             </button>
           ) : (
             <>
-              <button onClick={() => navigate('/auth')} className='rounded-xl px-4 py-2 text-sm font-semibold text-slate-700 border border-slate-200 bg-white cursor-pointer hover:bg-slate-50'>
+              <button onClick={() => navigate('/auth')} className='secondary-btn rounded-xl px-4 py-2 text-sm font-semibold cursor-pointer'>
                 Sign In
               </button>
-              <button onClick={() => navigate('/signup')} className='rounded-xl px-4 py-2 text-sm font-semibold text-white bg-gradient-to-r from-cyan-600 to-blue-700 shadow-md shadow-cyan-900/20 cursor-pointer'>
+              <button onClick={() => navigate('/signup')} className='primary-btn rounded-xl px-4 py-2 text-sm font-semibold cursor-pointer'>
                 Start Free
               </button>
             </>
