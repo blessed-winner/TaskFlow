@@ -2,53 +2,73 @@ import { useAppContext } from '../../context/AppContext'
 
 const systemInfo = [
   {
-    title: 'Role-driven architecture',
-    content: 'Admins manage users and departments, Managers assign and monitor work, Users execute and update status.',
+    title: 'Archival Infrastructure',
+    content: 'Role-driven hierarchy where Archivists manage the directory, Curators assign tasks, and Operatives execute the protocol.',
   },
   {
-    title: 'End-to-end task lifecycle',
-    content: 'Tasks flow from creation to in-progress to completion with dashboard updates reflected across roles.',
+    title: 'Ledger Chronology',
+    content: 'A complete historical record of task evolution, from initial entry to final verification, synced across all stations.',
   },
   {
-    title: 'Controlled access',
-    content: 'Route guards and role authorization keep each workspace secure and limited to the right permissions.',
+    title: 'Secure Access Points',
+    content: 'Encryption and role-based authorization ensure that sensitive archives remain accessible only to verified agents.',
   },
 ]
 
-const productFeatures = ['Real-time notifications', 'Analytics per role', 'JWT-based auth flow']
+const operationalModules = [
+  {
+    label: 'Chronicle Feed',
+    description: 'Real-time synchronization of system events and operative updates.'
+  },
+  {
+    label: 'Intelligence Ledgers',
+    description: 'Deep analytical insights into departmental throughput and efficiency.'
+  },
+  {
+    label: 'Identity Protocols',
+    description: 'JWT-secured verification for all agent interactions and data requests.'
+  }
+]
 
 const Features = () => {
   const { featuresRef } = useAppContext()
 
   return (
     <section className='px-6 md:px-8 pb-20'>
-      <div id='system-overview' className='max-w-7xl mx-auto rounded-3xl border border-slate-200 bg-white/80 backdrop-blur p-8 md:p-10'>
+      <div id='system-overview' className='max-w-7xl mx-auto card-vintage bg-white/60 backdrop-blur p-8 md:p-12'>
         <div className='max-w-3xl'>
-          <p className='text-xs font-semibold uppercase tracking-wider text-cyan-700'>System Overview</p>
-          <h2 className='text-3xl md:text-4xl font-bold text-slate-900 mt-2'>What this system actually gives your team</h2>
-          <p className='text-slate-600 mt-3'>
-            TaskFlow is not just a to-do list. It is a role-based execution system where planning, assignment, and delivery are linked in a single product.
+          <div className='flex items-center gap-4 mb-4'>
+            <span className='ornament w-12'></span>
+            <p className='text-[10px] uppercase tracking-[0.4em] font-black' style={{ color: 'var(--color-accent)' }}>operational logic</p>
+          </div>
+          <h2 className='text-4xl md:text-5xl font-normal text-text mt-2'>The Architecture of Coordination</h2>
+          <p className='text-text-muted mt-6 text-lg italic leading-relaxed'>
+            TaskFlow is a sophisticated ledger system designed for high-stakes coordination. It transcends the common to-do list by binding planning, delegation, and execution into a singular, historical record.
           </p>
         </div>
 
-        <div className='grid md:grid-cols-3 gap-4 mt-8'>
+        <div className='grid md:grid-cols-3 gap-8 mt-16'>
           {systemInfo.map(({ title, content }, idx) => (
-            <div key={title} className='rounded-2xl border border-slate-200 bg-slate-50/70 p-5'>
-              <p className='text-xs font-semibold text-cyan-700 mb-2'>0{idx + 1}</p>
-              <h3 className='font-semibold text-lg text-slate-900'>{title}</h3>
-              <p className='text-sm text-slate-600 mt-2 leading-6'>{content}</p>
+            <div key={title} className='group border-t-2 pt-8 last:border-b-0' style={{ borderColor: 'var(--color-border)' }}>
+              <p className='text-[10px] font-black uppercase tracking-widest mb-4 opacity-40'>module 0{idx + 1}</p>
+              <h3 className='text-2xl font-normal mb-4' style={{ color: 'var(--color-text)' }}>{title}</h3>
+              <p className='text-sm text-text-muted leading-relaxed italic'>{content}</p>
             </div>
           ))}
         </div>
       </div>
 
-      <div ref={featuresRef} className='max-w-7xl mx-auto mt-8'>
-        <div className='rounded-3xl border border-cyan-100 bg-cyan-50/60 p-6 md:p-8'>
-          <h3 className='text-2xl font-bold text-slate-900'>Core capabilities</h3>
-          <div className='grid sm:grid-cols-3 gap-3 mt-4'>
-            {productFeatures.map((label) => (
-              <div key={label} className='rounded-xl bg-white border border-cyan-100 p-4'>
-                <p className='text-sm font-semibold text-slate-700'>{label}</p>
+      <div ref={featuresRef} className='max-w-7xl mx-auto mt-16'>
+        <div className='card-vintage p-8 md:p-12 border-accent/20 bg-accent-soft/30'>
+          <div className='flex items-center gap-4 mb-8'>
+            <h3 className='text-3xl font-normal' style={{ color: 'var(--color-text)' }}>Operational Modules</h3>
+            <div className='flex-1 h-px opacity-20' style={{ background: 'var(--color-text)' }}></div>
+          </div>
+          <div className='grid sm:grid-cols-3 gap-8'>
+            {operationalModules.map((module) => (
+              <div key={module.label} className='p-6 border transition-all duration-300 hover:shadow-glow' style={{ borderColor: 'var(--color-border)', background: 'var(--color-surface)' }}>
+                <p className='text-xs uppercase tracking-[0.2em] font-black mb-3' style={{ color: 'var(--color-accent)' }}>{module.label}</p>
+                <p className='text-sm text-text-muted leading-relaxed'>{module.description}</p>
               </div>
             ))}
           </div>

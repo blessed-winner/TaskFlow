@@ -5,7 +5,7 @@ import Footer from '../../components/Landing/Footer'
 
 const Home = () => {
   return (
-    <div className='overflow-x-hidden bg-gradient-to-b from-cyan-50/30 via-white to-amber-50/30'>
+    <div className='overflow-x-hidden' style={{ background: 'var(--color-background)' }}>
       <HomeNav />
       <Hero />
       <Features />

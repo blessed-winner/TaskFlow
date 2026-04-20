@@ -2,6 +2,7 @@ import { SearchIcon, Bell, UserIcon, LogOutIcon } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useAppContext } from '../../context/AppContext'
 import Notifications from '../Notifications'
+import ThemeToggle from '../ThemeToggle'
 import { useState } from 'react'
 
 const AdminNavbar = () => {
@@ -19,22 +20,27 @@ const AdminNavbar = () => {
   }
 
   return (
-    <header className='app-topbar fixed top-0 left-0 right-0 z-30 px-4 md:px-8 py-3'>
-      <div className='flex justify-between items-center gap-4'>
-        <div className='flex gap-3 items-center min-w-0'>
-          <h1 onClick={() => navigate('/')} className='font-bold text-2xl text-slate-900 cursor-pointer tracking-tight'>
-            TaskFlow
+    <header className='fixed top-4 left-4 right-4 md:left-[17.5rem] z-[100] h-[64px] px-6 border flex items-center transition-colors' style={{ background: 'var(--color-surface)', borderColor: 'var(--color-border)' }}>
+      <div className='w-full flex justify-between items-center'>
+        
+        {/* Brand Section */}
+        <div className='flex items-center gap-3 pr-4 border-r' style={{ borderColor: 'var(--color-border)' }}>
+          <div className='w-1.5 h-1.5 hidden sm:block' style={{ background: 'var(--color-text)' }}></div>
+          <h1 onClick={() => navigate('/')} className='text-xs tracking-[0.3em] font-bold uppercase cursor-pointer' style={{ color: 'var(--color-text)' }}>
+            <span className='sm:hidden'>TF</span>
+            <span className='hidden sm:inline'>TaskFlow</span>
           </h1>
-          <div className='hidden md:flex items-center gap-2 bg-white border border-cyan-100 rounded-full px-4 py-2 min-w-[320px]'>
-            <SearchIcon className='w-4 text-slate-400' />
-            <input type='text' placeholder='Search users, tasks, teams...' className='text-sm outline-none w-full bg-transparent text-slate-700' />
-          </div>
+          <span className='text-[9px] uppercase tracking-widest opacity-50 font-black ml-1'>Archivist</span>
         </div>
 
-        <div className='flex items-center gap-2 md:gap-3'>
+        {/* Actions Section */}
+        <div className='flex items-center gap-3 sm:gap-6'>
+          <ThemeToggle />
+          
           <div className='relative'>
-            <button onClick={() => setShowNotifications(true)} className='secondary-btn rounded-full p-2 cursor-pointer'>
-              <Bell className='text-slate-600' size={18} />
+            <button onClick={() => setShowNotifications(true)} className='btn-invert p-2 transition-colors rounded-none border border-transparent hover:border-current'>
+              <Bell size={14} />
+              {unreadCount > 0 && <span className='absolute top-1 right-1 w-1.5 h-1.5 bg-red-500 rounded-none'></span>}
             </button>
             {showNotifications && (
               <Notifications
@@ -44,17 +50,20 @@ const AdminNavbar = () => {
                 onClearAll={handleDeleteNotifications}
               />
             )}
-            {unreadCount > 0 && <span className='absolute -top-1 -right-1 bg-red-500 text-white px-1.5 rounded-full text-xs'>{unreadCount}</span>}
           </div>
-          <div className='hidden md:block text-right'>
-            <p className='text-sm text-slate-800 font-semibold'>{`${user.fName} ${user.lName}`}</p>
-            <p className='text-xs text-slate-500'>Admin</p>
+          
+          <div className='hidden sm:block w-px h-4 bg-gray-500 opacity-30'></div>
+          
+          <div className='flex items-center gap-3'>
+            <div className='text-right leading-none hidden sm:block'>
+              <p className='text-[9px] uppercase tracking-widest font-bold' style={{ color: 'var(--color-text)' }}>{user.fName}</p>
+            </div>
+            <button onClick={logout} className='btn-invert p-2 transition-colors rounded-none border border-transparent hover:border-current'>
+              <LogOutIcon size={14} />
+            </button>
           </div>
-          <UserIcon className='bg-cyan-600 p-1.5 rounded-full text-white' size={32} />
-          <button onClick={logout} className='secondary-btn rounded-full p-2 cursor-pointer'>
-            <LogOutIcon className='text-slate-600' size={18} />
-          </button>
         </div>
+        
       </div>
     </header>
   )

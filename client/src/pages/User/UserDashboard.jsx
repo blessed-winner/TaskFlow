@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react'
-import { AlertCircle, CheckCircle, ClockIcon } from 'lucide-react'
+import { AlertCircle, CheckCircle, ClockIcon, TrendingUp } from 'lucide-react'
 import { useAppContext } from '../../context/AppContext'
 
 const UserDashboard = () => {
   const { userDashboardData, userTasks, fetchUserTasks } = useAppContext()
   const user = JSON.parse(localStorage.getItem('user'))
-  const [progress, setProgress] = useState(null)
+  const [progress, setProgress] = useState(0)
 
   const completedTasks = userTasks?.filter((task) => task.status.toLowerCase() === 'completed') || []
   const completedCount = completedTasks.length || 0
@@ -29,101 +29,110 @@ const UserDashboard = () => {
     setProgress(barProgress)
   }, [userTasks])
 
-  return (
-    <div className='flex-1'>
-      <h1 className='font-semibold text-3xl text-slate-900 mb-6'>My Dashboard</h1>
-      <div className='grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5'>
-        <div className='stat-card p-5 rounded-2xl flex items-center justify-between'>
-          <span className='space-y-1'>
-            <p className='text-sm font-semibold text-slate-600'>Total Tasks</p>
-            <p className='text-2xl font-semibold text-cyan-600'>{userDashboardData.totalTasks}</p>
-          </span>
-          <ClockIcon className='text-cyan-600 h-7 w-7' />
+  const StatCard = ({ title, value, icon: Icon, colorClass }) => (
+    <div className='card-vintage p-4 transition-all duration-300 hover:shadow-glow'>
+      <div className='flex justify-between items-center'>
+        <div>
+          <p className='text-[9px] uppercase tracking-[0.3em] font-black opacity-40 mb-1'>{title}</p>
+          <p className={`text-2xl font-normal ${colorClass}`}>{value}</p>
         </div>
-        <div className='stat-card p-5 rounded-2xl flex items-center justify-between'>
-          <span className='space-y-1'>
-            <p className='text-sm font-semibold text-slate-600'>Completed</p>
-            <p className='text-2xl font-semibold text-emerald-600'>{userDashboardData.completedTasks}</p>
-          </span>
-          <CheckCircle className='text-emerald-600 h-7 w-7' />
-        </div>
-        <div className='stat-card p-5 rounded-2xl flex items-center justify-between'>
-          <span className='space-y-1'>
-            <p className='text-sm font-semibold text-slate-600'>In Progress</p>
-            <p className='text-2xl font-semibold text-cyan-600'>{userDashboardData.inProgressTasks}</p>
-          </span>
-          <AlertCircle className='text-cyan-600 h-7 w-7' />
-        </div>
-        <div className='stat-card p-5 rounded-2xl flex items-center justify-between'>
-          <span className='space-y-1'>
-            <p className='text-sm font-semibold text-slate-600'>Completion Rate</p>
-            <p className='text-2xl font-semibold text-indigo-600'>{userDashboardData.completionRate}%</p>
-          </span>
-          <div className='h-8 w-8 bg-indigo-600 flex items-center justify-center rounded-full'>
-            <span className='text-white text-sm font-bold'>%</span>
-          </div>
-        </div>
-      </div>
-      <div className='grid grid-cols-1 lg:grid-cols-2 mt-6 gap-5'>
-        <div className='panel p-6 rounded-2xl'>
-          <h2 className='font-semibold text-slate-900 text-lg mb-5'>Recent Tasks</h2>
-          <div className='flex flex-col gap-3'>
-            {totalCount > 0 ? (
-              totalTasks.map((task, index) => (
-                <div key={index} className='soft-panel px-4 py-3 rounded-xl flex justify-between items-center'>
-                  <span className='space-y-1'>
-                    <h4 className='font-semibold text-slate-900'>{task.title}</h4>
-                    <p className='text-sm font-medium text-slate-500'>{new Date(task.dueDate).toLocaleDateString()}</p>
-                  </span>
-                  <p
-                    className={`px-2 py-1 text-xs rounded-full font-semibold capitalize ${
-                      task.status.toLowerCase() === 'in_progress' && 'text-cyan-700 bg-cyan-100/70'
-                    } ${task.status.toLowerCase() === 'pending' && 'text-orange-700 bg-orange-100/70'} ${task.status.toLowerCase() === 'completed' && 'text-green-700 bg-green-100/70'}`}
-                  >
-                    {task.status.toLowerCase().replace('_', ' ')}
-                  </p>
-                </div>
-              ))
-            ) : (
-              <div className='w-full min-h-50 flex items-center justify-center'>
-                <h3 className='font-medium text-lg text-emerald-600'>No Tasks Available</h3>
-              </div>
-            )}
-          </div>
-        </div>
-        <div className='panel p-6 rounded-2xl text-sm'>
-          <h2 className='font-semibold text-slate-900 text-lg mb-5'>Today's Progress</h2>
-          <div className='space-y-4'>
-            <div className='flex justify-between items-center'>
-              <h4 className='font-semibold text-slate-800'>Tasks Completed Today</h4>
-              <p className='font-semibold text-2xl text-emerald-600'>{completedCount > 0 ? completedCount : 0}</p>
-            </div>
-            <div className='w-full bg-slate-300 rounded-full h-2'>
-              <div className='bg-emerald-600 h-2 rounded-full' style={{ width: `${progress}%` }}></div>
-            </div>
-            <p className='text-slate-600'>
-              {user?.tasks?.length === undefined && 'Waiting for new task schedule...'}
-              {user?.tasks?.length > 0 && progress >= 50 && "Great job, you're ahead of schedule."}
-              {user?.tasks?.length > 0 && progress < 50 && "You're behind schedule. Push through your current tasks."}
-            </p>
-            <div className='space-y-2'>
-              <div className='flex gap-2 items-center'>
-                <div className='bg-emerald-600 rounded-full h-3 w-3'></div>
-                <p className='font-medium text-sm text-slate-600'>Completed: {completedCount > 0 ? completedTasks[0].title : 'No task recorded'}</p>
-              </div>
-              <div className='flex gap-2 items-center'>
-                <div className='bg-cyan-600 rounded-full h-3 w-3'></div>
-                <p className='font-medium text-sm text-slate-600'>In progress: {inProgressCount > 0 ? inProgressTasks[0].title : 'No task recorded'}</p>
-              </div>
-              <div className='flex gap-2 items-center'>
-                <div className='bg-orange-600 rounded-full h-3 w-3'></div>
-                <p className='font-medium text-sm text-slate-600'>Pending: {pendingCount > 0 ? pendingTasks[0].title : 'No task recorded'}</p>
-              </div>
-            </div>
-          </div>
-        </div>
+        <Icon className={`h-6 w-6 opacity-20 ${colorClass}`} />
       </div>
     </div>
+  )
+
+  return (
+    <main className='flex-1 pb-6 space-y-6'>
+      <div className='flex justify-between items-end gap-4 border-b-2 pb-4' style={{ borderColor: 'var(--color-border)' }}>
+        <div className='fade-in-slide'>
+          <div className='flex items-center gap-4 mb-2'>
+            <span className='ornament w-12'></span>
+            <p className='text-[10px] uppercase tracking-[0.4em] font-black' style={{ color: 'var(--color-accent)' }}>operative station</p>
+          </div>
+          <h1 className='text-5xl font-normal' style={{ color: 'var(--color-text)' }}>Personal Station</h1>
+        </div>
+      </div>
+
+      <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4'>
+        <StatCard title='total protocols' value={userDashboardData.totalTasks} icon={ClockIcon} colorClass='text-text' />
+        <StatCard title='verified works' value={userDashboardData.completedTasks} icon={CheckCircle} colorClass='text-emerald-500' />
+        <StatCard title='active sessions' value={userDashboardData.inProgressTasks} icon={AlertCircle} colorClass='text-accent' />
+        <StatCard title='yield rate' value={`${userDashboardData.completionRate}%`} icon={TrendingUp} colorClass='text-text' />
+      </div>
+
+      <div className='grid grid-cols-1 lg:grid-cols-12 gap-6'>
+        <div className='lg:col-span-8 card-vintage p-0 overflow-hidden'>
+          <div className='p-4 border-b-2 flex justify-between items-center' style={{ borderColor: 'var(--color-border)' }}>
+            <h2 className='text-3xl font-normal' style={{ color: 'var(--color-text)' }}>Protocol Ledger</h2>
+            <p className='text-[10px] uppercase tracking-widest font-black opacity-40'>assigned execution tasks</p>
+          </div>
+          <div className='p-4'>
+            <div className='space-y-4'>
+              {totalCount > 0 ? (
+                totalTasks.map((task, index) => {
+                  const status = task.status.toLowerCase()
+                  return (
+                    <div key={index} className='flex justify-between items-center pb-3 border-b last:border-0' style={{ borderColor: 'var(--color-border)' }}>
+                      <div className='space-y-1'>
+                        <h4 className='text-lg font-normal' style={{ color: 'var(--color-text)' }}>{task.title}</h4>
+                        <p className='text-[9px] uppercase tracking-widest font-black opacity-40'>Due: {new Date(task.dueDate).toLocaleDateString()}</p>
+                      </div>
+                      <span className='text-[9px] uppercase tracking-[0.2em] font-black px-2 py-1 border'
+                            style={{ 
+                              color: status === 'completed' ? 'var(--color-emerald-500)' : 'var(--color-text)', 
+                              borderColor: 'var(--color-border)',
+                              background: 'var(--color-background)'
+                            }}>
+                        {status.replace('_', ' ')}
+                      </span>
+                    </div>
+                  )
+                })
+              ) : (
+                <div className='min-h-[200px] flex flex-col items-center justify-center opacity-20'>
+                  <p className='text-2xl font-normal'>No Protocols Available</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        <div className='lg:col-span-4 card-vintage p-4 flex flex-col'>
+          <div className='border-b-2 pb-3 mb-4 flex justify-between items-end' style={{ borderColor: 'var(--color-border)' }}>
+            <div>
+              <h2 className='text-3xl font-normal' style={{ color: 'var(--color-text)' }}>Yield</h2>
+              <p className='text-[10px] uppercase tracking-widest font-black opacity-40'>cycle progress</p>
+            </div>
+          </div>
+          <div className='flex-1 flex flex-col justify-center items-center py-6'>
+            <div className='relative w-32 h-32 flex items-center justify-center rounded-full border-4' style={{ borderColor: 'var(--color-border)' }}>
+              <div className='absolute inset-0 rounded-full border-4 transition-all duration-1000' 
+                   style={{ 
+                     borderColor: 'var(--color-accent)', 
+                     clipPath: `inset(${100 - progress}% 0 0 0)`,
+                     boxShadow: 'var(--shadow-glow)'
+                   }}></div>
+              <p className='text-3xl font-normal' style={{ color: 'var(--color-text)' }}>{progress}%</p>
+            </div>
+            <p className='mt-4 text-xs text-center text-text-muted italic leading-relaxed px-4'>
+              {totalCount === 0 && 'Waiting for new task schedule...'}
+              {totalCount > 0 && progress >= 50 && "Current yield exceeds established thresholds."}
+              {totalCount > 0 && progress < 50 && "Production requires additional focus."}
+            </p>
+          </div>
+          <div className='mt-auto pt-4 border-t-2 space-y-2' style={{ borderColor: 'var(--color-border)' }}>
+            <div className='flex justify-between items-center opacity-60'>
+              <p className='text-[9px] uppercase tracking-widest font-black'>completed protocols</p>
+              <p className='text-sm font-normal'>{completedCount}</p>
+            </div>
+            <div className='flex justify-between items-center opacity-60'>
+              <p className='text-[9px] uppercase tracking-widest font-black'>active sessions</p>
+              <p className='text-sm font-normal'>{inProgressCount}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
   )
 }
 
