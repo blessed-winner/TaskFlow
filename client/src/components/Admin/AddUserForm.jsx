@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import ReactDOM from 'react-dom'
 import { Flag, Users, X } from 'lucide-react'
 import RoleSelect from './RoleSelect'
 import { useAppContext } from '../../context/AppContext'
@@ -32,73 +33,99 @@ const AddUserForm = ({ onClose, onUserAdded, fetchDashboard }) => {
       role,
       deptId: departmentId,
     }
+    console.log('[Admin] Attempting to add user:', email);
     try {
       const { data } = await axios.post('/api/users/admin/add-user', formData)
-      data.success ? toast.success(data.message) : toast.error(data.message)
-      onUserAdded(data.user)
-      fetchDashboard()
+      if (data.success) {
+        console.log('[Admin] User added successfully:', data.user.email);
+        toast.success(data.message);
+        onUserAdded(data.user)
+        fetchDashboard()
 
-      setFirstName('')
-      setLastName('')
-      setEmail('')
-      setDepartmentId(null)
-      setRole('User')
+        setFirstName('')
+        setLastName('')
+        setEmail('')
+        setDepartmentId(null)
+        setRole('User')
+      } else {
+        console.warn('[Admin] Failed to add user:', data.message);
+        toast.error(data.message)
+      }
     } catch (error) {
-      toast.error(error.message)
+      console.error('[Admin] Error adding user:', error.response?.data?.message || error.message);
+      toast.error(error.response?.data?.message || error.message)
     }
   }
 
-  return (
-    <div className='inset-0 flex justify-center bg-slate-900/45 items-center fixed z-50 px-4'>
-      <form onSubmit={handleSubmit} className='panel max-w-2xl w-full overflow-auto max-h-[85vh] rounded-2xl px-7 py-6 text-slate-800 space-y-4'>
-        <div className='flex justify-between py-2 border-b border-cyan-100 mb-1'>
-          <h2 className='font-semibold text-2xl text-slate-900'>Add New User Account</h2>
-          <X onClick={onClose} className='text-slate-500 cursor-pointer' />
-        </div>
-        <div className='grid md:grid-cols-2 gap-4'>
-          <div>
-            <h5 className='font-semibold text-sm mb-1.5'>First Name *</h5>
-            <input type='text' value={firstName} onChange={(e) => setFirstName(e.target.value)} placeholder='Enter First Name' className='form-input' />
+  return ReactDOM.createPortal(
+    <div className='inset-0 flex justify-center items-center fixed z-[200] px-4' style={{ background: 'rgba(0, 0, 0, 0.85)' }}>
+      <form onSubmit={handleSubmit} className='card-vintage max-w-2xl w-full overflow-auto max-h-[90vh] space-y-10 relative' style={{ background: 'var(--color-background)', border: '1px solid var(--color-border)' }}>
+        <button 
+          onClick={onClose} 
+          className='absolute top-6 right-6 p-2 transition-colors hover:text-accent'
+          style={{ color: 'var(--color-text-muted)' }}
+        >
+          <X className='w-5 h-5' />
+        </button>
+
+        <div className='space-y-4'>
+          <div className='flex items-center gap-4'>
+            <span className='ornament w-8'></span>
+            <p className='text-[10px] uppercase tracking-[0.3em] font-black' style={{ color: 'var(--color-accent)' }}>formal request</p>
           </div>
-          <div>
-            <h5 className='font-semibold text-sm mb-1.5'>Last Name *</h5>
-            <input type='text' value={lastName} onChange={(e) => setLastName(e.target.value)} placeholder='Enter Last Name' className='form-input' />
-          </div>
-        </div>
-        <div>
-          <h5 className='font-semibold text-sm mb-1.5'>Email Address *</h5>
-          <input type='email' value={email} onChange={(e) => setEmail(e.target.value)} className='form-input' placeholder='Enter Email Address' />
+          <h2 className='text-4xl italic font-normal' style={{ color: 'var(--color-text)' }}>Agent Provisioning</h2>
+          <p className='text-xs uppercase tracking-widest font-bold opacity-60' style={{ color: 'var(--color-text-muted)' }}>Enter the details for the new operative below.</p>
         </div>
 
-        <div>
-          <h5 className='font-semibold text-sm mb-1.5'>Password *</h5>
-          <input type='password' value={password} onChange={(e) => setPassword(e.target.value)} className='form-input' placeholder='Enter Password' />
+        <div className='grid md:grid-cols-2 gap-10'>
+          <div className='space-y-1'>
+            <label className='text-[10px] uppercase tracking-widest font-black opacity-40' style={{ color: 'var(--color-text-muted)' }}>First Name</label>
+            <input type='text' value={firstName} onChange={(e) => setFirstName(e.target.value)} placeholder='e.g. Alexander' className='input-vintage w-full' />
+          </div>
+          <div className='space-y-1'>
+            <label className='text-[10px] uppercase tracking-widest font-black opacity-40' style={{ color: 'var(--color-text-muted)' }}>Last Name</label>
+            <input type='text' value={lastName} onChange={(e) => setLastName(e.target.value)} placeholder='e.g. Hamilton' className='input-vintage w-full' />
+          </div>
         </div>
 
-        <div>
-          <span className='flex items-center gap-1 mb-1.5'>
-            <Flag className='w-4' />
-            <h5 className='font-semibold text-sm'>Role *</h5>
-          </span>
-          <RoleSelect value={role} onChange={setRole} />
+        <div className='space-y-1'>
+          <label className='text-[10px] uppercase tracking-widest font-black opacity-40' style={{ color: 'var(--color-text-muted)' }}>Email Address</label>
+          <input type='email' value={email} onChange={(e) => setEmail(e.target.value)} className='input-vintage w-full' placeholder='agent@taskflow.io' />
         </div>
-        <div>
-          <span className='flex items-center gap-1 mb-1.5'>
-            <Users className='w-4' />
-            <h5 className='font-semibold text-sm'>Department *</h5>
-          </span>
-          <DepartmentSelect value={departmentId} onChange={setDepartmentId} />
+
+        <div className='space-y-1'>
+          <label className='text-[10px] uppercase tracking-widest font-black opacity-40' style={{ color: 'var(--color-text-muted)' }}>Secure Passphrase</label>
+          <input type='password' value={password} onChange={(e) => setPassword(e.target.value)} className='input-vintage w-full' placeholder='••••••••' />
         </div>
-        <div className='w-full flex justify-end gap-3 pt-4 border-t border-cyan-100 mt-2'>
-          <button onClick={onClose} className='secondary-btn px-4 py-2.5 rounded-xl font-semibold cursor-pointer'>
-            Cancel
+
+        <div className='grid md:grid-cols-2 gap-10'>
+          <div className='space-y-3'>
+            <div className='flex items-center gap-2'>
+              <Flag className='w-3 h-3 opacity-40' />
+              <label className='text-[10px] uppercase tracking-widest font-black opacity-40' style={{ color: 'var(--color-text-muted)' }}>Security Role</label>
+            </div>
+            <RoleSelect value={role} onChange={setRole} />
+          </div>
+          <div className='space-y-3'>
+            <div className='flex items-center gap-2'>
+              <Users className='w-3 h-3 opacity-40' />
+              <label className='text-[10px] uppercase tracking-widest font-black opacity-40' style={{ color: 'var(--color-text-muted)' }}>Department</label>
+            </div>
+            <DepartmentSelect value={departmentId} onChange={setDepartmentId} />
+          </div>
+        </div>
+
+        <div className='flex justify-end gap-8 pt-8 border-t' style={{ borderColor: 'var(--color-border)' }}>
+          <button onClick={onClose} className='text-xs uppercase tracking-widest font-bold opacity-60 hover:opacity-100 transition-opacity'>
+            Abort
           </button>
-          <button onClick={handleAddUser} className='primary-btn text-white px-4 py-2.5 rounded-xl font-semibold cursor-pointer'>
-            Add User
+          <button onClick={handleAddUser} className='btn-modern-vintage btn-solid'>
+            confirm entry
           </button>
         </div>
       </form>
-    </div>
+    </div>,
+    document.body
   )
 }
 

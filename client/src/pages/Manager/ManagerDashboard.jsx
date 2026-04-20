@@ -44,106 +44,116 @@ const ManagerDashboard = () => {
     setTasks((prev) => [newTask, ...prev.filter(Boolean)])
   }
 
-  return (
-    <div className='flex-1'>
-      {showForm && <CreateTaskForm onTaskAdded={handleTaskAdd} onClose={() => setShowForm(false)} />}
-      <div className='flex justify-between items-center mb-6 gap-4'>
+  const StatCard = ({ title, value, icon: Icon, colorClass }) => (
+    <div className='card-vintage p-4 transition-all duration-300 hover:shadow-glow'>
+      <div className='flex justify-between items-center'>
         <div>
-          <h1 className='font-semibold text-3xl text-slate-900'>Manager Dashboard</h1>
-          <p className='text-sm text-slate-600 mt-1'>Track execution quality and team performance in real time.</p>
+          <p className='text-[9px] uppercase tracking-[0.3em] font-black opacity-40 mb-1'>{title}</p>
+          <p className={`text-2xl font-normal ${colorClass}`}>{value}</p>
+        </div>
+        <Icon className={`h-6 w-6 opacity-20 ${colorClass}`} />
+      </div>
+    </div>
+  )
+
+  return (
+    <main className='flex-1 pb-6 space-y-6'>
+      {showForm && <CreateTaskForm onTaskAdded={handleTaskAdd} onClose={() => setShowForm(false)} />}
+      
+      <div className='flex justify-between items-end gap-4 border-b-2 pb-4' style={{ borderColor: 'var(--color-border)' }}>
+        <div className='fade-in-slide'>
+          <div className='flex items-center gap-4 mb-2'>
+            <span className='ornament w-12'></span>
+            <p className='text-[10px] uppercase tracking-[0.4em] font-black' style={{ color: 'var(--color-accent)' }}>operational hub</p>
+          </div>
+          <h1 className='text-5xl font-normal' style={{ color: 'var(--color-text)' }}>Strategic Overview</h1>
         </div>
         <AddTaskButton onClick={() => setShowForm(true)} />
       </div>
 
-      <div className='grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5'>
-        <div className='stat-card p-5 rounded-2xl flex items-center justify-between'>
-          <span className='space-y-1'>
-            <p className='text-sm font-semibold text-slate-600'>Total Tasks</p>
-            <p className='text-2xl font-semibold text-cyan-600'>{managerDashboardData.totalTasks}</p>
-          </span>
-          <ClipboardList className='text-cyan-600 h-7 w-7' />
-        </div>
-        <div className='stat-card p-5 rounded-2xl flex items-center justify-between'>
-          <span className='space-y-1'>
-            <p className='text-sm font-semibold text-slate-600'>Completed</p>
-            <p className='text-2xl font-semibold text-emerald-600'>{managerDashboardData.completedTasks}</p>
-          </span>
-          <TrendingUp className='text-emerald-600 h-7 w-7' />
-        </div>
-        <div className='stat-card p-5 rounded-2xl flex items-center justify-between'>
-          <span className='space-y-1'>
-            <p className='text-sm font-semibold text-slate-600'>Team Members</p>
-            <p className='text-2xl font-semibold text-indigo-600'>{managerDashboardData.teamMembers}</p>
-          </span>
-          <Users className='text-indigo-600 h-7 w-7' />
-        </div>
-        <div className='stat-card p-5 rounded-2xl flex items-center justify-between'>
-          <span className='space-y-1'>
-            <p className='text-sm font-semibold text-slate-600'>Overdue Tasks</p>
-            <p className='text-2xl font-semibold text-red-600'>{managerDashboardData.overDueTasks}</p>
-          </span>
-          <AlertCircle className='text-red-600 h-7 w-7' />
-        </div>
+      <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4'>
+        <StatCard title='total assignments' value={managerDashboardData.totalTasks} icon={ClipboardList} colorClass='text-text' />
+        <StatCard title='verified completion' value={managerDashboardData.completedTasks} icon={TrendingUp} colorClass='text-emerald-500' />
+        <StatCard title='active operatives' value={managerDashboardData.teamMembers} icon={Users} colorClass='text-text' />
+        <StatCard title='overdue protocols' value={managerDashboardData.overDueTasks} icon={AlertCircle} colorClass='text-red-500' />
       </div>
-      <div className='grid grid-cols-1 lg:grid-cols-2 mt-6 gap-5'>
-        <div className='panel p-6 rounded-2xl min-h-[350px] overflow-auto'>
-          <h2 className='font-semibold text-slate-900 text-lg mb-5'>Recent Tasks</h2>
-          <div className='flex flex-col gap-3'>
-            {tasks && tasks.filter(Boolean).length > 0 ? (
-              tasks
-                .filter(Boolean)
-                .sort((a, b) => new Date(b?.createdAt || b?.dueDate || 0) - new Date(a?.createdAt || a?.dueDate || 0))
-                .slice(0, 4)
-                .map((task, index) => {
-                  const status = (task?.status || '').toLowerCase()
-                  return (
-                    <div key={index} className='soft-panel px-4 py-3 rounded-xl flex justify-between items-center gap-3'>
-                      <span className='space-y-1'>
-                        <h4 className='font-semibold text-slate-900'>{task?.title || 'Untitled task'}</h4>
-                        <p className='text-sm font-light text-slate-600'>{task?.dueDate ? new Date(task.dueDate).toLocaleDateString() : 'No due date'}</p>
-                      </span>
-                      <p
-                        className={`px-2 py-1 text-xs rounded-full font-semibold capitalize ${
-                          status === 'in_progress' && 'text-cyan-700 bg-cyan-100/70'
-                        } ${status === 'pending' && 'text-orange-700 bg-orange-100/70'} ${status === 'completed' && 'text-green-700 bg-green-100/70'}`}
-                      >
-                        {status || 'unknown'}
-                      </p>
-                    </div>
-                  )
-                })
-            ) : (
-              <div className='w-full min-h-50 flex items-center justify-center'>
-                <h3 className='font-medium text-lg text-emerald-600'>No Tasks Found</h3>
-              </div>
-            )}
+
+      <div className='grid grid-cols-1 lg:grid-cols-12 gap-6'>
+        <div className='lg:col-span-7 card-vintage p-0 overflow-hidden'>
+          <div className='p-4 border-b-2 flex justify-between items-center' style={{ borderColor: 'var(--color-border)' }}>
+            <h2 className='text-3xl font-normal' style={{ color: 'var(--color-text)' }}>Active Chronicle</h2>
+            <p className='text-[10px] uppercase tracking-widest font-black opacity-40'>recent throughput</p>
+          </div>
+          <div className='p-4'>
+            <div className='space-y-4'>
+              {tasks && tasks.filter(Boolean).length > 0 ? (
+                tasks
+                  .filter(Boolean)
+                  .sort((a, b) => new Date(b?.createdAt || b?.dueDate || 0) - new Date(a?.createdAt || a?.dueDate || 0))
+                  .slice(0, 5)
+                  .map((task, index) => {
+                    const status = (task?.status || '').toLowerCase()
+                    return (
+                      <div key={index} className='flex justify-between items-center pb-3 border-b last:border-0' style={{ borderColor: 'var(--color-border)' }}>
+                        <div className='space-y-1'>
+                          <h4 className='text-lg font-normal' style={{ color: 'var(--color-text)' }}>{task?.title || 'Untitled Protocol'}</h4>
+                          <p className='text-[9px] uppercase tracking-widest font-black opacity-40'>{task?.dueDate ? `Verification Due: ${new Date(task.dueDate).toLocaleDateString()}` : 'No deadline established'}</p>
+                        </div>
+                        <span className='text-[9px] uppercase tracking-[0.2em] font-black px-2 py-1 border'
+                              style={{ 
+                                color: status === 'completed' ? 'var(--color-emerald-500)' : 'var(--color-text)', 
+                                borderColor: 'var(--color-border)',
+                                background: 'var(--color-background)'
+                              }}>
+                          {status.replace('_', ' ')}
+                        </span>
+                      </div>
+                    )
+                  })
+              ) : (
+                <div className='min-h-[200px] flex flex-col items-center justify-center opacity-20'>
+                  <p className='text-2xl font-normal'>No Active Records</p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
-        <div className='panel p-6 rounded-2xl text-sm min-h-[350px] overflow-auto'>
-          <h2 className='font-semibold text-slate-900 text-lg mb-5'>Team Performance</h2>
 
-          {users
-            .filter((user) => user.role === 'USER')
-            .map((user, index) => {
-              const userTasks = userTaskData[user.id] || []
-              const totalTasks = userTasks.length || 0
-              const completedTasks = userTasks.filter((t) => t.status.toLowerCase() === 'completed').length || 0
-              const completionRate = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0
-              return (
-                <div key={index} className='flex justify-between mb-4 soft-panel px-3 py-2.5 rounded-xl'>
-                  <p className='font-semibold text-slate-800'>{`${user.fName} ${user.lName}`}</p>
-                  <div className='space-y-1 text-right'>
-                    <p className='text-xs font-semibold'>{completionRate}%</p>
-                    <p className='font-light text-xs text-slate-500'>{totalTasks} tasks</p>
-                  </div>
-                </div>
-              )
-            })}
+        <div className='lg:col-span-5 card-vintage p-0 overflow-hidden'>
+          <div className='p-4 border-b-2' style={{ borderColor: 'var(--color-border)' }}>
+            <h2 className='text-3xl font-normal' style={{ color: 'var(--color-text)' }}>Operative Yield</h2>
+            <p className='text-[10px] uppercase tracking-widest font-black opacity-40'>performance metrics</p>
+          </div>
+          <div className='p-4'>
+            <div className='space-y-4'>
+              {users
+                .filter((user) => user.role === 'USER')
+                .map((user, index) => {
+                  const userTasks = userTaskData[user.id] || []
+                  const totalTasks = userTasks.length || 0
+                  const completedTasks = userTasks.filter((t) => t.status.toLowerCase() === 'completed').length || 0
+                  const completionRate = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0
+                  return (
+                    <div key={index} className='space-y-2'>
+                      <div className='flex justify-between items-end'>
+                        <div>
+                          <p className='text-sm font-normal' style={{ color: 'var(--color-text)' }}>{`${user.fName} ${user.lName}`}</p>
+                          <p className='text-[9px] uppercase tracking-widest font-black opacity-40'>{totalTasks} assignments established</p>
+                        </div>
+                        <p className='text-lg font-normal' style={{ color: 'var(--color-accent)' }}>{completionRate}%</p>
+                      </div>
+                      <div className='h-1 w-full bg-border/20 rounded-full overflow-hidden'>
+                        <div className='h-full bg-accent transition-all duration-500' style={{ width: `${completionRate}%`, boxShadow: 'var(--shadow-glow)' }}></div>
+                      </div>
+                    </div>
+                  )
+                })}
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+    </main>
   )
 }
 
 export default ManagerDashboard
-

@@ -7,66 +7,95 @@ const TeamOverview = () => {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const fetchRoleUsers = async () => {
-      const userRoleUsers = users.filter((user) => user.role === 'USER')
-      setUserData(userRoleUsers)
-      setLoading(false)
-    }
     if (users.length > 0) {
-      fetchRoleUsers()
+      setUserData(users.filter((u) => u.role === 'USER'))
+      setLoading(false)
     }
   }, [users])
 
   if (loading) {
     return (
-      <div className='flex-1'>
-        <h1 className='font-semibold text-3xl mb-5 text-slate-900'>Team Overview</h1>
-        <div className='panel rounded-2xl flex items-center justify-center h-64'>
-          <div className='text-slate-500'>Loading team data...</div>
+      <div className='space-y-8'>
+        <div className='pb-6 border-b' style={{ borderColor: 'var(--color-border)' }}>
+          <div className='flex items-center gap-4 mb-4'>
+            <span className='w-8 h-px shrink-0' style={{ background: 'var(--color-text)' }}></span>
+            <p className='text-[10px] uppercase tracking-[0.4em] font-sans font-bold' style={{ color: 'var(--color-accent)' }}>personnel</p>
+          </div>
+          <h1 className='text-3xl sm:text-5xl uppercase mb-2 leading-[0.9]'>
+            <span className='font-sans font-black tracking-tighter' style={{ color: 'var(--color-text)' }}>Team</span>
+            <span className='ml-3 font-serif font-normal italic tracking-tight capitalize' style={{ color: 'var(--color-text-muted)' }}>Overview.</span>
+          </h1>
         </div>
+        <p className='text-[10px] uppercase tracking-widest opacity-40 font-sans' style={{ color: 'var(--color-text)' }}>
+          Retrieving operative data...
+        </p>
       </div>
     )
   }
 
   return (
-    <div className='flex-1'>
-      <h1 className='font-semibold text-3xl mb-6 text-slate-900'>Team Overview</h1>
-      <div className='grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5'>
+    <div className='space-y-8'>
+
+      {/* ── Header ── */}
+      <div className='pb-6 border-b' style={{ borderColor: 'var(--color-border)' }}>
+        <div className='flex items-center gap-4 mb-4'>
+          <span className='w-8 h-px shrink-0' style={{ background: 'var(--color-text)' }}></span>
+          <p className='text-[10px] uppercase tracking-[0.4em] font-sans font-bold' style={{ color: 'var(--color-accent)' }}>personnel</p>
+        </div>
+        <h1 className='text-3xl sm:text-5xl uppercase mb-2 leading-[0.9]'>
+          <span className='font-sans font-black tracking-tighter' style={{ color: 'var(--color-text)' }}>Team</span>
+          <span className='ml-3 font-serif font-normal italic tracking-tight capitalize' style={{ color: 'var(--color-text-muted)' }}>Overview.</span>
+        </h1>
+      </div>
+
+      {/* ── Operative Cards ── */}
+      <div className='grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4'>
         {userData.map((user, index) => {
-          const totalTasks = user.tasks?.length || 0
+          const totalTasks     = user.tasks?.length || 0
           const completedTasks = user.tasks?.filter((t) => t.status === 'COMPLETED').length || 0
-          const pendingTasks = user.tasks?.filter((t) => t.status === 'PENDING').length || 0
-          const progress = totalTasks > 0 ? Math.floor((completedTasks / totalTasks) * 100) : 0
+          const pendingTasks   = user.tasks?.filter((t) => t.status === 'PENDING').length || 0
+          const progress       = totalTasks > 0 ? Math.floor((completedTasks / totalTasks) * 100) : 0
+
           return (
-            <div key={index} className='panel px-5 py-4 rounded-2xl'>
-              <div className='flex space-x-3'>
-                <span className='bg-cyan-600 text-white w-12 rounded-full flex justify-center items-center h-12 font-semibold'>{user.fName?.slice(0, 1) || 'U'}</span>
-                <span>
-                  <h4 className='font-semibold text-lg text-slate-900'>{`${user.fName} ${user.lName}`}</h4>
-                  <p className='font-medium text-sm text-slate-500'>{user.department?.name || 'No Department'}</p>
-                </span>
-              </div>
-              <div className='space-y-2 text-sm mt-4 font-medium text-slate-600'>
-                <div className='flex justify-between'>
-                  <p>Total Tasks</p>
-                  <p className='font-semibold text-slate-800'>{totalTasks}</p>
+            <div key={index} className='border' style={{ borderColor: 'var(--color-border)', background: 'var(--color-surface)' }}>
+              {/* Card header with avatar */}
+              <div className='flex items-center gap-4 px-5 py-4 border-b' style={{ borderColor: 'var(--color-border)' }}>
+                <div className='w-10 h-10 border flex items-center justify-center font-sans font-black text-sm uppercase flex-shrink-0'
+                     style={{ background: 'var(--color-text)', color: 'var(--color-background)', borderColor: 'var(--color-border)' }}>
+                  {user.fName?.slice(0, 1) || 'U'}
                 </div>
-                <div className='flex justify-between'>
-                  <p>Completed</p>
-                  <p className='text-emerald-600 font-semibold'>{completedTasks}</p>
-                </div>
-                <div className='flex justify-between'>
-                  <p>Pending</p>
-                  <p className='text-amber-600 font-semibold'>{pendingTasks}</p>
+                <div className='min-w-0'>
+                  <h4 className='font-sans font-bold text-sm uppercase tracking-wider truncate' style={{ color: 'var(--color-text)' }}>
+                    {user.fName} {user.lName}
+                  </h4>
+                  <p className='text-[9px] uppercase tracking-widest opacity-50 font-sans mt-0.5' style={{ color: 'var(--color-text)' }}>
+                    {user.department?.name || 'Unassigned'}
+                  </p>
                 </div>
               </div>
-              <div className='mt-5'>
-                <div className='flex justify-between'>
-                  <p className='text-sm font-medium text-slate-600'>Progress</p>
-                  <p className='text-sm font-medium text-slate-600'>{progress}%</p>
+
+              {/* Stats */}
+              <div className='divide-y' style={{ borderColor: 'var(--color-border)' }}>
+                {[
+                  { label: 'Total Tasks', value: totalTasks },
+                  { label: 'Completed',   value: completedTasks },
+                  { label: 'Pending',     value: pendingTasks },
+                ].map(({ label, value }) => (
+                  <div key={label} className='flex justify-between items-center px-5 py-2.5'>
+                    <span className='text-[9px] uppercase tracking-widest font-sans opacity-50' style={{ color: 'var(--color-text)' }}>{label}</span>
+                    <span className='font-sans font-bold text-sm' style={{ color: 'var(--color-text)' }}>{value}</span>
+                  </div>
+                ))}
+              </div>
+
+              {/* Progress */}
+              <div className='px-5 py-4 border-t' style={{ borderColor: 'var(--color-border)' }}>
+                <div className='flex justify-between mb-2'>
+                  <span className='text-[8px] uppercase tracking-widest font-sans opacity-40' style={{ color: 'var(--color-text)' }}>Progress</span>
+                  <span className='text-[8px] uppercase tracking-widest font-sans font-bold' style={{ color: 'var(--color-text)' }}>{progress}%</span>
                 </div>
-                <div className='w-full bg-slate-200 rounded-full h-2 mt-2'>
-                  <div className='bg-cyan-500 h-2 rounded-full transition-all duration-300' style={{ width: `${progress}%` }}></div>
+                <div className='w-full h-px' style={{ background: 'var(--color-border)' }}>
+                  <div className='h-px transition-all duration-500' style={{ width: `${progress}%`, background: 'var(--color-text)' }} />
                 </div>
               </div>
             </div>
@@ -78,4 +107,3 @@ const TeamOverview = () => {
 }
 
 export default TeamOverview
-

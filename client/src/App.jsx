@@ -19,12 +19,14 @@ import RoleGuard from './components/Guard/RoleGuard'
 import Unauthorized from './pages/Unauthorized'
 import Home from './pages/Landing/Home'
 import Signup from './components/auth/Signup'
+import { ThemeProvider } from './context/ThemeContext'
 
 const App = () => {
   return (
-    <div>
-      <Toaster/>
-       <Routes>
+    <ThemeProvider>
+      <div>
+        <Toaster/>
+         <Routes>
         <Route path="/" element={<Home/>} />
  
          <Route path = '/admin' element = {
@@ -58,7 +60,8 @@ const App = () => {
          <Route path='/signup' element={<Signup/>}/>
          <Route path='/unauthorized' element={<Unauthorized/>}/>
        </Routes>
-    </div>
+      </div>
+    </ThemeProvider>
   )
 }
 

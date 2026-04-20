@@ -20,7 +20,7 @@ const User = () => {
   }
 
   return (
-    <div className='flex-1'>
+    <div className='flex-1 pb-12'>
       {showForm && <AddUserForm onClose={() => setShowForm(false)} onUserAdded={handleUserAdd} fetchDashboard={fetchDashboardData} />}
       {showUpdateForm && selectedUser && (
         <UpdateUserForm
@@ -31,37 +31,44 @@ const User = () => {
           fetchUsers={fetchUsers}
         />
       )}
-      <div className='flex justify-between items-center mb-6 gap-4'>
-        <div>
-          <h1 className='font-semibold text-3xl text-slate-900'>User Management</h1>
-          <p className='text-sm text-slate-600 mt-1'>View, update, and manage access across your organization.</p>
+      
+      <div className='flex justify-between items-end mb-16 gap-4 border-b-2 pb-8' style={{ borderColor: 'var(--color-border)' }}>
+        <div className='fade-in-slide'>
+          <div className='flex items-center gap-4 mb-2'>
+            <span className='ornament w-12'></span>
+            <p className='text-[10px] uppercase tracking-[0.4em] font-black' style={{ color: 'var(--color-accent)' }}>personnel management</p>
+          </div>
+          <h1 className='text-5xl font-normal' style={{ color: 'var(--color-text)' }}>Agent Directory</h1>
         </div>
         <AddUserButton onClick={() => setShowForm(true)} />
       </div>
-      <div className='panel rounded-2xl overflow-x-auto'>
-        <table className='w-full text-sm min-w-[760px]'>
-          <thead className='text-slate-500 uppercase text-xs bg-cyan-50/60 text-left'>
-            <tr>
-              <th className='py-4 px-3 xl:px-5 font-semibold'>User</th>
-              <th className='py-4 px-3 xl:px-5 font-semibold'>Role</th>
-              <th className='py-4 px-3 xl:px-5 font-semibold'>Department</th>
-              <th className='py-4 px-3 xl:px-5 font-semibold'>Status</th>
-              <th className='py-4 px-3 xl:px-5 font-semibold'>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {users.map((user, index) => (
-              <UserTableData
-                user={user}
-                key={index}
-                fetchUsers={fetchUsers}
-                fetchDashboard={fetchDashboardData}
-                onShowUpdateForm={() => setShowUpdateForm(true)}
-                setSelectedUser={setSelectedUser}
-              />
-            ))}
-          </tbody>
-        </table>
+
+      <div className='card-vintage p-0 overflow-hidden fade-in-slide'>
+        <div className='overflow-x-auto'>
+          <table className='w-full text-sm min-w-[760px]'>
+            <thead className='uppercase text-[10px] tracking-[0.2em] font-black opacity-60 border-b-2' style={{ borderColor: 'var(--color-border)', color: 'var(--color-text-muted)' }}>
+              <tr>
+                <th className='py-6 px-6 text-left'>Agent</th>
+                <th className='py-6 px-6 text-left'>Designation</th>
+                <th className='py-6 px-6 text-left'>Department</th>
+                <th className='py-6 px-6 text-left'>Protocol Status</th>
+                <th className='py-6 px-6 text-right'>Actions</th>
+              </tr>
+            </thead>
+            <tbody className='divide-y' style={{ borderColor: 'var(--color-border)' }}>
+              {users.map((user, index) => (
+                <UserTableData
+                  user={user}
+                  key={index}
+                  fetchUsers={fetchUsers}
+                  fetchDashboard={fetchDashboardData}
+                  onShowUpdateForm={() => setShowUpdateForm(true)}
+                  setSelectedUser={setSelectedUser}
+                />
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   )

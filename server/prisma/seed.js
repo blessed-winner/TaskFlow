@@ -4,49 +4,67 @@ const bcrypt = require('bcrypt');
 const prisma = new PrismaClient();
 
 async function main() {
-  const engineering = await prisma.department.upsert({
-    where: { id: 1 },
-    update: { name: 'Engineering' },
-    create: {
-      id: 1,
-      name: 'Engineering',
-    },
-  });
+  // Create Departments
+  const departments = [
+    { id: 1, name: 'Intelligence & Strategy' },
+    { id: 2, name: 'Operational Security' },
+    { id: 3, name: 'Archival Engineering' },
+    { id: 4, name: 'Field Communications' }
+  ];
 
-  const operations = await prisma.department.upsert({
-    where: { id: 2 },
-    update: { name: 'Operations' },
-    create: {
-      id: 2,
-      name: 'Operations',
-    },
-  });
+  for (const dept of departments) {
+    await prisma.department.upsert({
+      where: { id: dept.id },
+      update: { name: dept.name },
+      create: { id: dept.id, name: dept.name },
+    });
+  }
+
+  const engineering = departments[2];
+  const operations = departments[1];
+  const intelligence = departments[0];
 
   const usersToSeed = [
     {
-      fName: 'Admin',
-      lName: 'User',
-      email: 'admin@taskflow.local',
+      fName: 'Alexander',
+      lName: 'Vance',
+      email: 'admin@taskflow.io',
       role: 'ADMIN',
-      deptId: engineering.id,
+      deptId: intelligence.id,
       password: 'Admin123!',
     },
     {
-      fName: 'Manager',
-      lName: 'User',
-      email: 'manager@taskflow.local',
+      fName: 'Sarah',
+      lName: 'Connor',
+      email: 'manager@taskflow.io',
       role: 'MANAGER',
       deptId: operations.id,
       password: 'Manager123!',
     },
     {
-      fName: 'Team',
-      lName: 'User',
-      email: 'user@taskflow.local',
+      fName: 'Gordon',
+      lName: 'Freeman',
+      email: 'agent@taskflow.io',
       role: 'USER',
       deptId: engineering.id,
       password: 'User123!',
     },
+    {
+      fName: 'Elena',
+      lName: 'Fisher',
+      email: 'elena@taskflow.io',
+      role: 'USER',
+      deptId: departments[3].id,
+      password: 'User123!',
+    },
+    {
+      fName: 'Victor',
+      lName: 'Sullivan',
+      email: 'sully@taskflow.io',
+      role: 'MANAGER',
+      deptId: intelligence.id,
+      password: 'Manager123!',
+    }
   ];
 
   for (const seedUser of usersToSeed) {
@@ -72,10 +90,13 @@ async function main() {
     });
   }
 
-  console.log('Seed complete. Test users created/updated:');
-  console.log('Admin   -> admin@taskflow.local / Admin123!');
-  console.log('Manager -> manager@taskflow.local / Manager123!');
-  console.log('User    -> user@taskflow.local / User123!');
+  console.log('Seed complete. Neo-Vintage agents provisioned:');
+  console.log('-------------------------------------------');
+  console.log('Alexander (Admin)  -> admin@taskflow.io / Admin123!');
+  console.log('Sarah (Manager)    -> manager@taskflow.io / Manager123!');
+  console.log('Gordon (Agent)     -> agent@taskflow.io / User123!');
+  console.log('Elena (Agent)      -> elena@taskflow.io / User123!');
+  console.log('Sullivan (Manager) -> sully@taskflow.io / Manager123!');
 }
 
 main()

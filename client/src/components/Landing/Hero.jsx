@@ -13,100 +13,95 @@ const Hero = () => {
   }
 
   return (
-    <section className='relative min-h-screen flex items-center pt-28 pb-18 bg-gradient-to-b from-cyan-50/70 via-white to-amber-50/50'>
-      <div className='max-w-7xl mx-auto px-6 md:px-8 grid lg:grid-cols-2 gap-12 items-center'>
-        <div className='space-y-7'>
-          <div className='inline-flex items-center rounded-full bg-cyan-100 text-cyan-800 px-4 py-1.5 text-xs font-semibold'>
-            ROLE-BASED TASK OPERATING SYSTEM
-          </div>
-
-          <h1 className='text-4xl md:text-6xl font-bold leading-tight text-slate-900'>
-            One workspace for
-            <span className='text-cyan-700'> teams, tasks, and execution</span>
-          </h1>
-
-          <p className='text-lg text-slate-600 max-w-xl'>
-            TaskFlow gives Admins, Managers, and Users one connected system for planning, delegation, and completion tracking in real time.
-          </p>
-
-          <div className='flex flex-wrap gap-3'>
-            {token && user ? (
-              <button onClick={handleNavigation} className='primary-btn rounded-xl px-8 py-3 font-semibold cursor-pointer'>
-                Open Dashboard
-              </button>
-            ) : (
-              <>
-                <button onClick={() => navigate('/signup')} className='primary-btn rounded-xl px-8 py-3 font-semibold cursor-pointer'>
-                  Create Account
-                </button>
-                <button onClick={() => navigate('/auth')} className='secondary-btn rounded-xl px-8 py-3 font-semibold cursor-pointer'>
-                  Sign In
-                </button>
-              </>
-            )}
-          </div>
-
-          <div className='grid grid-cols-2 gap-3 max-w-md pt-2'>
-            <div className='rounded-xl bg-white border border-cyan-100 p-3'>
-              <p className='text-xs text-slate-500'>Live Status</p>
-              <p className='text-xl font-bold text-slate-900'>24/7</p>
+    <section className='relative min-h-screen pt-32 md:pt-48 pb-20'>
+      <div className='max-w-7xl mx-auto px-4 md:px-12'>
+        
+        <div className='grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8'>
+          {/* Main Typography Column */}
+          <div className='lg:col-span-8 flex flex-col justify-start'>
+            <div className='border-l-2 pl-4 mb-12' style={{ borderColor: 'var(--color-text)' }}>
+              <p className='text-[10px] uppercase tracking-[0.3em] font-bold font-sans' style={{ color: 'var(--color-text)' }}>
+                System Initialize: 2026/TF
+              </p>
             </div>
-            <div className='rounded-xl bg-white border border-cyan-100 p-3'>
-              <p className='text-xs text-slate-500'>Role Access</p>
-              <p className='text-xl font-bold text-slate-900'>Admin / Manager / User</p>
+
+            <h1 className='text-6xl md:text-8xl lg:text-[10rem] leading-[0.85] uppercase mb-8' style={{ color: 'var(--color-text)' }}>
+              <span className='font-sans font-black tracking-tighter'>Task</span> <br/>
+              <span className='ml-12 md:ml-24 font-serif font-normal italic tracking-tight capitalize' style={{ color: 'var(--color-text-muted)' }}>Flow.</span>
+            </h1>
+
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-8 mt-12'>
+              <p className='text-sm leading-relaxed font-sans font-medium md:max-w-sm' style={{ color: 'var(--color-text)' }}>
+                A structural approach to team coordination. Stripped of the unnecessary. Built for scale.
+              </p>
+              
+              <div className='flex flex-col items-start gap-4'>
+                {token && user ? (
+                  <button onClick={handleNavigation} className='w-full md:w-auto border py-4 px-8 text-xs uppercase tracking-widest font-bold btn-invert' style={{ borderColor: 'var(--color-text)' }}>
+                    Access Console
+                  </button>
+                ) : (
+                  <>
+                    <button onClick={() => navigate('/signup')} className='w-full md:w-auto border py-4 px-8 text-xs uppercase tracking-widest font-bold btn-solid'>
+                      Initialize
+                    </button>
+                    <button onClick={() => navigate('/auth')} className='w-full md:w-auto py-4 px-8 text-xs uppercase tracking-widest font-bold hover:opacity-50 transition-opacity whitespace-nowrap'>
+                      Authenticate
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Data Readout Column */}
+          <div className='lg:col-span-4 flex flex-col justify-start lg:mt-[4.5rem]'>
+            <div className='border p-6' style={{ borderColor: 'var(--color-border)', background: 'transparent' }}>
+              <div className='border-b pb-4 mb-6 flex justify-between' style={{ borderColor: 'var(--color-border)' }}>
+                <div>
+                  <h3 className='text-sm uppercase tracking-widest font-bold' style={{ color: 'var(--color-text)' }}>Ledger</h3>
+                  <p className='text-[10px] uppercase tracking-[0.2em] mt-1' style={{ color: 'var(--color-text-muted)' }}>Vol. i</p>
+                </div>
+                <div className='text-right'>
+                  <p className='text-[10px] uppercase tracking-widest font-medium' style={{ color: 'var(--color-text-muted)' }}>Sync</p>
+                  <div className='flex items-center gap-1.5 mt-1 justify-end'>
+                    <span className='w-1.5 h-1.5 rounded-none' style={{ background: 'var(--color-text)' }}></span>
+                    <p className='text-[10px] font-bold uppercase' style={{ color: 'var(--color-text)' }}>OK</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className='space-y-4'>
+                {[
+                  { id: '01', label: 'Archival Systems', status: 'Process' },
+                  { id: '02', label: 'Manuscript Review', status: 'Queued' },
+                  { id: '03', label: 'Protocol Alpha', status: 'Verified' }
+                ].map((item, i) => (
+                  <div key={i} className='flex justify-between items-end border-b border-dashed pb-2' 
+                       style={{ borderColor: 'var(--color-text-muted)' }}>
+                    <div className='flex gap-4 items-end'>
+                      <span className='text-[9px] font-mono' style={{ color: 'var(--color-text-muted)' }}>{item.id}</span>
+                      <p className='text-xs uppercase tracking-widest font-bold' style={{ color: 'var(--color-text)' }}>{item.label}</p>
+                    </div>
+                    <span className='text-[10px] uppercase tracking-[0.2em]' style={{ color: 'var(--color-text)' }}>
+                      {item.status}
+                    </span>
+                  </div>
+                ))}
+              </div>
+
+              <div className='mt-8 pt-4 flex justify-between items-center py-2 px-4' style={{ background: 'var(--color-text)', color: 'var(--color-background)' }}>
+                <p className='text-[10px] uppercase tracking-[0.2em] font-bold'>
+                  Agents Active
+                </p>
+                <p className='text-xs font-mono font-bold'>
+                  24.0
+                </p>
+              </div>
             </div>
           </div>
         </div>
 
-        <div className='relative'>
-          <div className='relative rounded-3xl border border-cyan-100 bg-white/90 backdrop-blur p-6 shadow-2xl shadow-slate-900/10'>
-            <div className='flex items-center justify-between border-b border-slate-100 pb-4'>
-              <h3 className='text-lg font-bold text-slate-900'>Execution Snapshot</h3>
-              <span className='text-xs font-semibold text-cyan-700 bg-cyan-100 px-2.5 py-1 rounded-full'>Live</span>
-            </div>
-
-            <div className='mt-4 space-y-3'>
-              <div className='rounded-xl bg-slate-50 border border-slate-100 p-3 flex justify-between items-center'>
-                <div>
-                  <p className='text-sm font-semibold text-slate-900'>Backend API migration</p>
-                  <p className='text-xs text-slate-500'>Assigned by Manager</p>
-                </div>
-                <span className='text-xs font-semibold text-cyan-700 bg-cyan-100 px-2 py-1 rounded-full'>In Progress</span>
-              </div>
-
-              <div className='rounded-xl bg-slate-50 border border-slate-100 p-3 flex justify-between items-center'>
-                <div>
-                  <p className='text-sm font-semibold text-slate-900'>UI approval workflow</p>
-                  <p className='text-xs text-slate-500'>Queued by Admin</p>
-                </div>
-                <span className='text-xs font-semibold text-amber-700 bg-amber-100 px-2 py-1 rounded-full'>Pending</span>
-              </div>
-
-              <div className='rounded-xl bg-slate-50 border border-slate-100 p-3 flex justify-between items-center'>
-                <div>
-                  <p className='text-sm font-semibold text-slate-900'>Auth + role checks</p>
-                  <p className='text-xs text-slate-500'>Completed by User</p>
-                </div>
-                <span className='text-xs font-semibold text-emerald-700 bg-emerald-100 px-2 py-1 rounded-full'>Complete</span>
-              </div>
-            </div>
-
-            <div className='mt-5 grid grid-cols-3 gap-2'>
-              <div className='rounded-lg bg-cyan-50 border border-cyan-100 p-2 text-center'>
-                <p className='text-xs text-slate-500'>Total</p>
-                <p className='text-lg font-bold text-slate-900'>128</p>
-              </div>
-              <div className='rounded-lg bg-emerald-50 border border-emerald-100 p-2 text-center'>
-                <p className='text-xs text-slate-500'>Done</p>
-                <p className='text-lg font-bold text-emerald-700'>92</p>
-              </div>
-              <div className='rounded-lg bg-amber-50 border border-amber-100 p-2 text-center'>
-                <p className='text-xs text-slate-500'>Due Soon</p>
-                <p className='text-lg font-bold text-amber-700'>11</p>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </section>
   )

@@ -2,7 +2,7 @@
 
 A modern task management application built with React and Vite, designed to streamline project workflows and team collaboration.
 
-## 🚀 Features
+## Features
 
 ### Admin Dashboard
 - **User Management**: View and manage all users across different departments
@@ -24,7 +24,7 @@ A modern task management application built with React and Vite, designed to stre
 - Database Department
 - Networking Department
 
-## 🛠️ Technology Stack
+## Technology Stack
 
 ### Frontend
 - **React 19.1.0** - Modern UI library for building interactive interfaces
@@ -38,7 +38,7 @@ A modern task management application built with React and Vite, designed to stre
 - **ESLint 9.30.1** - Code linting and formatting
 - **TypeScript Support** - Type definitions for React components
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 TaskFlow/
@@ -72,7 +72,7 @@ TaskFlow/
 │   └── README.md
 ```
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 - Node.js (version 18 or higher)
@@ -107,7 +107,7 @@ TaskFlow/
 - `npm run lint` - Run ESLint
 - `npm run preview` - Preview production build
 
-## 📊 Dashboard Features
+## Dashboard Features
 
 ### Admin Dashboard Overview
 - **Total Users**: Track registered users across all departments
@@ -127,7 +127,7 @@ TaskFlow/
 - Backup information
 - Performance metrics
 
-## 🎨 UI/UX Features
+## UI/UX Features
 
 - **Responsive Design**: Optimized for desktop, tablet, and mobile devices
 - **Modern Interface**: Clean, intuitive design with Tailwind CSS
@@ -135,7 +135,7 @@ TaskFlow/
 - **Color-coded Status**: Visual indicators for different task states
 - **Card-based Layout**: Organized information display
 
-## 🔧 Configuration
+## Configuration
 
 ### Environment Setup
 The application uses Vite for development and build processes. Configuration can be found in:
@@ -150,7 +150,7 @@ The application uses React Router for navigation:
 - `/admin/analytics` - Analytics page
 - `/admin/settings` - Settings page
 
-## 🤝 Contributing
+## Contributing
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
@@ -158,15 +158,15 @@ The application uses React Router for navigation:
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## 📝 License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 👥 Authors
+## Authors
 
 - **Blessed Winner** - *Initial work* - [blessed-winner](https://github.com/blessed-winner)
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - React team for the amazing framework
 - Vite team for the fast build tool
@@ -175,4 +175,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-**TaskFlow** - Streamlining your workflow, one task at a time! 🎯 
+**TaskFlow** - Streamlining your workflow, one task at a time! 
