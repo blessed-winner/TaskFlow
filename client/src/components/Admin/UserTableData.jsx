@@ -30,7 +30,7 @@ const UserTableData = ({ user, fetchUsers, fetchDashboard, onShowUpdateForm, set
     <tr className='group transition-all hover:bg-surface-hover'>
       <td className='py-5 px-6'>
         <div className='flex items-center gap-4'>
-          <div className='w-10 h-10 flex items-center justify-center rounded-full text-lg font-normal border'
+          <div className='w-10 h-10 flex items-center justify-center rounded-none text-lg font-normal border'
                style={{ background: 'var(--color-primary)', color: 'var(--color-secondary)', borderColor: 'var(--color-border)' }}>
             {fName.slice(0, 1)}
           </div>

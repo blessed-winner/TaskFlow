@@ -7,7 +7,7 @@ const TaskTableData = ({ task, fetchTasks, fetchManagerDashboard, onEditTask }) 
   const { title, description, dueDate, user, priority, status } = task
 
   const deleteTask = async () => {
-    const confirm = window.confirm('Are you sure you want to delete this task ?')
+    const confirm = window.confirm('Are you sure you want to delete this protocol record?')
     if (!confirm) return
     try {
       const { data } = await axios.delete(`/api/tasks/delete/${task.id}`)
@@ -19,49 +19,84 @@ const TaskTableData = ({ task, fetchTasks, fetchManagerDashboard, onEditTask }) 
         toast.error(data.message)
       }
     } catch (error) {
-      toast.error(error)
+      toast.error(error.message)
     }
   }
 
+  const getStatusColor = (s) => {
+    const statusLower = s.toLowerCase()
+    if (statusLower === 'completed') return 'var(--color-emerald-500)'
+    if (statusLower === 'in_progress') return 'var(--color-accent)'
+    if (statusLower === 'pending') return '#f59e0b' // fallback amber
+    return 'var(--color-text-muted)'
+  }
+
+  const getPriorityColor = (p) => {
+    const pLower = p.toLowerCase()
+    if (pLower === 'high') return '#ef4444' // red
+    if (pLower === 'medium') return '#f97316' // orange
+    return '#84cc16' // lime/yellow
+  }
+
   return (
-    <tr className='border-b border-cyan-100 text-slate-800 hover:bg-cyan-50/60 transition-all'>
-      <td className='py-3 px-3 xl:px-5'>
-        <div className='space-y-1'>
-          <h4 className='font-semibold'>{title}</h4>
-          <p className='font-medium text-sm text-slate-500'>{description.length > 40 ? `${description.slice(0, 40)}...` : description}</p>
+    <tr className='group border-b border-dashed transition-all hover:bg-black/5' style={{ borderColor: 'var(--color-border)' }}>
+      <td className='py-5 px-5'>
+        <div className='flex flex-col'>
+          <h4 className='text-sm font-sans font-bold uppercase tracking-wider' style={{ color: 'var(--color-text)' }}>{title}</h4>
+          <p className='text-[10px] uppercase tracking-widest font-medium opacity-40 mt-1' style={{ color: 'var(--color-text)' }}>
+            {description.length > 50 ? `${description.slice(0, 50)}...` : description}
+          </p>
         </div>
       </td>
-      <td className='py-3 px-3 xl:px-5 space-x-2'>
-        <h1 className='text-white bg-cyan-500 w-8 h-8 inline-flex items-center justify-center rounded-full font-semibold'>{user.fName.slice(0, 1)}</h1>
-        <p className='font-medium inline-block text-slate-700'>{`${user.fName} ${user.lName}`}</p>
+      
+      <td className='py-5 px-5'>
+        <div className='flex items-center gap-3'>
+          <div className='w-8 h-8 border flex items-center justify-center font-sans font-black text-[10px] uppercase shrink-0'
+               style={{ background: 'var(--color-primary)', color: 'var(--color-secondary)', borderColor: 'var(--color-border)' }}>
+            {user.fName.slice(0, 1)}
+          </div>
+          <p className='text-[10px] uppercase tracking-widest font-bold' style={{ color: 'var(--color-text)' }}>{`${user.fName} ${user.lName}`}</p>
+        </div>
       </td>
-      <td className='py-3 px-3 xl:px-5 font-light'>
-        <span
-          className={`px-2.5 py-1 rounded-full font-semibold text-xs capitalize ${
-            status.toLowerCase() === 'in_progress' && 'text-cyan-800 bg-cyan-100/70'
-          } ${status.toLowerCase() === 'completed' && 'text-emerald-800 bg-emerald-100/70'} ${status.toLowerCase() === 'pending' && 'text-amber-800 bg-amber-100/70'}`}
-        >
+
+      <td className='py-5 px-5'>
+        <span className='text-[9px] uppercase tracking-[0.2em] font-black px-2 py-0.5 border'
+              style={{ 
+                color: getStatusColor(status), 
+                borderColor: 'var(--color-border)',
+                background: 'var(--color-background)'
+              }}>
           {status.toLowerCase().replace('_', ' ')}
         </span>
       </td>
-      <td className='py-3 px-3 xl:px-5'>
-        <span
-          className={`px-2.5 py-1 rounded-full font-semibold text-xs capitalize ${
-            priority.toLowerCase() === 'high' && 'text-red-800 bg-red-100/60'
-          } ${priority.toLowerCase() === 'medium' && 'text-orange-700 bg-orange-100/60'} ${priority.toLowerCase() === 'low' && 'text-yellow-800 bg-yellow-100/60'}`}
-        >
-          {priority.toLowerCase()}
-        </span>
+
+      <td className='py-5 px-5'>
+        <div className='flex items-center gap-2'>
+           <div className='w-1.5 h-1.5' style={{ background: getPriorityColor(priority) }}></div>
+           <span className='text-[10px] uppercase tracking-widest font-bold opacity-60' style={{ color: 'var(--color-text)' }}>
+             {priority.toLowerCase()}
+           </span>
+        </div>
       </td>
-      <td className='py-3 px-3 xl:px-5 font-medium text-slate-600'>{new Date(dueDate).toLocaleDateString()}</td>
-      <td className='py-3 px-3 xl:px-5'>
-        <div className='flex gap-4 font-semibold text-sm'>
-          <span onClick={() => onEditTask(task)} className='text-cyan-500 cursor-pointer hover:text-cyan-700 transition-all'>
-            Edit
-          </span>
-          <span onClick={deleteTask} className='text-red-500 cursor-pointer hover:text-red-700 transition-all'>
-            Delete
-          </span>
+
+      <td className='py-5 px-5 text-[10px] uppercase tracking-widest font-bold opacity-50' style={{ color: 'var(--color-text)' }}>
+        {new Date(dueDate).toLocaleDateString()}
+      </td>
+
+      <td className='py-5 px-5 text-right'>
+        <div className='flex justify-end gap-6'>
+          <button
+            className='text-[10px] uppercase tracking-widest font-black hover:text-accent transition-colors opacity-40 hover:opacity-100'
+            onClick={() => onEditTask(task)}
+          >
+            edit
+          </button>
+          <button 
+            className='text-[10px] uppercase tracking-widest font-black text-red-500/60 hover:text-red-500 transition-colors' 
+            onClick={deleteTask}
+          >
+            erase
+          </button>
         </div>
       </td>
     </tr>
@@ -69,4 +104,3 @@ const TaskTableData = ({ task, fetchTasks, fetchManagerDashboard, onEditTask }) 
 }
 
 export default TaskTableData
-

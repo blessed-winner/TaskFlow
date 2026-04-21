@@ -41,7 +41,10 @@ const Features = () => {
             <span className='ornament w-12'></span>
             <p className='text-[10px] uppercase tracking-[0.4em] font-black' style={{ color: 'var(--color-accent)' }}>operational logic</p>
           </div>
-          <h2 className='text-4xl md:text-5xl font-normal text-text mt-2'>The Architecture of Coordination</h2>
+          <h2 className='text-3xl sm:text-5xl md:text-7xl uppercase mb-2 leading-[0.9] mt-2'>
+            <span className='font-sans font-black tracking-tighter' style={{ color: 'var(--color-text)' }}>Structural</span>
+            <span className='ml-2 md:ml-4 font-serif font-normal italic tracking-tight capitalize' style={{ color: 'var(--color-text-muted)' }}>Logic.</span>
+          </h2>
           <p className='text-text-muted mt-6 text-lg italic leading-relaxed'>
             TaskFlow is a sophisticated ledger system designed for high-stakes coordination. It transcends the common to-do list by binding planning, delegation, and execution into a singular, historical record.
           </p>

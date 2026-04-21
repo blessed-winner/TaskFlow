@@ -64,16 +64,17 @@ const TaskManagement = () => {
       </div>
 
       {/* ── Tasks Table ── */}
-      <div className='border overflow-x-auto' style={{ borderColor: 'var(--color-border)' }}>
-        <table className='w-full text-sm min-w-[900px]'>
-          <thead>
-            <tr className='border-b' style={{ borderColor: 'var(--color-border)', background: 'var(--color-surface)' }}>
-              {['Task', 'Assigned To', 'Status', 'Priority', 'Due Date', 'Actions'].map((h) => (
-                <th key={h} className='py-3 px-5 text-left text-[9px] uppercase tracking-widest font-sans font-bold opacity-50' style={{ color: 'var(--color-text)' }}>{h}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
+      <div className='card-vintage p-0 overflow-hidden fade-in-slide'>
+        <div className='overflow-x-auto'>
+          <table className='w-full text-sm min-w-[900px]'>
+            <thead className='uppercase text-[10px] tracking-[0.2em] font-black opacity-60 border-b-2' style={{ borderColor: 'var(--color-border)', color: 'var(--color-text-muted)' }}>
+              <tr>
+                {['Protocol Title', 'Assigned To', 'Status', 'Priority', 'Deadline', 'Actions'].map((h) => (
+                  <th key={h} className={`py-6 px-5 text-left ${h === 'Actions' ? 'text-right' : ''}`}>{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody className='divide-y' style={{ borderColor: 'var(--color-border)' }}>
             {tasks.map((task) => (
               <TaskTableData
                 task={task}
@@ -87,7 +88,8 @@ const TaskManagement = () => {
         </table>
       </div>
     </div>
-  )
+  </div>
+)
 }
 
 export default TaskManagement

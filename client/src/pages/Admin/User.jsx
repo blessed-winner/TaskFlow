@@ -32,15 +32,20 @@ const User = () => {
         />
       )}
       
-      <div className='flex justify-between items-end mb-16 gap-4 border-b-2 pb-8' style={{ borderColor: 'var(--color-border)' }}>
-        <div className='fade-in-slide'>
-          <div className='flex items-center gap-4 mb-2'>
-            <span className='ornament w-12'></span>
-            <p className='text-[10px] uppercase tracking-[0.4em] font-black' style={{ color: 'var(--color-accent)' }}>personnel management</p>
+      <div className='flex flex-col md:flex-row md:justify-between items-start md:items-end gap-6 border-b pb-6 mb-12' style={{ borderColor: 'var(--color-border)' }}>
+        <div className='fade-in-slide max-w-full'>
+          <div className='flex items-center gap-4 mb-4'>
+            <span className='w-8 h-px shrink-0' style={{ background: 'var(--color-text)' }}></span>
+            <p className='text-[10px] uppercase tracking-[0.4em] font-sans font-bold' style={{ color: 'var(--color-accent)' }}>personnel management</p>
           </div>
-          <h1 className='text-5xl font-normal' style={{ color: 'var(--color-text)' }}>Agent Directory</h1>
+          <h1 className='text-3xl sm:text-5xl md:text-7xl uppercase mb-2 break-words leading-[0.9]'>
+            <span className='font-sans font-black tracking-tighter' style={{ color: 'var(--color-text)' }}>Agent</span>
+            <span className='ml-2 md:ml-4 font-serif font-normal italic tracking-tight capitalize' style={{ color: 'var(--color-text-muted)' }}>Directory.</span>
+          </h1>
         </div>
-        <AddUserButton onClick={() => setShowForm(true)} />
+        <div className='shrink-0 w-full md:w-auto'>
+          <AddUserButton onClick={() => setShowForm(true)} />
+        </div>
       </div>
 
       <div className='card-vintage p-0 overflow-hidden fade-in-slide'>

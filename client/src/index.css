@@ -110,31 +110,22 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--color-secondary);
 }
 
-.btn-solid {
-  background: var(--color-primary);
-  color: var(--color-secondary);
-  border-color: var(--color-primary);
-}
-
-.btn-solid:hover {
-  background: transparent;
-  color: var(--color-primary);
-}
-
 .btn-invert {
+  border: 1px solid var(--color-text);
+  color: var(--color-text);
+  background: transparent;
   transition: all 0.2s ease-out;
 }
 
 .btn-invert:hover {
   background: var(--color-text);
   color: var(--color-background);
-  border-color: var(--color-text);
 }
 
 .btn-solid {
   background: var(--color-text);
   color: var(--color-background);
-  border-color: var(--color-text);
+  border: 1px solid var(--color-text);
   transition: all 0.2s ease-out;
 }
 
