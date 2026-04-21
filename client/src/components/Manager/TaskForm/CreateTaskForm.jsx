@@ -3,6 +3,7 @@ import { useState } from 'react'
 import PrioritySelect from './PrioritySelect'
 import toast from 'react-hot-toast'
 import { useAppContext } from '../../../context/AppContext'
+import ReactDOM from 'react-dom'
 
 const CreateTaskForm = ({ onClose, onTaskAdded }) => {
   const { axios } = useAppContext()
@@ -18,6 +19,11 @@ const CreateTaskForm = ({ onClose, onTaskAdded }) => {
   }
 
   const handleCreateTask = async () => {
+    if (!title || !description || !assigneeName || !dueDate) {
+      toast.error('Required parameters missing')
+      return
+    }
+
     const formData = {
       title,
       description,
@@ -31,12 +37,7 @@ const CreateTaskForm = ({ onClose, onTaskAdded }) => {
       if (data.success) {
         toast.success(data.message)
         onTaskAdded(data.task)
-
-        setTitle('')
-        setDescription('')
-        setAssigneeName('')
-        setDueDate('')
-        setPriority('Medium')
+        onClose()
       } else {
         toast.error(data.message)
       }
@@ -45,55 +46,100 @@ const CreateTaskForm = ({ onClose, onTaskAdded }) => {
     }
   }
 
-  return (
-    <div className='inset-0 flex justify-center bg-slate-900/45 items-center fixed z-50 px-4'>
-      <form onSubmit={handleSubmit} className='panel max-w-2xl w-full overflow-auto max-h-[85vh] rounded-2xl px-7 py-6 text-slate-800 space-y-4'>
-        <div className='flex justify-between py-2 border-b border-cyan-100 mb-1'>
-          <h2 className='font-semibold text-2xl text-slate-900'>Create New Task</h2>
-          <X onClick={onClose} className='text-slate-500 cursor-pointer' />
-        </div>
-        <div>
-          <h5 className='font-semibold text-sm mb-1.5'>Task Title *</h5>
-          <input type='text' value={title} onChange={(e) => setTitle(e.target.value)} placeholder='Enter task title' className='form-input' />
-        </div>
-        <div>
-          <h5 className='font-semibold text-sm mb-1.5'>Description *</h5>
-          <textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder='Describe task in detail' className='form-input h-28 resize-none'></textarea>
+  return ReactDOM.createPortal(
+    <div className='inset-0 flex justify-center bg-black/70 items-center fixed z-[999] px-4 backdrop-blur-md'>
+      <div className='card-vintage max-w-2xl w-full overflow-auto max-h-[90vh] fade-in-slide relative' style={{ background: 'var(--color-surface)', border: '1px solid var(--color-text)' }}>
+        <div className='flex justify-between items-center py-6 border-b' style={{ borderColor: 'var(--color-border)', padding: '1.5rem 2rem' }}>
+          <div>
+            <p className='text-[10px] uppercase font-sans font-black tracking-[0.4em] mb-1' style={{ color: 'var(--color-accent)' }}>operational entry</p>
+            <h2 className='text-3xl font-sans font-black uppercase tracking-tight' style={{ color: 'var(--color-text)' }}>Establish Protocol</h2>
+          </div>
+          <button onClick={onClose} className='p-2 hover:bg-black/5 transition-colors cursor-pointer border' style={{ borderColor: 'var(--color-border)' }}>
+            <X className='h-4 w-4' style={{ color: 'var(--color-text)' }} />
+          </button>
         </div>
 
-        <div className='grid md:grid-cols-2 gap-4'>
-          <div>
-            <span className='flex items-center gap-1 mb-1.5'>
-              <User className='w-4' />
-              <h5 className='font-semibold text-sm'>Assign To *</h5>
-            </span>
-            <input type='text' value={assigneeName} onChange={(e) => setAssigneeName(e.target.value)} placeholder='Select team member' className='form-input' />
+        <form onSubmit={handleSubmit} className='p-8 space-y-8'>
+          <div className='space-y-2'>
+            <label className='text-[10px] uppercase font-sans font-black tracking-widest opacity-60' style={{ color: 'var(--color-text)' }}>Protocol Title</label>
+            <input 
+              type='text' 
+              value={title} 
+              onChange={(e) => setTitle(e.target.value)} 
+              placeholder='Identifier for the operative sequence...' 
+              className='w-full input-vintage' 
+            />
           </div>
-          <div>
-            <span className='flex items-center gap-1 mb-1.5'>
-              <Flag className='w-4' />
-              <h5 className='font-semibold text-sm'>Priority *</h5>
-            </span>
-            <PrioritySelect value={priority} onChange={setPriority} />
+
+          <div className='space-y-2'>
+            <label className='text-[10px] uppercase font-sans font-black tracking-widest opacity-60' style={{ color: 'var(--color-text)' }}>Objective Parameters</label>
+            <textarea 
+              value={description} 
+              onChange={(e) => setDescription(e.target.value)} 
+              placeholder='Detailed execution instructions...' 
+              className='w-full input-vintage h-32 resize-none'
+            ></textarea>
           </div>
-        </div>
-        <div>
-          <span className='flex items-center gap-1 mb-1.5'>
-            <Calendar className='w-4' />
-            <h5 className='font-semibold text-sm'>Due Date *</h5>
-          </span>
-          <input type='date' value={dueDate} onChange={(e) => setDueDate(e.target.value)} className='form-input' />
-        </div>
-        <div className='w-full flex justify-end gap-3 pt-4 border-t border-cyan-100 mt-2'>
-          <button onClick={onClose} className='secondary-btn px-4 py-2.5 rounded-xl font-semibold cursor-pointer'>
-            Cancel
-          </button>
-          <button onClick={handleCreateTask} className='primary-btn text-white px-4 py-2.5 rounded-xl font-semibold cursor-pointer'>
-            Create Task
-          </button>
-        </div>
-      </form>
-    </div>
+
+          <div className='grid md:grid-cols-2 gap-8'>
+            <div className='space-y-2'>
+              <div className='flex items-center gap-2'>
+                <User className='w-3 h-3 opacity-40' />
+                <label className='text-[10px] uppercase font-sans font-black tracking-widest opacity-60' style={{ color: 'var(--color-text)' }}>Assigned Operative</label>
+              </div>
+              <input 
+                type='text' 
+                value={assigneeName} 
+                onChange={(e) => setAssigneeName(e.target.value)} 
+                placeholder='Identify personnel...' 
+                className='w-full input-vintage' 
+              />
+            </div>
+            <div className='space-y-2'>
+              <div className='flex items-center gap-2'>
+                <Flag className='w-3 h-3 opacity-40' />
+                <label className='text-[10px] uppercase font-sans font-black tracking-widest opacity-60' style={{ color: 'var(--color-text)' }}>Priority Level</label>
+              </div>
+              <PrioritySelect value={priority} onChange={setPriority} />
+            </div>
+          </div>
+
+          <div className='space-y-2'>
+            <div className='flex items-center gap-2'>
+              <Calendar className='w-3 h-3 opacity-40' />
+              <label className='text-[10px] uppercase font-sans font-black tracking-widest opacity-60' style={{ color: 'var(--color-text)' }}>Verification Deadline</label>
+            </div>
+            <input 
+              type='date' 
+              value={dueDate} 
+              onChange={(e) => setDueDate(e.target.value)} 
+              className='w-full input-vintage' 
+              style={{ colorScheme: 'light' }}
+            />
+          </div>
+
+          <div className='flex flex-col sm:flex-row justify-end gap-4 pt-8 border-t' style={{ borderColor: 'var(--color-border)' }}>
+            <button 
+              type='button'
+              onClick={onClose} 
+              className='btn-modern-vintage px-8 border'
+              style={{ color: 'var(--color-text)', borderColor: 'var(--color-border)' }}
+            >
+              Abeyance
+            </button>
+            <button 
+              type='button'
+              onClick={handleCreateTask} 
+              className='btn-modern-vintage px-8'
+              style={{ background: 'var(--color-text)', color: 'var(--color-background)' }}
+            >
+              Establish Protocol
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>,
+    document.body
   )
 }
 
