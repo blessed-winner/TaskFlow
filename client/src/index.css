@@ -199,3 +199,28 @@ h1, h2, h3, h4, h5, h6 {
 
 
 
+/* Animations */
+@keyframes fade-in-slide {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in-slide {
+  animation: fade-in-slide 0.5s ease-out forwards;
+}
+
+[data-theme="light"] {
+  --color-emerald-500: #10b981;
+  --color-emerald-600: #059669;
+}
+
+[data-theme="dark"] {
+  --color-emerald-500: #34d399;
+  --color-emerald-600: #10b981;
+}
