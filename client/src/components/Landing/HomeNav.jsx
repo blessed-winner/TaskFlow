@@ -52,8 +52,7 @@ const HomeNav = () => {
           {token && user ? (
             <button 
               onClick={handleNavigation} 
-              className='text-[10px] font-bold uppercase tracking-[0.1em] border px-4 py-1.5 btn-invert'
-              style={{ borderColor: 'var(--color-text)', color: 'var(--color-text)' }}
+              className='text-[10px] font-bold uppercase tracking-[0.1em] px-4 py-1.5 btn-invert'
             >
               Enter
             </button>
@@ -68,8 +67,7 @@ const HomeNav = () => {
               </button>
               <button 
                 onClick={() => navigate('/signup')} 
-                className='text-[10px] font-bold uppercase tracking-[0.1em] border px-4 py-1.5 transition-colors btn-invert'
-                style={{ borderColor: 'var(--color-text)', background: 'var(--color-text)', color: 'var(--color-background)' }}
+                className='text-[10px] font-bold uppercase tracking-[0.1em] px-4 py-1.5 btn-solid'
               >
                 Start
               </button>
